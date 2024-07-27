@@ -1,6 +1,7 @@
 import requests
 
 MAINNET_API_URL = 'https://api.influenceth.io'
+PRE_RELEASE_API_URL = 'https://api-prerelease.influenceth.io'
 
 
 class InfluenceClient:
@@ -49,4 +50,24 @@ class InfluenceClient:
         :return:
         """
         crew = self._get(f'/v1/crew/{id}')
+        # TODO: implement for real
         return crew
+
+    def get_activities(self,
+                       crew_id: int,
+                       page_num: int = 1,
+                       page_size: int = 25
+                       ):
+        """
+
+        :param id:
+        :return:
+        """
+        # TODO: add type filtering??
+        activities = self._get(f'/v2/entities/{crew_id}/activity?page={page_num}&pageSize={page_size}')
+        # TODO: parse activities: see src/api/activity-schema.ts
+        return activities
+
+    def get_entities(self,
+                     ):
+        pass
