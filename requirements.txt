@@ -1,2 +1,3 @@
 setuptools
+starknet_py
 requests
