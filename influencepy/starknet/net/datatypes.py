@@ -3,6 +3,9 @@ from typing import List
 from starknet_py.cairo import felt
 
 
+ContractAddress = int
+
+
 class Calldata:
     def __init__(self, calldata: list[int]):
         self.data = calldata
@@ -23,12 +26,12 @@ class Calldata:
         self.push_int(felt.encode_shortstring(value))
 
 
-class Struct:
+class InfluenceStruct:
     def to_calldata(self) -> List[int]:
         raise NotImplementedError
 
 
-class Entity(Struct):
+class Entity(InfluenceStruct):
     CREW = 1
     CREWMATE = 2
     ASTEROID = 3
@@ -48,10 +51,28 @@ class Entity(Struct):
 
 
 class Crew(Entity):
+    """ Convenience class for crew entities. """
     def __init__(self, crew_id: int):
         super().__init__(entity_type=Entity.CREW, entity_id=crew_id)
 
 
 class Building(Entity):
+    """ Convenience class for building entities. """
     def __init__(self, building_id: int):
         super().__init__(entity_type=Entity.BUILDING, entity_id=building_id)
+
+
+class CubitFixedFloat(InfluenceStruct):
+    pass  # TODO
+
+
+class InventoryItem(InfluenceStruct):
+    pass  # TODO
+
+
+class Withdrawal(InfluenceStruct):
+    pass  # TODO
+
+
+class SeededAsteroid(InfluenceStruct):
+    pass  # TODO

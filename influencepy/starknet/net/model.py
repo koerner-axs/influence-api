@@ -1,8 +1,13 @@
 from dataclasses import dataclass
+from typing import List
 
-from influencepy.starknet.net.datatypes import Entity
+from starknet_py.net.schemas.common import Felt
+
+from influencepy.starknet.net.datatypes import Entity, ContractAddress, InventoryItem, Withdrawal, CubitFixedFloat, \
+    SeededAsteroid
 
 
+# TODO: maybe rename to avoid confusion with Starknet OS 'system calls'
 @dataclass
 class Syscall:
     functionName: str
@@ -22,7 +27,7 @@ class AcceptPrepaidMerkleAgreement(Syscall):
     permission: int
     permitted: Entity
     term: int
-    merkle_proof: Span<Felt> ????
+    merkle_proof: List[Felt]
     caller_crew: Entity
 
 
@@ -64,7 +69,7 @@ class RemoveFromWhitelist(Syscall):
 class RemoveAccountFromWhiteList(Syscall):
     target: Entity
     permission: int
-    permitted: ContractAddress ????
+    permitted: ContractAddress
     caller_crew: Entity
 
 
@@ -80,7 +85,7 @@ class Whitelist(Syscall):
 class WhitelistAccount(Syscall):
     target: Entity
     permission: int
-    permitted: ContractAddress ????
+    permitted: ContractAddress
     caller_crew: Entity
 
 
@@ -135,13 +140,13 @@ class RepossessBuilding(Syscall):
 
 @dataclass
 class ArrangeCrew(Syscall):
-    composition: Span<Int> ????
+    composition: List[int]
     caller_crew: Entity
 
 
 @dataclass
 class DelegateCrew(Syscall):
-    delegated_to: ContractAddress ????
+    delegated_to: ContractAddress
     caller_crew: Entity
 
 
@@ -154,17 +159,17 @@ class EjectCrew(Syscall):
 @dataclass
 class ExchangeCrew(Syscall):
     crew1: Entity
-    comp1: Span<Int> ????
-    _crew2: Entity
-    comp2: Span<Int> ????
+    comp1: List[int]
+    _crew2: Entity  # underscore as per the ABI
+    comp2: List[int]
 
 
 @dataclass
 class InitializeArvadian(Syscall):
     crewmate: Entity
-    impactful: Span<Int> ????
-    cosmetic: Span<Int> ????
-    name: Felt oder str ????
+    impactful: List[int]
+    cosmetic: List[int]
+    name: str
     station: Entity
     caller_crew: Entity
 
@@ -172,16 +177,16 @@ class InitializeArvadian(Syscall):
 @dataclass
 class RecruitAdalian(Syscall):
     crewmate: Entity
-    class: int
-    impactful: Span<Int> ????
-    cosmetic: Span<Int> ????
+    class_: int  # class is a reserved keyword
+    impactful: List[int]
+    cosmetic: List[int]
     gender: int
     body: int
     face: int
     hair: int
     hair_color: int
     clothes: int
-    name: Felt oder str ????
+    name: str
     station: Entity
     caller_crew: Entity
 
@@ -221,7 +226,7 @@ class AcceptDelivery(Syscall):
 class DumpDelivery(Syscall):
     origin: Entity
     origin_slot: int
-    products: Span<InventoryItem> ????
+    products: List[InventoryItem]
     caller_crew: Entity
 
 
@@ -235,7 +240,7 @@ class CancelDelivery(Syscall):
 class PackageDelivery(Syscall):
     origin: Entity
     origin_slot: int
-    products: Span<InventoryItem> ????
+    products: List[InventoryItem]
     dest: Entity
     dest_slot: int
     price: int
@@ -252,7 +257,7 @@ class ReceiveDelivery(Syscall):
 class SendDelivery(Syscall):
     origin: Entity
     origin_slot: int
-    products: Span<InventoryItem> ????
+    products: List[InventoryItem]
     dest: Entity
     dest_slot: int
     caller_crew: Entity
@@ -360,9 +365,9 @@ class CreateBuyOrder(Syscall):
     storage: Entity
     storage_slot: int
     caller_crew: Entity
-    escrow_caller: ContractAddress ????
+    escrow_caller: ContractAddress
     escrow_type: int
-    escrow_token: ContractAddress ????
+    escrow_token: ContractAddress
     escrow_amount: int
 
 
@@ -378,17 +383,17 @@ class FillBuyOrder(Syscall):
     origin: Entity
     origin_slot: int
     caller_crew: Entity
-    escrow_caller: ContractAddress ????
+    escrow_caller: ContractAddress
     escrow_type: int
-    escrow_token: ContractAddress ????
-    escrow_withdrawals: Span<Withdrawal> ????
+    escrow_token: ContractAddress
+    escrow_withdrawals: List[Withdrawal]
 
 
 @dataclass
 class AssignContractPolicy(Syscall):
     target: Entity
     permission: int
-    contract: ContractAddress ????
+    contract: ContractAddress
     caller_crew: Entity
 
 
@@ -399,7 +404,7 @@ class AssignPrepaidMerklePolicy(Syscall):
     rate: int
     initial_term: int
     notice_period: int
-    merkle_root: Felt | str ????
+    merkle_root: Felt
     caller_crew: Entity
 
 
@@ -497,7 +502,7 @@ class ProcessProductsStart(Syscall):
     processor_slot: int
     process: int
     target_output: int
-    recipes: CubitFixedFloat ????
+    recipes: CubitFixedFloat
     origin: Entity
     origin_slot: int
     destination: Entity
@@ -530,7 +535,7 @@ class ClaimPrepareForLaunchReward(Syscall):
 
 @dataclass
 class ClaimTestnetSway(Syscall):
-    proof: Span<Felt> ????
+    proof: List[Felt]
     caller_crew: Entity
 
 
@@ -584,17 +589,17 @@ class InitializeAsteroid(Syscall):
     purchase_order: int
     scan_status: int
     bonuses: int
-    merkle_proof: Span<Felt> ????
+    merkle_proof: List[Felt]
 
 
 @dataclass
 class SeedAsteroids(Syscall):
-    asteroids: Span<SeededAsteroid> ????
+    asteroids: List[SeededAsteroid]
 
 
 @dataclass
 class SeedCrewmates(Syscall):
-    crewmates: Span<SeededCrewmate> ????
+    crewmates: List[SeededAsteroid]
 
 
 # NOTE: This is according to the system ABI, but it seems to be incorrect or incomplete
@@ -635,13 +640,13 @@ class TransitBetweenStart(Syscall):
     destination: Entity
     departure_time: int
     arrival_time: int
-    transit_p: CubitFixedFloat ????
-    transit_ecc: CubitFixedFloat ????
-    transit_inc: CubitFixedFloat ????
-    transit_raan: CubitFixedFloat ????
-    transit_argp: CubitFixedFloat ????
-    transit_nu_start: CubitFixedFloat ????
-    transit_nu_end: CubitFixedFloat ????
+    transit_p: CubitFixedFloat
+    transit_ecc: CubitFixedFloat
+    transit_inc: CubitFixedFloat
+    transit_raan: CubitFixedFloat
+    transit_argp: CubitFixedFloat
+    transit_nu_start: CubitFixedFloat
+    transit_nu_end: CubitFixedFloat
     caller_crew: Entity
 
 
@@ -654,16 +659,16 @@ class UndockShip(Syscall):
 
 @dataclass
 class AnnotateEvent(Syscall):
-    transaction_hash: Felt ????
+    transaction_hash: Felt
     log_index: int
-    content_hash: Span<Felt> ????
+    content_hash: List[Felt]
     caller_crew: Entity
 
 
 @dataclass
 class ChangeName(Syscall):
     entity: Entity
-    name: InfluenceString ????
+    name: str
     caller_crew: Entity
 
 
@@ -672,20 +677,20 @@ class ConfigureExchange(Syscall):
     exchange: Entity
     maker_fee: int
     taker_fee: int
-    allowed_products: Span<int> ????
+    allowed_products: List[int]
     caller_crew: Entity
 
 
 @dataclass
 class ReadComponent(Syscall):
-    name: Felt ????
-    path: Span<Felt> ????
-    # TODO: output is of type Span<Felt>, declare this
+    name: Felt
+    path: List[Felt]
+    # TODO: output is of type Span<Felt>, need to declare this somewhere?
 
 
 @dataclass
 class WriteComponent(Syscall):
-    name: Felt ????
-    path: Span<Felt> ????
-    data: Span<Felt> ????
+    name: Felt
+    path: List[Felt]
+    data: List[Felt]
     # TODO: state_mutability is 'view' which doesn't make sense for a write operation
