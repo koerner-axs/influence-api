@@ -3,8 +3,8 @@ from typing import List
 
 from starknet_py.net.schemas.common import Felt
 
-from influencepy.starknet.net.datatypes import Entity, ContractAddress, InventoryItem, Withdrawal, CubitFixedFloat, \
-    SeededAsteroid
+from influencepy.starknet.net.datatypes import Entity, ContractAddress, InventoryItem, Withdrawal, SeededAsteroid, \
+    CubitFixedPoint64, CubitFixedPoint128, u256
 
 
 # TODO: maybe rename to avoid confusion with Starknet OS 'system calls'
@@ -502,7 +502,7 @@ class ProcessProductsStart(Syscall):
     processor_slot: int
     process: int
     target_output: int
-    recipes: CubitFixedFloat
+    recipes: CubitFixedPoint64
     origin: Entity
     origin_slot: int
     destination: Entity
@@ -599,7 +599,7 @@ class SeedAsteroids(Syscall):
 
 @dataclass
 class SeedCrewmates(Syscall):
-    crewmates: List[SeededAsteroid]
+    crewmates: List[SeededCrewmate]
 
 
 # NOTE: This is according to the system ABI, but it seems to be incorrect or incomplete
@@ -640,13 +640,13 @@ class TransitBetweenStart(Syscall):
     destination: Entity
     departure_time: int
     arrival_time: int
-    transit_p: CubitFixedFloat
-    transit_ecc: CubitFixedFloat
-    transit_inc: CubitFixedFloat
-    transit_raan: CubitFixedFloat
-    transit_argp: CubitFixedFloat
-    transit_nu_start: CubitFixedFloat
-    transit_nu_end: CubitFixedFloat
+    transit_p: CubitFixedPoint128
+    transit_ecc: CubitFixedPoint128
+    transit_inc: CubitFixedPoint128
+    transit_raan: CubitFixedPoint128
+    transit_argp: CubitFixedPoint128
+    transit_nu_start: CubitFixedPoint128
+    transit_nu_end: CubitFixedPoint128
     caller_crew: Entity
 
 
@@ -668,7 +668,7 @@ class AnnotateEvent(Syscall):
 @dataclass
 class ChangeName(Syscall):
     entity: Entity
-    name: str
+    name: u256
     caller_crew: Entity
 
 
