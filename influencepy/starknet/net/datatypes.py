@@ -2,11 +2,10 @@ from dataclasses import dataclass
 from typing import List
 
 from starknet_py.cairo import felt
-from starknet_py.net.schemas.common import Felt
 
 
 class Calldata:
-    def __init__(self, calldata: list[int]):
+    def __init__(self, calldata: List[int]):
         self.data = calldata
 
     def __len__(self):
@@ -25,25 +24,43 @@ class Calldata:
         self.push_int(felt.encode_shortstring(value))
 
 
-class InfluenceStruct:
-    def to_calldata(self) -> List[int]:
+class BasicType:
+    def to_calldata(self, calldata: Calldata) -> Calldata:
         raise NotImplementedError
 
     @staticmethod
-    def from_calldata(calldata: Calldata) -> "InfluenceStruct":
+    def from_calldata(calldata: Calldata) -> "BasicType":
         raise NotImplementedError
 
 
-class UnsignedInt256(InfluenceStruct):
+def _make_uint_type(bits: int) -> type:
+    class UnsignedInt(BasicType):
+        def __init__(self, value: int):
+            if not 0 <= value < 2 ** bits:
+                raise ValueError(f"Value {value} is not in the range [0, 2**{bits})")
+            self.value = value
+
+        def to_calldata(self, calldata: Calldata) -> Calldata:
+            calldata.push_int(self.value)
+            return calldata
+
+        @staticmethod
+        def from_calldata(calldata: Calldata) -> "UnsignedInt":
+            return UnsignedInt(calldata.pop_int())
+
+    return UnsignedInt
+
+
+class UnsignedInt256(BasicType):
     def __init__(self, value: int):
         if not 0 <= value < 2 ** 256:
             raise ValueError(f"Value {value} is not in the range [0, 2**256)")
         self.value = value
 
-    def to_calldata(self) -> List[int]:
-        low = self.value & (2 ** 128 - 1)
-        high = self.value >> 128
-        return [low, high]
+    def to_calldata(self, calldata: Calldata) -> Calldata:
+        calldata.push_int(self.value & (2 ** 128 - 1))
+        calldata.push_int(self.value >> 128)
+        return calldata
 
     @staticmethod
     def from_calldata(calldata: Calldata) -> "UnsignedInt256":
@@ -52,79 +69,21 @@ class UnsignedInt256(InfluenceStruct):
         return UnsignedInt256(low + (high << 128))
 
 
-ContractAddress = int
-u64 = int
-u128 = int
+ContractAddress = int  # TODO: determine bit width
+u64 = _make_uint_type(64)
+u128 = _make_uint_type(128)
 u256 = UnsignedInt256
-felt252 = Felt
-
-
-class EntityId(u64):
-    CREW = 1
-    CREWMATE = 2
-    ASTEROID = 3
-    LOT = 4
-    BUILDING = 5
-    SHIP = 6
-    DEPOSIT = 7
-    DELIVERY = 9
-    SPACE = 10
+felt252 = _make_uint_type(252)
+shortstr = felt252
 
 
 @dataclass
-class Entity(InfluenceStruct):
-    entity_type: EntityId
-    entity_id: u64
-
-    def to_calldata(self) -> List[int]:
-        return [self.entity_type, self.entity_id]
-
-
-class Crew(Entity):
-    """ Convenience class for crew entities. """
-
-    def __init__(self, crew_id: int):
-        super().__init__(entity_type=EntityId.CREW, entity_id=crew_id)
-
-
-class Building(Entity):
-    """ Convenience class for building entities. """
-
-    def __init__(self, building_id: int):
-        super().__init__(entity_type=EntityId.BUILDING, entity_id=building_id)
-
-
-@dataclass
-class CubitFixedPoint64(InfluenceStruct):
+class CubitFixedPoint64(BasicType):
     mag: u64
     sign: bool
 
 
 @dataclass
-class CubitFixedPoint128(InfluenceStruct):
+class CubitFixedPoint128(BasicType):
     mag: u128
     sign: bool
-
-
-@dataclass
-class InventoryItem(InfluenceStruct):
-    product: u64
-    amount: u64
-
-
-@dataclass
-class Withdrawal(InfluenceStruct):
-    recipient: ContractAddress
-    amount: u256
-
-
-@dataclass
-class SeededAsteroid(InfluenceStruct):
-    asteroid_id: u64
-    name: felt252
-
-
-@dataclass
-class SeededCrewmate(InfluenceStruct):
-    crewmate_id: u64
-    name: felt252

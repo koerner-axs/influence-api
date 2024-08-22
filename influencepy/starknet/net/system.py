@@ -1,20 +1,13 @@
 from dataclasses import dataclass
 from typing import List
 
-from starknet_py.net.schemas.common import Felt
-
-from influencepy.starknet.net.datatypes import Entity, ContractAddress, InventoryItem, Withdrawal, SeededAsteroid, \
-    CubitFixedPoint64, CubitFixedPoint128, u256
-
-
-# TODO: maybe rename to avoid confusion with Starknet OS 'system calls'
-@dataclass
-class Syscall:
-    functionName: str
+from influencepy.starknet.net.datatypes import ContractAddress, CubitFixedPoint64, CubitFixedPoint128, u256, felt252
+from influencepy.starknet.net.schema import System
+from influencepy.starknet.net.structs import Entity, InventoryItem, Withdrawal, SeededAsteroid, SeededCrewmate
 
 
 @dataclass
-class AcceptContractAgreement(Syscall):
+class AcceptContractAgreement(System, identifier='AcceptContractAgreement'):
     target: Entity
     permission: int
     permitted: Entity
@@ -22,17 +15,17 @@ class AcceptContractAgreement(Syscall):
 
 
 @dataclass
-class AcceptPrepaidMerkleAgreement(Syscall):
+class AcceptPrepaidMerkleAgreement(System, identifier='AcceptPrepaidMerkleAgreement'):
     target: Entity
     permission: int
     permitted: Entity
     term: int
-    merkle_proof: List[Felt]
+    merkle_proof: List[felt252]
     caller_crew: Entity
 
 
 @dataclass
-class AcceptPrepaidAgreement(Syscall):
+class AcceptPrepaidAgreement(System, identifier='AcceptPrepaidAgreement'):
     target: Entity
     permission: int
     permitted: Entity
@@ -41,7 +34,7 @@ class AcceptPrepaidAgreement(Syscall):
 
 
 @dataclass
-class ExtendPrepaidAgreement(Syscall):
+class ExtendPrepaidAgreement(System, identifier='ExtendPrepaidAgreement'):
     target: Entity
     permission: int
     permitted: Entity
@@ -50,7 +43,7 @@ class ExtendPrepaidAgreement(Syscall):
 
 
 @dataclass
-class CancelPrepaidAgreement(Syscall):
+class CancelPrepaidAgreement(System, identifier='CancelPrepaidAgreement'):
     target: Entity
     permission: int
     permitted: Entity
@@ -58,7 +51,7 @@ class CancelPrepaidAgreement(Syscall):
 
 
 @dataclass
-class RemoveFromWhitelist(Syscall):
+class RemoveFromWhitelist(System, identifier='RemoveFromWhitelist'):
     target: Entity
     permission: int
     permitted: Entity
@@ -66,7 +59,7 @@ class RemoveFromWhitelist(Syscall):
 
 
 @dataclass
-class RemoveAccountFromWhiteList(Syscall):
+class RemoveAccountFromWhiteList(System, identifier='RemoveAccountFromWhiteList'):
     target: Entity
     permission: int
     permitted: ContractAddress
@@ -74,7 +67,7 @@ class RemoveAccountFromWhiteList(Syscall):
 
 
 @dataclass
-class Whitelist(Syscall):
+class Whitelist(System, identifier='Whitelist'):
     target: Entity
     permission: int
     permitted: Entity
@@ -82,7 +75,7 @@ class Whitelist(Syscall):
 
 
 @dataclass
-class WhitelistAccount(Syscall):
+class WhitelistAccount(System, identifier='WhitelistAccount'):
     target: Entity
     permission: int
     permitted: ContractAddress
@@ -90,74 +83,74 @@ class WhitelistAccount(Syscall):
 
 
 @dataclass
-class ConstructionAbandon(Syscall):
+class ConstructionAbandon(System, identifier='ConstructionAbandon'):
     building: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ConstructionDeconstruct(Syscall):
+class ConstructionDeconstruct(System, identifier='ConstructionDeconstruct'):
     building: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ConstructionFinish(Syscall):
+class ConstructionFinish(System, identifier='ConstructionFinish'):
     building: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ConstructionPlan(Syscall):
+class ConstructionPlan(System, identifier='ConstructionPlan'):
     building_type: int
     lot: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ConstructionStart(Syscall):
+class ConstructionStart(System, identifier='ConstructionStart'):
     building: Entity
     caller_crew: Entity
 
 
 @dataclass
-class CommandeerShip(Syscall):
+class CommandeerShip(System, identifier='CommandeerShip'):
     ship: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ManageAsteroid(Syscall):
+class ManageAsteroid(System, identifier='ManageAsteroid'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class RepossessBuilding(Syscall):
+class RepossessBuilding(System, identifier='RepossessBuilding'):
     building: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ArrangeCrew(Syscall):
+class ArrangeCrew(System, identifier='ArrangeCrew'):
     composition: List[int]
     caller_crew: Entity
 
 
 @dataclass
-class DelegateCrew(Syscall):
+class DelegateCrew(System, identifier='DelegateCrew'):
     delegated_to: ContractAddress
     caller_crew: Entity
 
 
 @dataclass
-class EjectCrew(Syscall):
+class EjectCrew(System, identifier='EjectCrew'):
     ejected_crew: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ExchangeCrew(Syscall):
+class ExchangeCrew(System, identifier='ExchangeCrew'):
     crew1: Entity
     comp1: List[int]
     _crew2: Entity  # underscore as per the ABI
@@ -165,7 +158,7 @@ class ExchangeCrew(Syscall):
 
 
 @dataclass
-class InitializeArvadian(Syscall):
+class InitializeArvadian(System, identifier='InitializeArvadian'):
     crewmate: Entity
     impactful: List[int]
     cosmetic: List[int]
@@ -175,7 +168,7 @@ class InitializeArvadian(Syscall):
 
 
 @dataclass
-class RecruitAdalian(Syscall):
+class RecruitAdalian(System, identifier='RecruitAdalian'):
     crewmate: Entity
     class_: int  # class is a reserved keyword
     impactful: List[int]
@@ -192,7 +185,7 @@ class RecruitAdalian(Syscall):
 
 
 @dataclass
-class ResupplyFood(Syscall):
+class ResupplyFood(System, identifier='ResupplyFood'):
     origin: Entity
     origin_slot: int
     food: int
@@ -200,7 +193,7 @@ class ResupplyFood(Syscall):
 
 
 @dataclass
-class ResupplyFoodFromExchange(Syscall):
+class ResupplyFoodFromExchange(System, identifier='ResupplyFoodFromExchange'):
     seller_crew: Entity
     exchange: Entity
     amount: int
@@ -211,19 +204,19 @@ class ResupplyFoodFromExchange(Syscall):
 
 
 @dataclass
-class StationCrew(Syscall):
+class StationCrew(System, identifier='StationCrew'):
     destination: Entity
     caller_crew: Entity
 
 
 @dataclass
-class AcceptDelivery(Syscall):
+class AcceptDelivery(System, identifier='AcceptDelivery'):
     delivery: Entity
     caller_crew: Entity
 
 
 @dataclass
-class DumpDelivery(Syscall):
+class DumpDelivery(System, identifier='DumpDelivery'):
     origin: Entity
     origin_slot: int
     products: List[InventoryItem]
@@ -231,13 +224,13 @@ class DumpDelivery(Syscall):
 
 
 @dataclass
-class CancelDelivery(Syscall):
+class CancelDelivery(System, identifier='CancelDelivery'):
     delivery: Entity
     caller_crew: Entity
 
 
 @dataclass
-class PackageDelivery(Syscall):
+class PackageDelivery(System, identifier='PackageDelivery'):
     origin: Entity
     origin_slot: int
     products: List[InventoryItem]
@@ -248,13 +241,13 @@ class PackageDelivery(Syscall):
 
 
 @dataclass
-class ReceiveDelivery(Syscall):
+class ReceiveDelivery(System, identifier='ReceiveDelivery'):
     delivery: Entity
     caller_crew: Entity
 
 
 @dataclass
-class SendDelivery(Syscall):
+class SendDelivery(System, identifier='SendDelivery'):
     origin: Entity
     origin_slot: int
     products: List[InventoryItem]
@@ -264,7 +257,7 @@ class SendDelivery(Syscall):
 
 
 @dataclass
-class SampleDepositStart(Syscall):
+class SampleDepositStart(System, identifier='SampleDepositStart'):
     lot: Entity
     resource: int
     origin: Entity
@@ -273,7 +266,7 @@ class SampleDepositStart(Syscall):
 
 
 @dataclass
-class SampleDepositImprove(Syscall):
+class SampleDepositImprove(System, identifier='SampleDepositImprove'):
     deposit: Entity
     origin: Entity
     origin_slot: int
@@ -281,47 +274,47 @@ class SampleDepositImprove(Syscall):
 
 
 @dataclass
-class SampleDepositFinish(Syscall):
+class SampleDepositFinish(System, identifier='SampleDepositFinish'):
     deposit: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ListDepositForSale(Syscall):
+class ListDepositForSale(System, identifier='ListDepositForSale'):
     deposit: Entity
     price: int
     caller_crew: Entity
 
 
 @dataclass
-class PurchaseDeposit(Syscall):
+class PurchaseDeposit(System, identifier='PurchaseDeposit'):
     deposit: Entity
     caller_crew: Entity
 
 
 @dataclass
-class UnlistDepositForSale(Syscall):
+class UnlistDepositForSale(System, identifier='UnlistDepositForSale'):
     deposit: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ActivateEmergency(Syscall):
+class ActivateEmergency(System, identifier='ActivateEmergency'):
     caller_crew: Entity
 
 
 @dataclass
-class CollectEmergencyPropellant(Syscall):
+class CollectEmergencyPropellant(System, identifier='CollectEmergencyPropellant'):
     caller_crew: Entity
 
 
 @dataclass
-class DeactivateEmergency(Syscall):
+class DeactivateEmergency(System, identifier='DeactivateEmergency'):
     caller_crew: Entity
 
 
 @dataclass
-class CreateSellOrder(Syscall):
+class CreateSellOrder(System, identifier='CreateSellOrder'):
     exchange: Entity
     product: int
     amount: int
@@ -332,7 +325,7 @@ class CreateSellOrder(Syscall):
 
 
 @dataclass
-class FillSellOrder(Syscall):
+class FillSellOrder(System, identifier='FillSellOrder'):
     seller_crew: Entity
     exchange: Entity
     product: int
@@ -346,7 +339,7 @@ class FillSellOrder(Syscall):
 
 
 @dataclass
-class CancelSellOrder(Syscall):
+class CancelSellOrder(System, identifier='CancelSellOrder'):
     seller_crew: Entity
     exchange: Entity
     product: int
@@ -357,7 +350,7 @@ class CancelSellOrder(Syscall):
 
 
 @dataclass
-class CreateBuyOrder(Syscall):
+class CreateBuyOrder(System, identifier='CreateBuyOrder'):
     exchange: Entity
     product: int
     amount: int
@@ -372,7 +365,7 @@ class CreateBuyOrder(Syscall):
 
 
 @dataclass
-class FillBuyOrder(Syscall):
+class FillBuyOrder(System, identifier='FillBuyOrder'):
     buyer_crew: Entity
     exchange: Entity
     product: int
@@ -390,7 +383,7 @@ class FillBuyOrder(Syscall):
 
 
 @dataclass
-class AssignContractPolicy(Syscall):
+class AssignContractPolicy(System, identifier='AssignContractPolicy'):
     target: Entity
     permission: int
     contract: ContractAddress
@@ -398,18 +391,18 @@ class AssignContractPolicy(Syscall):
 
 
 @dataclass
-class AssignPrepaidMerklePolicy(Syscall):
+class AssignPrepaidMerklePolicy(System, identifier='AssignPrepaidMerklePolicy'):
     target: Entity
     permission: int
     rate: int
     initial_term: int
     notice_period: int
-    merkle_root: Felt
+    merkle_root: felt252
     caller_crew: Entity
 
 
 @dataclass
-class AssignPrepaidPolicy(Syscall):
+class AssignPrepaidPolicy(System, identifier='AssignPrepaidPolicy'):
     target: Entity
     permission: int
     rate: int
@@ -419,42 +412,42 @@ class AssignPrepaidPolicy(Syscall):
 
 
 @dataclass
-class AssignPublicPolicy(Syscall):
+class AssignPublicPolicy(System, identifier='AssignPublicPolicy'):
     target: Entity
     permission: int
     caller_crew: Entity
 
 
 @dataclass
-class RemoveContractPolicy(Syscall):
+class RemoveContractPolicy(System, identifier='RemoveContractPolicy'):
     target: Entity
     permission: int
     caller_crew: Entity
 
 
 @dataclass
-class RemovePrepaidPolicy(Syscall):
+class RemovePrepaidPolicy(System, identifier='RemovePrepaidPolicy'):
     target: Entity
     permission: int
     caller_crew: Entity
 
 
 @dataclass
-class RemovePrepaidMerklePolicy(Syscall):
+class RemovePrepaidMerklePolicy(System, identifier='RemovePrepaidMerklePolicy'):
     target: Entity
     permission: int
     caller_crew: Entity
 
 
 @dataclass
-class RemovePublicPolicy(Syscall):
+class RemovePublicPolicy(System, identifier='RemovePublicPolicy'):
     target: Entity
     permission: int
     caller_crew: Entity
 
 
 @dataclass
-class AssembleShipFinish(Syscall):
+class AssembleShipFinish(System, identifier='AssembleShipFinish'):
     dry_dock: Entity
     dry_dock_slot: int
     destination: Entity
@@ -462,7 +455,7 @@ class AssembleShipFinish(Syscall):
 
 
 @dataclass
-class AssembleShipStart(Syscall):
+class AssembleShipStart(System, identifier='AssembleShipStart'):
     dry_dock: Entity
     dry_dock_slot: int
     ship_type: int
@@ -472,14 +465,14 @@ class AssembleShipStart(Syscall):
 
 
 @dataclass
-class ExtractResourceFinish(Syscall):
+class ExtractResourceFinish(System, identifier='ExtractResourceFinish'):
     extractor: Entity
     extractor_slot: int
     caller_crew: Entity
 
 
 @dataclass
-class ExtractResourceStart(Syscall):
+class ExtractResourceStart(System, identifier='ExtractResourceStart'):
     deposit: Entity
     yield_: int  # yield is a reserved keyword
     extractor: Entity
@@ -490,14 +483,14 @@ class ExtractResourceStart(Syscall):
 
 
 @dataclass
-class ProcessProductsFinish(Syscall):
+class ProcessProductsFinish(System, identifier='ProcessProductsFinish'):
     processor: Entity
     processor_slot: int
     caller_crew: Entity
 
 
 @dataclass
-class ProcessProductsStart(Syscall):
+class ProcessProductsStart(System, identifier='ProcessProductsStart'):
     processor: Entity
     processor_slot: int
     process: int
@@ -511,71 +504,71 @@ class ProcessProductsStart(Syscall):
 
 
 @dataclass
-class ResolveRandomEvent(Syscall):
+class ResolveRandomEvent(System, identifier='ResolveRandomEvent'):
     choice: int
     caller_crew: Entity
 
 
 @dataclass
-class CheckForRandomEvent(Syscall):
-    # TODO: this is a 'view' function, so it should not be a syscall
+class CheckForRandomEvent(System, identifier='CheckForRandomEvent'):
+    # TODO: this is a 'view' function, so it should not be a System
     caller_crew: Entity
 
 
 @dataclass
-class ClaimArrivalReward(Syscall):
+class ClaimArrivalReward(System, identifier='ClaimArrivalReward'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ClaimPrepareForLaunchReward(Syscall):
+class ClaimPrepareForLaunchReward(System, identifier='ClaimPrepareForLaunchReward'):
     asteroid: Entity
 
 
 @dataclass
-class ClaimTestnetSway(Syscall):
-    proof: List[Felt]
+class ClaimTestnetSway(System, identifier='ClaimTestnetSway'):
+    proof: List[felt252]
     caller_crew: Entity
 
 
 @dataclass
-class PurchaseAdalian(Syscall):
+class PurchaseAdalian(System, identifier='PurchaseAdalian'):
     collection: int
 
 
 @dataclass
-class PurchaseAsteroid(Syscall):
+class PurchaseAsteroid(System, identifier='PurchaseAsteroid'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ScanResourcesFinish(Syscall):
+class ScanResourcesFinish(System, identifier='ScanResourcesFinish'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ScanResourcesStart(Syscall):
+class ScanResourcesStart(System, identifier='ScanResourcesStart'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ScanSurfaceFinish(Syscall):
+class ScanSurfaceFinish(System, identifier='ScanSurfaceFinish'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ScanSurfaceStart(Syscall):
+class ScanSurfaceStart(System, identifier='ScanSurfaceStart'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class InitializeAsteroid(Syscall):
+class InitializeAsteroid(System, identifier='InitializeAsteroid'):
     asteroid: Entity
     celestial_type: int
     mass: int
@@ -589,53 +582,53 @@ class InitializeAsteroid(Syscall):
     purchase_order: int
     scan_status: int
     bonuses: int
-    merkle_proof: List[Felt]
+    merkle_proof: List[felt252]
 
 
 @dataclass
-class SeedAsteroids(Syscall):
+class SeedAsteroids(System, identifier='SeedAsteroids'):
     asteroids: List[SeededAsteroid]
 
 
 @dataclass
-class SeedCrewmates(Syscall):
+class SeedCrewmates(System, identifier='SeedCrewmates'):
     crewmates: List[SeededCrewmate]
 
 
 # NOTE: This is according to the system ABI, but it seems to be incorrect or incomplete
 @dataclass
-class SeedColony(Syscall):
+class SeedColony(System, identifier='SeedColony'):
     colony: int
     building_type: int
 
 
 # NOTE: This is according to the system ABI, but it seems to be incorrect or incomplete
 @dataclass
-class SeedHabitat(Syscall):
+class SeedHabitat(System, identifier='SeedHabitat'):
     pass
 
 
 # NOTE: This is according to the system ABI, but it seems to be incorrect or incomplete
 @dataclass
-class SeedOrders(Syscall):
+class SeedOrders(System, identifier='SeedOrders'):
     market_lot: int
     warehouse_lot: int
 
 
 @dataclass
-class DockShip(Syscall):
+class DockShip(System, identifier='DockShip'):
     target: Entity
     powered: bool
     caller_crew: Entity
 
 
 @dataclass
-class TransitBetweenFinish(Syscall):
+class TransitBetweenFinish(System, identifier='TransitBetweenFinish'):
     caller_crew: Entity
 
 
 @dataclass
-class TransitBetweenStart(Syscall):
+class TransitBetweenStart(System, identifier='TransitBetweenStart'):
     origin: Entity
     destination: Entity
     departure_time: int
@@ -651,29 +644,29 @@ class TransitBetweenStart(Syscall):
 
 
 @dataclass
-class UndockShip(Syscall):
+class UndockShip(System, identifier='UndockShip'):
     ship: Entity
     powered: bool
     caller_crew: Entity
 
 
 @dataclass
-class AnnotateEvent(Syscall):
-    transaction_hash: Felt
+class AnnotateEvent(System, identifier='AnnotateEvent'):
+    transaction_hash: felt252
     log_index: int
-    content_hash: List[Felt]
+    content_hash: List[felt252]
     caller_crew: Entity
 
 
 @dataclass
-class ChangeName(Syscall):
+class ChangeName(System, identifier='ChangeName'):
     entity: Entity
     name: u256
     caller_crew: Entity
 
 
 @dataclass
-class ConfigureExchange(Syscall):
+class ConfigureExchange(System, identifier='ConfigureExchange'):
     exchange: Entity
     maker_fee: int
     taker_fee: int
@@ -682,15 +675,15 @@ class ConfigureExchange(Syscall):
 
 
 @dataclass
-class ReadComponent(Syscall):
-    name: Felt
-    path: List[Felt]
-    # TODO: output is of type Span<Felt>, need to declare this somewhere?
+class ReadComponent(System, identifier='ReadComponent'):
+    name: felt252
+    path: List[felt252]
+    # TODO: output is of type Span<felt252>, need to declare this somewhere?
 
 
 @dataclass
-class WriteComponent(Syscall):
-    name: Felt
-    path: List[Felt]
-    data: List[Felt]
+class WriteComponent(System, identifier='WriteComponent'):
+    name: felt252
+    path: List[felt252]
+    data: List[felt252]
     # TODO: state_mutability is 'view' which doesn't make sense for a write operation
