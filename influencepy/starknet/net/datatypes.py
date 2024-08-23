@@ -69,12 +69,13 @@ class UnsignedInt256(BasicType):
         return UnsignedInt256(low + (high << 128))
 
 
-ContractAddress = int  # TODO: determine bit width
 u64 = _make_uint_type(64)
 u128 = _make_uint_type(128)
 u256 = UnsignedInt256
 felt252 = _make_uint_type(252)
 shortstr = felt252
+ContractAddress = felt252
+AccountAddress = felt252
 
 
 @dataclass
