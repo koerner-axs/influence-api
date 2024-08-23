@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, get_origin, get_args
 
-from influencepy.starknet.net.datatypes import Calldata, shortstr
+from influencepy.starknet.net.datatypes import Calldata, shortstr, ContractAddress
 
 
 class Schema:
@@ -45,41 +45,66 @@ class Schema:
         return new_list
 
 
-class SubSchemaRegistry(type):
+#class SubSchemaRegistry(type):
+#    def __new__(cls, name, bases, dct, **kwargs):
+#        new_class = super().__new__(cls, name, bases, dct)
+#        if name == 'OneOfSchema':
+#            return new_class
+#        superclass = bases[0]
+#        if superclass.__name__ == 'OneOfSchema':
+#            superclass.subclass_mapping = {}
+#            return new_class
+#
+#        if 'identifier' not in kwargs:
+#            raise KeyError(f"Class {name} must define an identifier in its class definition")
+#        identifier = kwargs['identifier']
+#        if identifier in superclass.subclass_mapping:
+#            other_class = superclass.subclass_mapping[identifier]
+#            raise ValueError(f"Identifier {identifier} is already in use, defined by {other_class}")
+#        superclass.subclass_mapping[identifier] = new_class
+#        return new_class
+#
+#
+#class OneOfSchema(Schema, metaclass=SubSchemaRegistry):
+#    subclass_mapping = {}
+#
+#    @classmethod
+#    def from_calldata(cls, calldata: Calldata) -> "Schema":
+#        subclass_identifier = calldata.pop_string()
+#        if subclass_identifier not in cls.subclass_mapping:
+#            raise ValueError(f"Unknown subclass identifier \"{subclass_identifier}\"")
+#        subclass = cls.subclass_mapping[subclass_identifier]
+#        return subclass.from_calldata(calldata)
+
+class OneOfSchema(type):
     def __new__(cls, name, bases, dct, **kwargs):
         new_class = super().__new__(cls, name, bases, dct)
-        if name == 'OneOfSchema':
-            return new_class
-        superclass = bases[0]
-        if superclass.__name__ == 'OneOfSchema':
-            superclass.subclass_mapping = {}
-            return new_class
-
-        if 'identifier' not in kwargs:
-            raise KeyError(f"Class {name} must define an identifier in its class definition")
-        identifier = kwargs['identifier']
-        if identifier in superclass.subclass_mapping:
-            other_class = superclass.subclass_mapping[identifier]
-            raise ValueError(f"Identifier {identifier} is already in use, defined by {other_class}")
-        superclass.subclass_mapping[identifier] = new_class
+        if len(bases) == 1 and bases[0].__name__ == 'Schema':
+            new_class.type_map = {}
         return new_class
 
 
-class OneOfSchema(Schema, metaclass=SubSchemaRegistry):
-    subclass_mapping = {}
-
+class System(Schema, metaclass=OneOfSchema):
     @classmethod
-    def from_calldata(cls, calldata: Calldata) -> "Schema":
-        subclass_identifier = calldata.pop_string()
-        if subclass_identifier not in cls.subclass_mapping:
-            raise ValueError(f"Unknown subclass identifier \"{subclass_identifier}\"")
-        subclass = cls.subclass_mapping[subclass_identifier]
-        return subclass.from_calldata(calldata)
+    def from_calldata(cls, calldata: Calldata) -> "System":
+        function_name = calldata.pop_string()
+        if function_name not in cls.type_map:
+            raise ValueError(f"Unknown function name \"{function_name}\"")
+        function_class = cls.type_map[function_name]
+        return function_class.from_calldata(calldata)
 
 
-class System(OneOfSchema):
-    pass
+class ContractCall(Schema, metaclass=OneOfSchema):
+    @classmethod
+    def from_calldata(cls, calldata: Calldata) -> "ContractCall":
+        to_addr = calldata.pop_int()
+        selector = calldata.pop_int()
+        if to_addr not in cls.type_map:
+            raise ValueError(f"Unknown contract address {to_addr}")
+        contract = cls.type_map[to_addr]
+        if selector not in contract:
+        return cls(to_addr=to_addr, selector=selector)
 
 
 class MultiInvocationTransaction(Schema):
-    invocations: List[System]
+    invocations: List[ContractCall]
