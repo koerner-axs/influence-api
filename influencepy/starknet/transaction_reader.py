@@ -11,6 +11,7 @@ from starknet_py.net.signer.stark_curve_signer import KeyPair
 from influencepy.starknet.net.constants import DISPATCHER_ADDRESS
 from influencepy.starknet.net.datatypes import Calldata
 from influencepy.starknet.net.schema import MultiInvocationTransaction
+import influencepy.starknet.net.system as system
 
 full_node_address = 'https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/Dx_Csa1pBUwBeP3qSu5UnzC882cfOE5d'
 
@@ -56,4 +57,4 @@ async def read_transaction(client: FullNodeClient):
 
 if __name__ == '__main__':
     client, account, dispatcher_contract = asyncio.run(setup_starknet())
-    asyncio.run(read_transaction())
+    asyncio.run(read_transaction(client))

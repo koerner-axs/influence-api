@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, get_origin, get_args, Any
+from typing import List, get_origin, get_args, Any, Dict, Tuple
 
 from influencepy.starknet.net.constants import DISPATCHER_ADDRESS, DISPATCHER_RUN_SYSTEM_SELECTOR, SWAY_TOKEN_ADDRESS, \
     SWAY_TRANSFER_WITH_CONFIRMATION_SELECTOR
@@ -22,7 +22,7 @@ class Schema(BasicType):
         return calldata
 
     @classmethod
-    def from_calldata(cls, calldata: Calldata) -> "Schema":
+    def from_calldata(cls, calldata: Calldata, **kwargs) -> "Schema":
         instance = cls.__new__(cls)
         for key, field_type in cls.__annotations__.items():
             if isinstance(field_type, type) and issubclass(field_type, BasicType):
@@ -74,58 +74,47 @@ class Schema(BasicType):
         return str(self.__dict__)
 
 
-class Subtype:
-    def __init__(self, key: dict, schema: Schema):
-        self.key = key
-        self.schema = schema
-
-    def is_matching(self, key: dict) -> bool:
-        return self.key == key
-
-    def get_schema(self) -> Schema:
-        return self.schema
-
-
 class OneOfSchema(Schema):
     @classmethod
-    def from_calldata(cls, calldata: Calldata) -> Schema | Any:
-        key = cls.get_subtype_key(calldata)
-        for subtype in cls.subtypes:
-            if subtype.is_matching(key):
-                _arg_count = calldata.pop_int()
-                return subtype.get_schema().from_calldata(calldata)
-        if hasattr(cls, 'default'):
-            return cls.default.from_calldata(calldata, key)
-        raise ValueError(f'Unknown subtype {key}')
-
-    @classmethod
-    def get_subtype_key(cls, calldata: Calldata) -> dict:
-        raise NotImplementedError('get_subtype_key must be implemented in subclasses of OneOfSchema')
+    def register_subtype(cls, subtype_class, **kwargs):
+        raise NotImplementedError('register_subtype must be implemented in subclasses of OneOfSchema')
 
 
 class OneOf:
     @classmethod
-    def __class_getitem__(cls, dispatcher):
+    def __class_getitem__(cls, dispatcher_class):
         class OneOfMeta(type):
             def __new__(cls, name, bases, dct, **kwargs):
+                if len(bases) == 0:
+                    bases = (Schema,)
                 new_class = super().__new__(cls, name, bases, dct)
-                if 'default' in kwargs and kwargs['default'] is True:
-                    dispatcher.default = new_class
-                else:
-                    if 'subtypes' not in dispatcher.__dict__:
-                        dispatcher.subtypes = []
-                    dispatcher.subtypes.append(Subtype(kwargs, new_class))
+                dispatcher_class.register_subtype(new_class, **kwargs)
                 return new_class
 
         return OneOfMeta
 
 
 class ContractCall(OneOfSchema):
+    default: "ContractCall" = None
+    subtype_map: Dict[Tuple[int, int], "ContractCall"] = {}
+
     @classmethod
-    def get_subtype_key(cls, calldata: Calldata) -> dict:
-        to_addr = calldata.pop_int()
+    def register_subtype(cls, subtype_class, **kwargs):
+        if kwargs.get('default', False):
+            cls.default = subtype_class
+        elif 'contract_address' in kwargs and 'selector' in kwargs:
+            cls.subtype_map[(kwargs['contract_address'], kwargs['selector'])] = subtype_class
+        else:
+            raise ValueError('Subtype class must define "contract_address" and "selector" attributes')
+
+    @classmethod
+    def from_calldata(cls, calldata: Calldata, **kwargs) -> "ContractCall":
+        contract_address = calldata.pop_int()
         selector = calldata.pop_int()
-        return {'contract_address': to_addr, 'selector': selector}
+        arg_count = calldata.pop_int()
+        subtype_class = cls.subtype_map.get((contract_address, selector), cls.default)
+        return subtype_class.from_calldata(calldata, contract_address=contract_address, selector=selector,
+                                           arg_count=arg_count, **kwargs)
 
 
 class UnknownContractCall(metaclass=OneOf[ContractCall], default=True):
@@ -133,20 +122,20 @@ class UnknownContractCall(metaclass=OneOf[ContractCall], default=True):
     It stores the calldata that was consumed during the parsing of the contract call.
     """
 
-    def __init__(self, calldata: List[int], contract_address: int, selector: int):
+    def __init__(self, calldata: List[int], contract_address: int | str, selector: int | str):
         self.calldata = calldata
         self.contract_address = contract_address
         self.selector = selector
 
     @classmethod
-    def from_calldata(cls, calldata: Calldata, key: dict) -> "UnknownContractCall":
+    def from_calldata(cls, calldata: Calldata, **kwargs) -> "UnknownContractCall":
         """ Pops the argument length and all arguments from the calldata and stores it.
         No further parsing is done. """
-        arg_count = calldata.pop_int()
         data = []
-        for _ in range(arg_count):
+        for _ in range(kwargs['arg_count']):
             data.append(calldata.pop_int())
-        return UnknownContractCall(calldata=data, contract_address=key['contract_address'], selector=key['selector'])
+        return UnknownContractCall(calldata=data, contract_address=kwargs['contract_address'],
+                                   selector=kwargs['selector'])
 
     def __repr__(self):
         return f'UnknownContractCall(to={hex(self.contract_address)}, selector={hex(self.selector)}, calldata={self.calldata})'
@@ -155,14 +144,27 @@ class UnknownContractCall(metaclass=OneOf[ContractCall], default=True):
 class SystemCall(OneOfSchema, metaclass=OneOf[ContractCall],
                  contract_address=DISPATCHER_ADDRESS,
                  selector=DISPATCHER_RUN_SYSTEM_SELECTOR):
+    subtype_map: Dict[str, "SystemCall"] = {}
+
     @classmethod
-    def get_subtype_key(cls, calldata: Calldata) -> dict:
+    def register_subtype(cls, subtype_class, **kwargs):
+        if 'function_name' in kwargs:
+            cls.subtype_map[kwargs['function_name']] = subtype_class
+        else:
+            raise ValueError('Subtype class must define "function_name" attribute')
+
+    @classmethod
+    def from_calldata(cls, calldata: Calldata, **kwargs) -> Schema | Any:
         function_name = calldata.pop_string()
-        return {'function_name': function_name}
+        _arg_count = calldata.pop_int()
+        if function_name in cls.subtype_map:
+            return cls.subtype_map[function_name].from_calldata(calldata)
+        else:
+            raise ValueError(f'Unknown function name {function_name}')
 
 
 @dataclass
-class SwayTransferWithConfirmation(Schema, metaclass=OneOf[ContractCall],
+class SwayTransferWithConfirmation(metaclass=OneOf[ContractCall],
                                    contract_address=SWAY_TOKEN_ADDRESS,
                                    selector=SWAY_TRANSFER_WITH_CONFIRMATION_SELECTOR):
     recipient: ContractAddress
@@ -178,5 +180,5 @@ class MultiInvocationTransaction(Schema):
     def __init__(self):
         self.invocations = []
 
-    def append_contract_call(self, contract_call: ContractCall):
+    def append_contract_call(self, contract_call: ContractCall | Any):
         self.invocations.append(contract_call)

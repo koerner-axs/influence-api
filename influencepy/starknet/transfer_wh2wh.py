@@ -8,7 +8,6 @@ from starknet_py.net.models import StarknetChainId
 from starknet_py.net.signer.stark_curve_signer import KeyPair
 
 from influencepy.starknet.net.constants import DISPATCHER_ADDRESS
-from influencepy.starknet.net.datatypes import u64
 from influencepy.starknet.net.schema import MultiInvocationTransaction
 from influencepy.starknet.net.structs import Building, Crew, InventoryItem
 from influencepy.starknet.net.system import SendDelivery, ResolveRandomEvent
