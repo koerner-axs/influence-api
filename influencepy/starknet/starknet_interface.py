@@ -40,7 +40,8 @@ async def setup_starknet():
 
 
 async def retrieve_sell_order():
-    tx = await client.get_transaction('0x019ef3f6f03b280f7d48b2c896f4a833a318e04850fea15d9ba992e86e220577')
+    #tx = await client.get_transaction('0x019ef3f6f03b280f7d48b2c896f4a833a318e04850fea15d9ba992e86e220577')
+    tx = await client.get_transaction('0x01f5b7e92b51ec6492b6645bbea8fe098d2f156083ef5cc3cad3f878fb876025')
     if not isinstance(tx, InvokeTransactionV1):
         raise ValueError('Transaction is not an InvokeTransactionV1')
     calldata = Calldata(tx.calldata)
@@ -51,7 +52,7 @@ async def retrieve_sell_order():
     #    else:
     #        print(f'{i}: {x}')
     multi_invocation = MultiInvocationTransaction.from_calldata(calldata)
-    print(tx, multi_invocation)
+    print(multi_invocation)
 
 
 if __name__ == '__main__':
