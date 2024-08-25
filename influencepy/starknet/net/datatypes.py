@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 from typing import List
 
 from starknet_py.cairo import felt
@@ -23,17 +23,34 @@ class Calldata:
     def push_string(self, value: str):
         self.push_int(felt.encode_shortstring(value))
 
+    def count_push_len_extend(self, other: "Calldata"):
+        self.push_int(len(other))
+        self.data.extend(other.data)
+
+    def __str__(self):
+        return '[\n  ' + ',\n  '.join(f'"0x{x:02x}"' for x in self.data) + '\n]'
+
 
 class BasicType:
     def to_calldata(self, calldata: Calldata) -> Calldata:
-        raise NotImplementedError
+        raise NotImplementedError('to_calldata not implemented')
 
     @staticmethod
     def from_calldata(calldata: Calldata) -> "BasicType":
-        raise NotImplementedError
+        raise NotImplementedError('from_calldata not implemented')
+
+
+def autoconvert(cls):
+    cls.__auto_convert__ = True
+    return cls
+
+
+def is_auto_convertible(cls):
+    return getattr(cls, '__auto_convert__', False)
 
 
 def _make_uint_type(bits: int) -> type:
+    @autoconvert
     class UnsignedInt(BasicType):
         def __init__(self, value: int):
             if not 0 <= value < 2 ** bits:
@@ -51,6 +68,7 @@ def _make_uint_type(bits: int) -> type:
     return UnsignedInt
 
 
+@autoconvert
 class UnsignedInt256(BasicType):
     def __init__(self, value: int):
         if not 0 <= value < 2 ** 256:

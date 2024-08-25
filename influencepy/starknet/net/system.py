@@ -154,7 +154,7 @@ class EjectCrew(Schema, metaclass=OneOf[SystemCall], function_name='EjectCrew'):
 class ExchangeCrew(Schema, metaclass=OneOf[SystemCall], function_name='ExchangeCrew'):
     crew1: Entity
     comp1: List[u64]
-    _crew2: Entity  # underscore as per the ABI
+    crew2: Entity  # ABI specifies a leading _
     comp2: List[u64]
 
 
