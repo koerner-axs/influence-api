@@ -7,7 +7,7 @@ from influencepy.starknet.net.datatypes import Calldata, ContractAddress, u128, 
 
 
 class Schema(BasicType):
-    def to_calldata(self, calldata: Calldata = None) -> Calldata:
+    def to_calldata(self, calldata: Calldata | None = None) -> Calldata:
         if calldata is None:
             calldata = Calldata([])
         for key, field_type in self.__annotations__.items():
@@ -85,8 +85,7 @@ class OneOf:
     def __class_getitem__(cls, dispatcher_class):
         class OneOfMeta(type):
             def __new__(cls, name, bases, dct, **kwargs):
-                if len(bases) == 0:
-                    bases = (Schema,)
+                dct.update(kwargs)
                 new_class = super().__new__(cls, name, bases, dct)
                 dispatcher_class.register_subtype(new_class, **kwargs)
                 return new_class
@@ -94,9 +93,9 @@ class OneOf:
         return OneOfMeta
 
 
-class ContractCall(OneOfSchema):
-    default: "ContractCall" = None
-    subtype_map: Dict[Tuple[int, int], "ContractCall"] = {}
+class ContractCallDispatcher(OneOfSchema):
+    default: "ContractCallDispatcher" = None
+    subtype_map: Dict[Tuple[int, int], "ContractCallDispatcher"] = {}
 
     @classmethod
     def register_subtype(cls, subtype_class, **kwargs):
@@ -108,7 +107,7 @@ class ContractCall(OneOfSchema):
             raise ValueError('Subtype class must define "contract_address" and "selector" attributes')
 
     @classmethod
-    def from_calldata(cls, calldata: Calldata, **kwargs) -> "ContractCall":
+    def from_calldata(cls, calldata: Calldata, **kwargs) -> "ContractCallDispatcher":
         contract_address = calldata.pop_int()
         selector = calldata.pop_int()
         arg_count = calldata.pop_int()
@@ -117,7 +116,59 @@ class ContractCall(OneOfSchema):
                                            arg_count=arg_count, **kwargs)
 
 
-class UnknownContractCall(metaclass=OneOf[ContractCall], default=True):
+class ContractCall(Schema):
+    def to_calldata(self, calldata: Calldata = None) -> Calldata:
+        calldata.push_int(self.__class__.contract_address)
+        calldata.push_int(self.__class__.selector)
+        args_calldata = super().to_calldata(None)
+        calldata.count_push_len_extend(args_calldata)
+        return calldata
+
+
+class SystemCallDispatcher(OneOfSchema, metaclass=OneOf[ContractCallDispatcher],
+                           contract_address=DISPATCHER_ADDRESS,
+                           selector=DISPATCHER_RUN_SYSTEM_SELECTOR):
+    subtype_map: Dict[str, "SystemCall"] = {}
+
+    @classmethod
+    def register_subtype(cls, subtype_class, **kwargs):
+        if 'function_name' in kwargs:
+            cls.subtype_map[kwargs['function_name']] = subtype_class
+        else:
+            raise ValueError('Subtype class must define "function_name" attribute')
+
+    @classmethod
+    def from_calldata(cls, calldata: Calldata, **kwargs) -> Schema | Any:
+        function_name = calldata.pop_string()
+        _arg_count = calldata.pop_int()
+        if function_name in cls.subtype_map:
+            return cls.subtype_map[function_name].from_calldata(calldata)
+        else:
+            raise ValueError(f'Unknown function name {function_name}')
+
+
+class SystemCall(ContractCall):
+    def to_calldata(self, calldata: Calldata = None) -> Calldata:
+        calldata.push_int(SystemCallDispatcher.contract_address)
+        calldata.push_int(SystemCallDispatcher.selector)
+        args_calldata = super(ContractCall, self).to_calldata(None)
+        args_calldata.count_prepend_len()
+        args_calldata.prepend_string(self.__class__.function_name)
+        calldata.count_push_len_extend(args_calldata)
+        return calldata
+
+
+@dataclass
+class SwayTransferWithConfirmation(ContractCall, metaclass=OneOf[ContractCallDispatcher],
+                                   contract_address=SWAY_TOKEN_ADDRESS,
+                                   selector=SWAY_TRANSFER_WITH_CONFIRMATION_SELECTOR):
+    recipient: ContractAddress
+    amount: u128
+    memo: felt252
+    consumer: ContractAddress
+
+
+class UnknownContractCall(ContractCall, metaclass=OneOf[ContractCallDispatcher], default=True):
     """ This class represents a contract call where the contract address or selector is unknown.
     It stores the calldata that was consumed during the parsing of the contract call.
     """
@@ -141,44 +192,12 @@ class UnknownContractCall(metaclass=OneOf[ContractCall], default=True):
         return f'UnknownContractCall(to={hex(self.contract_address)}, selector={hex(self.selector)}, calldata={self.calldata})'
 
 
-class SystemCall(OneOfSchema, metaclass=OneOf[ContractCall],
-                 contract_address=DISPATCHER_ADDRESS,
-                 selector=DISPATCHER_RUN_SYSTEM_SELECTOR):
-    subtype_map: Dict[str, "SystemCall"] = {}
-
-    @classmethod
-    def register_subtype(cls, subtype_class, **kwargs):
-        if 'function_name' in kwargs:
-            cls.subtype_map[kwargs['function_name']] = subtype_class
-        else:
-            raise ValueError('Subtype class must define "function_name" attribute')
-
-    @classmethod
-    def from_calldata(cls, calldata: Calldata, **kwargs) -> Schema | Any:
-        function_name = calldata.pop_string()
-        _arg_count = calldata.pop_int()
-        if function_name in cls.subtype_map:
-            return cls.subtype_map[function_name].from_calldata(calldata)
-        else:
-            raise ValueError(f'Unknown function name {function_name}')
-
-
-@dataclass
-class SwayTransferWithConfirmation(metaclass=OneOf[ContractCall],
-                                   contract_address=SWAY_TOKEN_ADDRESS,
-                                   selector=SWAY_TRANSFER_WITH_CONFIRMATION_SELECTOR):
-    recipient: ContractAddress
-    amount: u128
-    memo: felt252
-    consumer: ContractAddress
-
-
 @dataclass
 class MultiInvocationTransaction(Schema):
-    invocations: List[ContractCall]
+    invocations: List[ContractCallDispatcher]
 
     def __init__(self):
         self.invocations = []
 
-    def append_contract_call(self, contract_call: ContractCall | Any):
+    def append_contract_call(self, contract_call: ContractCallDispatcher | Any):
         self.invocations.append(contract_call)

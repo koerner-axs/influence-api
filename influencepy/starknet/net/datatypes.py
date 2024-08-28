@@ -23,16 +23,25 @@ class Calldata:
     def push_string(self, value: str):
         self.push_int(felt.encode_shortstring(value))
 
+    def prepend_int(self, value: int):
+        self.data.insert(0, value)
+
+    def prepend_string(self, value: str):
+        self.prepend_int(felt.encode_shortstring(value))
+
     def count_push_len_extend(self, other: "Calldata"):
         self.push_int(len(other))
         self.data.extend(other.data)
+
+    def count_prepend_len(self):
+        self.prepend_int(len(self))
 
     def __str__(self):
         return '[\n  ' + ',\n  '.join(f'"0x{x:02x}"' for x in self.data) + '\n]'
 
 
 class BasicType:
-    def to_calldata(self, calldata: Calldata) -> Calldata:
+    def to_calldata(self, calldata: Calldata | None) -> Calldata:
         raise NotImplementedError('to_calldata not implemented')
 
     @staticmethod

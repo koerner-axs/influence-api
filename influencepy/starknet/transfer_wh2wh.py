@@ -75,6 +75,9 @@ async def transfer():
     calldata = tx.to_calldata()
     print(calldata)
 
+    recovered_tx = MultiInvocationTransaction.from_calldata(calldata)
+    print(recovered_tx)
+
 
 if __name__ == '__main__':
     client, account, dispatcher_contract = asyncio.run(setup_starknet())

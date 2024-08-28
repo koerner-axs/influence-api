@@ -3,12 +3,12 @@ from typing import List
 
 from influencepy.starknet.net.datatypes import ContractAddress, CubitFixedPoint64, CubitFixedPoint128, u256, felt252, \
     u64, shortstr, u128
-from influencepy.starknet.net.schema import SystemCall, OneOf
+from influencepy.starknet.net.schema import SystemCallDispatcher, OneOf, SystemCall
 from influencepy.starknet.net.structs import Entity, InventoryItem, Withdrawal, SeededAsteroid, SeededCrewmate
 
 
 @dataclass
-class AcceptContractAgreement(metaclass=OneOf[SystemCall], function_name='AcceptContractAgreement'):
+class AcceptContractAgreement(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AcceptContractAgreement'):
     target: Entity
     permission: u64
     permitted: Entity
@@ -16,7 +16,7 @@ class AcceptContractAgreement(metaclass=OneOf[SystemCall], function_name='Accept
 
 
 @dataclass
-class AcceptPrepaidMerkleAgreement(metaclass=OneOf[SystemCall], function_name='AcceptPrepaidMerkleAgreement'):
+class AcceptPrepaidMerkleAgreement(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AcceptPrepaidMerkleAgreement'):
     target: Entity
     permission: u64
     permitted: Entity
@@ -26,7 +26,7 @@ class AcceptPrepaidMerkleAgreement(metaclass=OneOf[SystemCall], function_name='A
 
 
 @dataclass
-class AcceptPrepaidAgreement(metaclass=OneOf[SystemCall], function_name='AcceptPrepaidAgreement'):
+class AcceptPrepaidAgreement(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AcceptPrepaidAgreement'):
     target: Entity
     permission: u64
     permitted: Entity
@@ -35,7 +35,7 @@ class AcceptPrepaidAgreement(metaclass=OneOf[SystemCall], function_name='AcceptP
 
 
 @dataclass
-class ExtendPrepaidAgreement(metaclass=OneOf[SystemCall], function_name='ExtendPrepaidAgreement'):
+class ExtendPrepaidAgreement(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ExtendPrepaidAgreement'):
     target: Entity
     permission: u64
     permitted: Entity
@@ -44,7 +44,7 @@ class ExtendPrepaidAgreement(metaclass=OneOf[SystemCall], function_name='ExtendP
 
 
 @dataclass
-class CancelPrepaidAgreement(metaclass=OneOf[SystemCall], function_name='CancelPrepaidAgreement'):
+class CancelPrepaidAgreement(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='CancelPrepaidAgreement'):
     target: Entity
     permission: u64
     permitted: Entity
@@ -52,7 +52,7 @@ class CancelPrepaidAgreement(metaclass=OneOf[SystemCall], function_name='CancelP
 
 
 @dataclass
-class RemoveFromWhitelist(metaclass=OneOf[SystemCall], function_name='RemoveFromWhitelist'):
+class RemoveFromWhitelist(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='RemoveFromWhitelist'):
     target: Entity
     permission: u64
     permitted: Entity
@@ -60,7 +60,7 @@ class RemoveFromWhitelist(metaclass=OneOf[SystemCall], function_name='RemoveFrom
 
 
 @dataclass
-class RemoveAccountFromWhiteList(metaclass=OneOf[SystemCall], function_name='RemoveAccountFromWhiteList'):
+class RemoveAccountFromWhiteList(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='RemoveAccountFromWhiteList'):
     target: Entity
     permission: u64
     permitted: ContractAddress
@@ -68,7 +68,7 @@ class RemoveAccountFromWhiteList(metaclass=OneOf[SystemCall], function_name='Rem
 
 
 @dataclass
-class Whitelist(metaclass=OneOf[SystemCall], function_name='Whitelist'):
+class Whitelist(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='Whitelist'):
     target: Entity
     permission: u64
     permitted: Entity
@@ -76,7 +76,7 @@ class Whitelist(metaclass=OneOf[SystemCall], function_name='Whitelist'):
 
 
 @dataclass
-class WhitelistAccount(metaclass=OneOf[SystemCall], function_name='WhitelistAccount'):
+class WhitelistAccount(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='WhitelistAccount'):
     target: Entity
     permission: u64
     permitted: ContractAddress
@@ -84,74 +84,74 @@ class WhitelistAccount(metaclass=OneOf[SystemCall], function_name='WhitelistAcco
 
 
 @dataclass
-class ConstructionAbandon(metaclass=OneOf[SystemCall], function_name='ConstructionAbandon'):
+class ConstructionAbandon(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ConstructionAbandon'):
     building: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ConstructionDeconstruct(metaclass=OneOf[SystemCall], function_name='ConstructionDeconstruct'):
+class ConstructionDeconstruct(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ConstructionDeconstruct'):
     building: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ConstructionFinish(metaclass=OneOf[SystemCall], function_name='ConstructionFinish'):
+class ConstructionFinish(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ConstructionFinish'):
     building: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ConstructionPlan(metaclass=OneOf[SystemCall], function_name='ConstructionPlan'):
+class ConstructionPlan(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ConstructionPlan'):
     building_type: u64
     lot: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ConstructionStart(metaclass=OneOf[SystemCall], function_name='ConstructionStart'):
+class ConstructionStart(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ConstructionStart'):
     building: Entity
     caller_crew: Entity
 
 
 @dataclass
-class CommandeerShip(metaclass=OneOf[SystemCall], function_name='CommandeerShip'):
+class CommandeerShip(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='CommandeerShip'):
     ship: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ManageAsteroid(metaclass=OneOf[SystemCall], function_name='ManageAsteroid'):
+class ManageAsteroid(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ManageAsteroid'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class RepossessBuilding(metaclass=OneOf[SystemCall], function_name='RepossessBuilding'):
+class RepossessBuilding(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='RepossessBuilding'):
     building: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ArrangeCrew(metaclass=OneOf[SystemCall], function_name='ArrangeCrew'):
+class ArrangeCrew(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ArrangeCrew'):
     composition: List[u64]
     caller_crew: Entity
 
 
 @dataclass
-class DelegateCrew(metaclass=OneOf[SystemCall], function_name='DelegateCrew'):
+class DelegateCrew(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='DelegateCrew'):
     delegated_to: ContractAddress
     caller_crew: Entity
 
 
 @dataclass
-class EjectCrew(metaclass=OneOf[SystemCall], function_name='EjectCrew'):
+class EjectCrew(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='EjectCrew'):
     ejected_crew: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ExchangeCrew(metaclass=OneOf[SystemCall], function_name='ExchangeCrew'):
+class ExchangeCrew(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ExchangeCrew'):
     crew1: Entity
     comp1: List[u64]
     crew2: Entity  # ABI specifies a leading _
@@ -159,7 +159,7 @@ class ExchangeCrew(metaclass=OneOf[SystemCall], function_name='ExchangeCrew'):
 
 
 @dataclass
-class InitializeArvadian(metaclass=OneOf[SystemCall], function_name='InitializeArvadian'):
+class InitializeArvadian(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='InitializeArvadian'):
     crewmate: Entity
     impactful: List[u64]
     cosmetic: List[u64]
@@ -169,7 +169,7 @@ class InitializeArvadian(metaclass=OneOf[SystemCall], function_name='InitializeA
 
 
 @dataclass
-class RecruitAdalian(metaclass=OneOf[SystemCall], function_name='RecruitAdalian'):
+class RecruitAdalian(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='RecruitAdalian'):
     crewmate: Entity
     class_: u64  # class is a reserved keyword
     impactful: List[u64]
@@ -186,7 +186,7 @@ class RecruitAdalian(metaclass=OneOf[SystemCall], function_name='RecruitAdalian'
 
 
 @dataclass
-class ResupplyFood(metaclass=OneOf[SystemCall], function_name='ResupplyFood'):
+class ResupplyFood(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ResupplyFood'):
     origin: Entity
     origin_slot: u64
     food: u64
@@ -194,7 +194,7 @@ class ResupplyFood(metaclass=OneOf[SystemCall], function_name='ResupplyFood'):
 
 
 @dataclass
-class ResupplyFoodFromExchange(metaclass=OneOf[SystemCall], function_name='ResupplyFoodFromExchange'):
+class ResupplyFoodFromExchange(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ResupplyFoodFromExchange'):
     seller_crew: Entity
     exchange: Entity
     amount: u64
@@ -205,19 +205,19 @@ class ResupplyFoodFromExchange(metaclass=OneOf[SystemCall], function_name='Resup
 
 
 @dataclass
-class StationCrew(metaclass=OneOf[SystemCall], function_name='StationCrew'):
+class StationCrew(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='StationCrew'):
     destination: Entity
     caller_crew: Entity
 
 
 @dataclass
-class AcceptDelivery(metaclass=OneOf[SystemCall], function_name='AcceptDelivery'):
+class AcceptDelivery(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AcceptDelivery'):
     delivery: Entity
     caller_crew: Entity
 
 
 @dataclass
-class DumpDelivery(metaclass=OneOf[SystemCall], function_name='DumpDelivery'):
+class DumpDelivery(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='DumpDelivery'):
     origin: Entity
     origin_slot: u64
     products: List[InventoryItem]
@@ -225,13 +225,13 @@ class DumpDelivery(metaclass=OneOf[SystemCall], function_name='DumpDelivery'):
 
 
 @dataclass
-class CancelDelivery(metaclass=OneOf[SystemCall], function_name='CancelDelivery'):
+class CancelDelivery(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='CancelDelivery'):
     delivery: Entity
     caller_crew: Entity
 
 
 @dataclass
-class PackageDelivery(metaclass=OneOf[SystemCall], function_name='PackageDelivery'):
+class PackageDelivery(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='PackageDelivery'):
     origin: Entity
     origin_slot: u64
     products: List[InventoryItem]
@@ -242,13 +242,13 @@ class PackageDelivery(metaclass=OneOf[SystemCall], function_name='PackageDeliver
 
 
 @dataclass
-class ReceiveDelivery(metaclass=OneOf[SystemCall], function_name='ReceiveDelivery'):
+class ReceiveDelivery(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ReceiveDelivery'):
     delivery: Entity
     caller_crew: Entity
 
 
 @dataclass
-class SendDelivery(metaclass=OneOf[SystemCall], function_name='SendDelivery'):
+class SendDelivery(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='SendDelivery'):
     origin: Entity
     origin_slot: u64
     products: List[InventoryItem]
@@ -258,7 +258,7 @@ class SendDelivery(metaclass=OneOf[SystemCall], function_name='SendDelivery'):
 
 
 @dataclass
-class SampleDepositStart(metaclass=OneOf[SystemCall], function_name='SampleDepositStart'):
+class SampleDepositStart(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='SampleDepositStart'):
     lot: Entity
     resource: u64
     origin: Entity
@@ -267,7 +267,7 @@ class SampleDepositStart(metaclass=OneOf[SystemCall], function_name='SampleDepos
 
 
 @dataclass
-class SampleDepositImprove(metaclass=OneOf[SystemCall], function_name='SampleDepositImprove'):
+class SampleDepositImprove(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='SampleDepositImprove'):
     deposit: Entity
     origin: Entity
     origin_slot: u64
@@ -275,47 +275,47 @@ class SampleDepositImprove(metaclass=OneOf[SystemCall], function_name='SampleDep
 
 
 @dataclass
-class SampleDepositFinish(metaclass=OneOf[SystemCall], function_name='SampleDepositFinish'):
+class SampleDepositFinish(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='SampleDepositFinish'):
     deposit: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ListDepositForSale(metaclass=OneOf[SystemCall], function_name='ListDepositForSale'):
+class ListDepositForSale(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ListDepositForSale'):
     deposit: Entity
     price: u64
     caller_crew: Entity
 
 
 @dataclass
-class PurchaseDeposit(metaclass=OneOf[SystemCall], function_name='PurchaseDeposit'):
+class PurchaseDeposit(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='PurchaseDeposit'):
     deposit: Entity
     caller_crew: Entity
 
 
 @dataclass
-class UnlistDepositForSale(metaclass=OneOf[SystemCall], function_name='UnlistDepositForSale'):
+class UnlistDepositForSale(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='UnlistDepositForSale'):
     deposit: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ActivateEmergency(metaclass=OneOf[SystemCall], function_name='ActivateEmergency'):
+class ActivateEmergency(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ActivateEmergency'):
     caller_crew: Entity
 
 
 @dataclass
-class CollectEmergencyPropellant(metaclass=OneOf[SystemCall], function_name='CollectEmergencyPropellant'):
+class CollectEmergencyPropellant(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='CollectEmergencyPropellant'):
     caller_crew: Entity
 
 
 @dataclass
-class DeactivateEmergency(metaclass=OneOf[SystemCall], function_name='DeactivateEmergency'):
+class DeactivateEmergency(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='DeactivateEmergency'):
     caller_crew: Entity
 
 
 @dataclass
-class CreateSellOrder(metaclass=OneOf[SystemCall], function_name='CreateSellOrder'):
+class CreateSellOrder(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='CreateSellOrder'):
     exchange: Entity
     product: u64
     amount: u64
@@ -326,7 +326,7 @@ class CreateSellOrder(metaclass=OneOf[SystemCall], function_name='CreateSellOrde
 
 
 @dataclass
-class FillSellOrder(metaclass=OneOf[SystemCall], function_name='FillSellOrder'):
+class FillSellOrder(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='FillSellOrder'):
     seller_crew: Entity
     exchange: Entity
     product: u64
@@ -340,7 +340,7 @@ class FillSellOrder(metaclass=OneOf[SystemCall], function_name='FillSellOrder'):
 
 
 @dataclass
-class CancelSellOrder(metaclass=OneOf[SystemCall], function_name='CancelSellOrder'):
+class CancelSellOrder(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='CancelSellOrder'):
     seller_crew: Entity
     exchange: Entity
     product: u64
@@ -351,7 +351,7 @@ class CancelSellOrder(metaclass=OneOf[SystemCall], function_name='CancelSellOrde
 
 
 @dataclass
-class CreateBuyOrder(metaclass=OneOf[SystemCall], function_name='CreateBuyOrder'):
+class CreateBuyOrder(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='CreateBuyOrder'):
     exchange: Entity
     product: u64
     amount: u64
@@ -366,7 +366,7 @@ class CreateBuyOrder(metaclass=OneOf[SystemCall], function_name='CreateBuyOrder'
 
 
 @dataclass
-class FillBuyOrder(metaclass=OneOf[SystemCall], function_name='FillBuyOrder'):
+class FillBuyOrder(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='FillBuyOrder'):
     buyer_crew: Entity
     exchange: Entity
     product: u64
@@ -384,7 +384,7 @@ class FillBuyOrder(metaclass=OneOf[SystemCall], function_name='FillBuyOrder'):
 
 
 @dataclass
-class AssignContractPolicy(metaclass=OneOf[SystemCall], function_name='AssignContractPolicy'):
+class AssignContractPolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AssignContractPolicy'):
     target: Entity
     permission: u64
     contract: ContractAddress
@@ -392,7 +392,7 @@ class AssignContractPolicy(metaclass=OneOf[SystemCall], function_name='AssignCon
 
 
 @dataclass
-class AssignPrepaidMerklePolicy(metaclass=OneOf[SystemCall], function_name='AssignPrepaidMerklePolicy'):
+class AssignPrepaidMerklePolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AssignPrepaidMerklePolicy'):
     target: Entity
     permission: u64
     rate: u64
@@ -403,7 +403,7 @@ class AssignPrepaidMerklePolicy(metaclass=OneOf[SystemCall], function_name='Assi
 
 
 @dataclass
-class AssignPrepaidPolicy(metaclass=OneOf[SystemCall], function_name='AssignPrepaidPolicy'):
+class AssignPrepaidPolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AssignPrepaidPolicy'):
     target: Entity
     permission: u64
     rate: u64
@@ -413,42 +413,42 @@ class AssignPrepaidPolicy(metaclass=OneOf[SystemCall], function_name='AssignPrep
 
 
 @dataclass
-class AssignPublicPolicy(metaclass=OneOf[SystemCall], function_name='AssignPublicPolicy'):
+class AssignPublicPolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AssignPublicPolicy'):
     target: Entity
     permission: u64
     caller_crew: Entity
 
 
 @dataclass
-class RemoveContractPolicy(metaclass=OneOf[SystemCall], function_name='RemoveContractPolicy'):
+class RemoveContractPolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='RemoveContractPolicy'):
     target: Entity
     permission: u64
     caller_crew: Entity
 
 
 @dataclass
-class RemovePrepaidPolicy(metaclass=OneOf[SystemCall], function_name='RemovePrepaidPolicy'):
+class RemovePrepaidPolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='RemovePrepaidPolicy'):
     target: Entity
     permission: u64
     caller_crew: Entity
 
 
 @dataclass
-class RemovePrepaidMerklePolicy(metaclass=OneOf[SystemCall], function_name='RemovePrepaidMerklePolicy'):
+class RemovePrepaidMerklePolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='RemovePrepaidMerklePolicy'):
     target: Entity
     permission: u64
     caller_crew: Entity
 
 
 @dataclass
-class RemovePublicPolicy(metaclass=OneOf[SystemCall], function_name='RemovePublicPolicy'):
+class RemovePublicPolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='RemovePublicPolicy'):
     target: Entity
     permission: u64
     caller_crew: Entity
 
 
 @dataclass
-class AssembleShipFinish(metaclass=OneOf[SystemCall], function_name='AssembleShipFinish'):
+class AssembleShipFinish(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AssembleShipFinish'):
     dry_dock: Entity
     dry_dock_slot: u64
     destination: Entity
@@ -456,7 +456,7 @@ class AssembleShipFinish(metaclass=OneOf[SystemCall], function_name='AssembleShi
 
 
 @dataclass
-class AssembleShipStart(metaclass=OneOf[SystemCall], function_name='AssembleShipStart'):
+class AssembleShipStart(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AssembleShipStart'):
     dry_dock: Entity
     dry_dock_slot: u64
     ship_type: u64
@@ -466,14 +466,14 @@ class AssembleShipStart(metaclass=OneOf[SystemCall], function_name='AssembleShip
 
 
 @dataclass
-class ExtractResourceFinish(metaclass=OneOf[SystemCall], function_name='ExtractResourceFinish'):
+class ExtractResourceFinish(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ExtractResourceFinish'):
     extractor: Entity
     extractor_slot: u64
     caller_crew: Entity
 
 
 @dataclass
-class ExtractResourceStart(metaclass=OneOf[SystemCall], function_name='ExtractResourceStart'):
+class ExtractResourceStart(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ExtractResourceStart'):
     deposit: Entity
     yield_: u64  # yield is a reserved keyword
     extractor: Entity
@@ -484,14 +484,14 @@ class ExtractResourceStart(metaclass=OneOf[SystemCall], function_name='ExtractRe
 
 
 @dataclass
-class ProcessProductsFinish(metaclass=OneOf[SystemCall], function_name='ProcessProductsFinish'):
+class ProcessProductsFinish(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ProcessProductsFinish'):
     processor: Entity
     processor_slot: u64
     caller_crew: Entity
 
 
 @dataclass
-class ProcessProductsStart(metaclass=OneOf[SystemCall], function_name='ProcessProductsStart'):
+class ProcessProductsStart(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ProcessProductsStart'):
     processor: Entity
     processor_slot: u64
     process: u64
@@ -505,72 +505,72 @@ class ProcessProductsStart(metaclass=OneOf[SystemCall], function_name='ProcessPr
 
 
 @dataclass
-class ResolveRandomEvent(metaclass=OneOf[SystemCall], function_name='ResolveRandomEvent'):
+class ResolveRandomEvent(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ResolveRandomEvent'):
     choice: u64
     caller_crew: Entity
 
 
 @dataclass
-class CheckForRandomEvent(metaclass=OneOf[SystemCall], function_name='CheckForRandomEvent'):
+class CheckForRandomEvent(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='CheckForRandomEvent'):
     # TODO: this is a 'view' function, so it should not be a System
     caller_crew: Entity
     # TODO: output is of type u64, need to declare this somewhere?
 
 
 @dataclass
-class ClaimArrivalReward(metaclass=OneOf[SystemCall], function_name='ClaimArrivalReward'):
+class ClaimArrivalReward(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ClaimArrivalReward'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ClaimPrepareForLaunchReward(metaclass=OneOf[SystemCall], function_name='ClaimPrepareForLaunchReward'):
+class ClaimPrepareForLaunchReward(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ClaimPrepareForLaunchReward'):
     asteroid: Entity
 
 
 @dataclass
-class ClaimTestnetSway(metaclass=OneOf[SystemCall], function_name='ClaimTestnetSway'):
+class ClaimTestnetSway(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ClaimTestnetSway'):
     proof: List[felt252]
     amount: u256
 
 
 @dataclass
-class PurchaseAdalian(metaclass=OneOf[SystemCall], function_name='PurchaseAdalian'):
+class PurchaseAdalian(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='PurchaseAdalian'):
     collection: u64
 
 
 @dataclass
-class PurchaseAsteroid(metaclass=OneOf[SystemCall], function_name='PurchaseAsteroid'):
+class PurchaseAsteroid(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='PurchaseAsteroid'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ScanResourcesFinish(metaclass=OneOf[SystemCall], function_name='ScanResourcesFinish'):
+class ScanResourcesFinish(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ScanResourcesFinish'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ScanResourcesStart(metaclass=OneOf[SystemCall], function_name='ScanResourcesStart'):
+class ScanResourcesStart(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ScanResourcesStart'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ScanSurfaceFinish(metaclass=OneOf[SystemCall], function_name='ScanSurfaceFinish'):
+class ScanSurfaceFinish(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ScanSurfaceFinish'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class ScanSurfaceStart(metaclass=OneOf[SystemCall], function_name='ScanSurfaceStart'):
+class ScanSurfaceStart(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ScanSurfaceStart'):
     asteroid: Entity
     caller_crew: Entity
 
 
 @dataclass
-class InitializeAsteroid(metaclass=OneOf[SystemCall], function_name='InitializeAsteroid'):
+class InitializeAsteroid(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='InitializeAsteroid'):
     asteroid: Entity
     celestial_type: u64
     mass: u128
@@ -588,49 +588,49 @@ class InitializeAsteroid(metaclass=OneOf[SystemCall], function_name='InitializeA
 
 
 @dataclass
-class SeedAsteroids(metaclass=OneOf[SystemCall], function_name='SeedAsteroids'):
+class SeedAsteroids(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='SeedAsteroids'):
     asteroids: List[SeededAsteroid]
 
 
 @dataclass
-class SeedCrewmates(metaclass=OneOf[SystemCall], function_name='SeedCrewmates'):
+class SeedCrewmates(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='SeedCrewmates'):
     crewmates: List[SeededCrewmate]
 
 
 # NOTE: This is according to the system ABI, but it seems to be incorrect or incomplete
 @dataclass
-class SeedColony(metaclass=OneOf[SystemCall], function_name='SeedColony'):
+class SeedColony(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='SeedColony'):
     colony: u64
     building_type: u64
 
 
 # NOTE: This is according to the system ABI, but it seems to be incorrect or incomplete
 @dataclass
-class SeedHabitat(metaclass=OneOf[SystemCall], function_name='SeedHabitat'):
+class SeedHabitat(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='SeedHabitat'):
     pass
 
 
 # NOTE: This is according to the system ABI, but it seems to be incorrect or incomplete
 @dataclass
-class SeedOrders(metaclass=OneOf[SystemCall], function_name='SeedOrders'):
+class SeedOrders(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='SeedOrders'):
     market_lot: u64
     warehouse_lot: u64
 
 
 @dataclass
-class DockShip(metaclass=OneOf[SystemCall], function_name='DockShip'):
+class DockShip(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='DockShip'):
     target: Entity
     powered: bool
     caller_crew: Entity
 
 
 @dataclass
-class TransitBetweenFinish(metaclass=OneOf[SystemCall], function_name='TransitBetweenFinish'):
+class TransitBetweenFinish(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='TransitBetweenFinish'):
     caller_crew: Entity
 
 
 @dataclass
-class TransitBetweenStart(metaclass=OneOf[SystemCall], function_name='TransitBetweenStart'):
+class TransitBetweenStart(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='TransitBetweenStart'):
     origin: Entity
     destination: Entity
     departure_time: u64
@@ -646,14 +646,14 @@ class TransitBetweenStart(metaclass=OneOf[SystemCall], function_name='TransitBet
 
 
 @dataclass
-class UndockShip(metaclass=OneOf[SystemCall], function_name='UndockShip'):
+class UndockShip(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='UndockShip'):
     ship: Entity
     powered: bool
     caller_crew: Entity
 
 
 @dataclass
-class AnnotateEvent(metaclass=OneOf[SystemCall], function_name='AnnotateEvent'):
+class AnnotateEvent(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AnnotateEvent'):
     transaction_hash: felt252
     log_index: u64
     content_hash: List[felt252]
@@ -661,14 +661,14 @@ class AnnotateEvent(metaclass=OneOf[SystemCall], function_name='AnnotateEvent'):
 
 
 @dataclass
-class ChangeName(metaclass=OneOf[SystemCall], function_name='ChangeName'):
+class ChangeName(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ChangeName'):
     entity: Entity
     name: shortstr
     caller_crew: Entity
 
 
 @dataclass
-class ConfigureExchange(metaclass=OneOf[SystemCall], function_name='ConfigureExchange'):
+class ConfigureExchange(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ConfigureExchange'):
     exchange: Entity
     maker_fee: u64
     taker_fee: u64
@@ -677,14 +677,14 @@ class ConfigureExchange(metaclass=OneOf[SystemCall], function_name='ConfigureExc
 
 
 @dataclass
-class ReadComponent(metaclass=OneOf[SystemCall], function_name='ReadComponent'):
+class ReadComponent(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ReadComponent'):
     name: felt252  # TODO: could also be a shortstr
     path: List[felt252]
     # TODO: output is of type Span<felt252>, need to declare this somewhere?
 
 
 @dataclass
-class WriteComponent(metaclass=OneOf[SystemCall], function_name='WriteComponent'):
+class WriteComponent(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='WriteComponent'):
     name: felt252  # TODO: could also be a shortstr
     path: List[felt252]
     data: List[felt252]
