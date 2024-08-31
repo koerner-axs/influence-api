@@ -10,8 +10,7 @@ from starknet_py.net.signer.stark_curve_signer import KeyPair
 
 from influencepy.starknet.net.constants import DISPATCHER_ADDRESS
 from influencepy.starknet.net.datatypes import Calldata
-from influencepy.starknet.net.schema import MultiInvocationTransaction
-import influencepy.starknet.net.system as system
+from influencepy.starknet.net.transaction import MultiInvocationTransaction
 
 full_node_address = 'https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/Dx_Csa1pBUwBeP3qSu5UnzC882cfOE5d'
 
@@ -40,9 +39,9 @@ async def setup_starknet():
 
 
 async def read_transaction(client: FullNodeClient):
-    #tx = await client.get_transaction('0x019ef3f6f03b280f7d48b2c896f4a833a318e04850fea15d9ba992e86e220577')
+    tx = await client.get_transaction('0x019ef3f6f03b280f7d48b2c896f4a833a318e04850fea15d9ba992e86e220577')
     #tx = await client.get_transaction('0x01f5b7e92b51ec6492b6645bbea8fe098d2f156083ef5cc3cad3f878fb876025')
-    tx = await client.get_transaction('0x293357fb4f6d2f63e008939c84abcf7d4f3e5a73dab47ccf8da56776fbf6b6a')
+    #tx = await client.get_transaction('0x293357fb4f6d2f63e008939c84abcf7d4f3e5a73dab47ccf8da56776fbf6b6a')
     if not isinstance(tx, InvokeTransactionV1):
         raise ValueError('Transaction is not an InvokeTransactionV1')
     calldata = Calldata(tx.calldata)

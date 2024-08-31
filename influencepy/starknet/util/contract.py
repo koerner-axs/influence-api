@@ -6,14 +6,11 @@ import time
 from typing import Any, List
 
 from starknet_py.contract import Contract
-from starknet_py.hash.selector import get_selector_from_name
 from starknet_py.net.account.account import Account
 from starknet_py.net.client import Client
-from starknet_py.net.client_models import Call
 from starknet_py.proxy.contract_abi_resolver import ContractAbiResolver, ProxyConfig
 
 from influencepy.starknet.net.constants import DISPATCHER_ADDRESS
-from influencepy.starknet.net.schema import SystemCall
 
 TEMP_BASE_DIR = os.path.join(tempfile.gettempdir(), 'influencepy')
 DISPATCHER_ABI = os.path.join(TEMP_BASE_DIR, 'dispatcher_abi.json')
@@ -61,5 +58,5 @@ class DispatcherContract:
         self.client, _ = _unpack_provider(provider)
         self.contract = get_dispatcher_contract(self.client, address, reload_abi)
 
-    async def run_system(self, system_call: SystemCall) -> List[int]:
+    async def run_system(self, system_call: "SystemCall") -> List[int]:
         return await self.client.call_contract(system_call.to_call())
