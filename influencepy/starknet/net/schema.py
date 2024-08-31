@@ -1,5 +1,9 @@
+from abc import abstractmethod
 from dataclasses import dataclass
 from typing import List, get_origin, get_args, Any, Dict, Tuple
+
+from starknet_py.contract import Contract
+from starknet_py.net.client_models import Call
 
 from influencepy.starknet.net.constants import DISPATCHER_ADDRESS, DISPATCHER_RUN_SYSTEM_SELECTOR, SWAY_TOKEN_ADDRESS, \
     SWAY_TRANSFER_WITH_CONFIRMATION_SELECTOR
@@ -76,6 +80,7 @@ class Schema(BasicType):
 
 class OneOfSchema(Schema):
     @classmethod
+    @abstractmethod
     def register_subtype(cls, subtype_class, **kwargs):
         raise NotImplementedError('register_subtype must be implemented in subclasses of OneOfSchema')
 
@@ -117,12 +122,23 @@ class ContractCallDispatcher(OneOfSchema):
 
 
 class ContractCall(Schema):
+    def _to_callargs(self, calldata: Calldata | None = None) -> Calldata:
+        return super().to_calldata(calldata)
+
     def to_calldata(self, calldata: Calldata = None) -> Calldata:
+        if calldata is None:
+            calldata = Calldata([])
         calldata.push_int(self.__class__.contract_address)
         calldata.push_int(self.__class__.selector)
-        args_calldata = super().to_calldata(None)
-        calldata.count_push_len_extend(args_calldata)
+        calldata.count_push_len_extend(self._to_callargs())
         return calldata
+
+    def to_call(self) -> Call:
+        return Call(
+            to_addr=self.__class__.contract_address,
+            selector=self.__class__.selector,
+            calldata=self._to_callargs().data
+        )
 
 
 class SystemCallDispatcher(OneOfSchema, metaclass=OneOf[ContractCallDispatcher],
@@ -149,6 +165,8 @@ class SystemCallDispatcher(OneOfSchema, metaclass=OneOf[ContractCallDispatcher],
 
 class SystemCall(ContractCall):
     def to_calldata(self, calldata: Calldata = None) -> Calldata:
+        if calldata is None:
+            calldata = Calldata([])
         calldata.push_int(SystemCallDispatcher.contract_address)
         calldata.push_int(SystemCallDispatcher.selector)
         args_calldata = super(ContractCall, self).to_calldata(None)
@@ -199,5 +217,8 @@ class MultiInvocationTransaction(Schema):
     def __init__(self):
         self.invocations = []
 
-    def append_contract_call(self, contract_call: ContractCallDispatcher | Any):
+    def prepend_contract_call(self, contract_call: ContractCall | Any):
+        self.invocations.insert(0, contract_call)
+
+    def append_contract_call(self, contract_call: ContractCall | Any):
         self.invocations.append(contract_call)

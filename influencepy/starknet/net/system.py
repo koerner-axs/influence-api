@@ -1,14 +1,18 @@
 from dataclasses import dataclass
 from typing import List
 
+from starknet_py.contract import Contract
+
 from influencepy.starknet.net.datatypes import ContractAddress, CubitFixedPoint64, CubitFixedPoint128, u256, felt252, \
     u64, shortstr, u128
 from influencepy.starknet.net.schema import SystemCallDispatcher, OneOf, SystemCall
 from influencepy.starknet.net.structs import Entity, InventoryItem, Withdrawal, SeededAsteroid, SeededCrewmate
+from influencepy.starknet.util.dispatcher import DispatcherContract
 
 
 @dataclass
-class AcceptContractAgreement(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AcceptContractAgreement'):
+class AcceptContractAgreement(SystemCall, metaclass=OneOf[SystemCallDispatcher],
+                              function_name='AcceptContractAgreement'):
     target: Entity
     permission: u64
     permitted: Entity
@@ -16,7 +20,8 @@ class AcceptContractAgreement(SystemCall, metaclass=OneOf[SystemCallDispatcher],
 
 
 @dataclass
-class AcceptPrepaidMerkleAgreement(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AcceptPrepaidMerkleAgreement'):
+class AcceptPrepaidMerkleAgreement(SystemCall, metaclass=OneOf[SystemCallDispatcher],
+                                   function_name='AcceptPrepaidMerkleAgreement'):
     target: Entity
     permission: u64
     permitted: Entity
@@ -60,7 +65,8 @@ class RemoveFromWhitelist(SystemCall, metaclass=OneOf[SystemCallDispatcher], fun
 
 
 @dataclass
-class RemoveAccountFromWhiteList(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='RemoveAccountFromWhiteList'):
+class RemoveAccountFromWhiteList(SystemCall, metaclass=OneOf[SystemCallDispatcher],
+                                 function_name='RemoveAccountFromWhiteList'):
     target: Entity
     permission: u64
     permitted: ContractAddress
@@ -90,7 +96,8 @@ class ConstructionAbandon(SystemCall, metaclass=OneOf[SystemCallDispatcher], fun
 
 
 @dataclass
-class ConstructionDeconstruct(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ConstructionDeconstruct'):
+class ConstructionDeconstruct(SystemCall, metaclass=OneOf[SystemCallDispatcher],
+                              function_name='ConstructionDeconstruct'):
     building: Entity
     caller_crew: Entity
 
@@ -194,7 +201,8 @@ class ResupplyFood(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_n
 
 
 @dataclass
-class ResupplyFoodFromExchange(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ResupplyFoodFromExchange'):
+class ResupplyFoodFromExchange(SystemCall, metaclass=OneOf[SystemCallDispatcher],
+                               function_name='ResupplyFoodFromExchange'):
     seller_crew: Entity
     exchange: Entity
     amount: u64
@@ -305,7 +313,8 @@ class ActivateEmergency(SystemCall, metaclass=OneOf[SystemCallDispatcher], funct
 
 
 @dataclass
-class CollectEmergencyPropellant(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='CollectEmergencyPropellant'):
+class CollectEmergencyPropellant(SystemCall, metaclass=OneOf[SystemCallDispatcher],
+                                 function_name='CollectEmergencyPropellant'):
     caller_crew: Entity
 
 
@@ -392,7 +401,8 @@ class AssignContractPolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], fu
 
 
 @dataclass
-class AssignPrepaidMerklePolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='AssignPrepaidMerklePolicy'):
+class AssignPrepaidMerklePolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher],
+                                function_name='AssignPrepaidMerklePolicy'):
     target: Entity
     permission: u64
     rate: u64
@@ -434,7 +444,8 @@ class RemovePrepaidPolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], fun
 
 
 @dataclass
-class RemovePrepaidMerklePolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='RemovePrepaidMerklePolicy'):
+class RemovePrepaidMerklePolicy(SystemCall, metaclass=OneOf[SystemCallDispatcher],
+                                function_name='RemovePrepaidMerklePolicy'):
     target: Entity
     permission: u64
     caller_crew: Entity
@@ -512,9 +523,14 @@ class ResolveRandomEvent(SystemCall, metaclass=OneOf[SystemCallDispatcher], func
 
 @dataclass
 class CheckForRandomEvent(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='CheckForRandomEvent'):
-    # TODO: this is a 'view' function, so it should not be a System
     caller_crew: Entity
+
     # TODO: output is of type u64, need to declare this somewhere?
+
+    async def query(self, dispatcher: DispatcherContract) -> bool:
+        result: List[int] = await dispatcher.run_system(self)
+        print('CheckForRandomEvent result:', result)
+        return result != 0
 
 
 @dataclass
@@ -524,7 +540,8 @@ class ClaimArrivalReward(SystemCall, metaclass=OneOf[SystemCallDispatcher], func
 
 
 @dataclass
-class ClaimPrepareForLaunchReward(SystemCall, metaclass=OneOf[SystemCallDispatcher], function_name='ClaimPrepareForLaunchReward'):
+class ClaimPrepareForLaunchReward(SystemCall, metaclass=OneOf[SystemCallDispatcher],
+                                  function_name='ClaimPrepareForLaunchReward'):
     asteroid: Entity
 
 
