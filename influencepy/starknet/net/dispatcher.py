@@ -6,10 +6,10 @@ from influencepy.starknet.net.system import *
 
 
 class SystemCallDispatcher(Schema):
-    _contract_address: int = SystemCall.contract_address
-    _selector: int = SystemCall.selector
+    _contract_address: int = SystemCall._contract_address
+    _selector: int = SystemCall._selector
     _variants: Dict[str, SystemCall] = {
-        variant.function_name: variant for variant in [
+        variant._function_name: variant for variant in [
             AcceptContractAgreement,
             AcceptDelivery,
             AcceptPrepaidAgreement,
@@ -102,11 +102,10 @@ class SystemCallDispatcher(Schema):
     @classmethod
     def from_calldata(cls, calldata: Calldata, **kwargs) -> Schema | Any:
         function_name = calldata.pop_string()
-        _arg_count = calldata.pop_int()
-        if function_name in cls.subtype_map:
-            return cls.subtype_map[function_name].from_calldata(calldata)
-        else:
-            raise ValueError(f'Unknown function name {function_name}')
+        arg_count = calldata.pop_int()
+        variant: SystemCall = cls._variants.get(function_name, UnknownSystemCall)
+        kwargs.update({'function_name': function_name, 'arg_count': arg_count})
+        return variant.from_calldata(calldata, **kwargs)
 
 
 class ContractCallDispatcher(Schema):
@@ -123,5 +122,5 @@ class ContractCallDispatcher(Schema):
         selector = calldata.pop_int()
         arg_count = calldata.pop_int()
         variant: ContractCall = cls._variants.get((contract_address, selector), UnknownContractCall)
-        return variant.from_calldata(calldata, contract_address=contract_address, selector=selector,
-                                     arg_count=arg_count, **kwargs)
+        kwargs.update({'contract_address': contract_address, 'selector': selector, 'arg_count': arg_count})
+        return variant.from_calldata(calldata, **kwargs)

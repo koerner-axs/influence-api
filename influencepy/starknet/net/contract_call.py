@@ -8,8 +8,8 @@ from influencepy.starknet.net.schema import Schema
 
 
 class ContractCall(Schema):
-    _contract_address: int
-    _selector: int
+    contract_address: int
+    selector: int
 
     def _to_callargs(self, calldata: Calldata | None = None) -> Calldata:
         return super().to_calldata(calldata)
@@ -17,15 +17,15 @@ class ContractCall(Schema):
     def to_calldata(self, calldata: Calldata = None) -> Calldata:
         if calldata is None:
             calldata = Calldata([])
-        calldata.push_int(self.__class__._contract_address)
-        calldata.push_int(self.__class__._selector)
+        calldata.push_int(self.__class__.contract_address)
+        calldata.push_int(self.__class__.selector)
         calldata.count_push_len_extend(self._to_callargs())
         return calldata
 
     def to_call(self) -> Call:
         return Call(
-            to_addr=self.__class__._contract_address,
-            selector=self.__class__._selector,
+            to_addr=self.__class__.contract_address,
+            selector=self.__class__.selector,
             calldata=self._to_callargs().data
         )
 
@@ -42,8 +42,8 @@ class SwayTransferWithConfirmation(ContractCall):
 class UnknownContractCall(ContractCall):
     def __init__(self, calldata: List[int], contract_address: int | str, selector: int | str):
         self.calldata = calldata
-        self._contract_address = contract_address
-        self._selector = selector
+        self.contract_address = contract_address
+        self.selector = selector
 
     @classmethod
     def from_calldata(cls, calldata: Calldata, **kwargs) -> "UnknownContractCall":
@@ -56,4 +56,4 @@ class UnknownContractCall(ContractCall):
                                    selector=kwargs['selector'])
 
     def __repr__(self):
-        return f'UnknownContractCall(to={hex(self._contract_address)}, selector={hex(self._selector)}, calldata={self.calldata})'
+        return f'UnknownContractCall(to={hex(self.contract_address)}, selector={hex(self.selector)}, calldata={self.calldata})'

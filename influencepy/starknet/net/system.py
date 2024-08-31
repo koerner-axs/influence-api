@@ -11,7 +11,7 @@ from influencepy.starknet.util.contract import DispatcherContract
 class SystemCall(ContractCall):
     _contract_address: int = DISPATCHER_ADDRESS
     _selector: int = DISPATCHER_RUN_SYSTEM_SELECTOR
-    _function_name: str
+    function_name: str
 
     def to_calldata(self, calldata: Calldata = None) -> Calldata:
         if calldata is None:
@@ -20,21 +20,9 @@ class SystemCall(ContractCall):
         calldata.push_int(self.__class__._selector)
         args_calldata = super(ContractCall, self).to_calldata(None)
         args_calldata.count_prepend_len()
-        args_calldata.prepend_string(self.__class__._function_name)
+        args_calldata.prepend_string(self.__class__.function_name)
         calldata.count_push_len_extend(args_calldata)
         return calldata
-
-    @property
-    def function_name(self):
-        return self._function_name
-
-    @property
-    def contract_address(self):
-        return self._contract_address
-
-    @property
-    def selector(self):
-        return self._selector
 
 
 class AcceptContractAgreement(SystemCall):
@@ -727,3 +715,21 @@ class WriteComponent(SystemCall):
     path: List[felt252]
     data: List[felt252]
     # TODO: state_mutability is 'view' which doesn't make sense for a write operation
+
+
+class UnknownSystemCall(SystemCall):
+    def __init__(self, calldata: List[int], function_name: str):
+        self.calldata = calldata
+        self.function_name = function_name
+
+    @classmethod
+    def from_calldata(cls, calldata: Calldata, **kwargs) -> "UnknownSystemCall":
+        """ Pops the argument length and all arguments from the calldata and stores it.
+        No further parsing is done. """
+        data = []
+        for _ in range(kwargs['arg_count']):
+            data.append(calldata.pop_int())
+        return UnknownSystemCall(calldata=data, function_name=kwargs['function_name'])
+
+    def __repr__(self):
+        return f'UnknownSystemCall(function_name={self.function_name}, calldata={self.calldata})'
