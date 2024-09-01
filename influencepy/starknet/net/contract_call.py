@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import List
 
 from starknet_py.net.client_models import Call
@@ -8,8 +9,8 @@ from influencepy.starknet.net.schema import Schema
 
 
 class ContractCall(Schema):
-    contract_address: int
-    selector: int
+    _contract_address: int
+    _selector: int
 
     def _to_callargs(self, calldata: Calldata | None = None) -> Calldata:
         return super().to_calldata(calldata)
@@ -17,26 +18,31 @@ class ContractCall(Schema):
     def to_calldata(self, calldata: Calldata = None) -> Calldata:
         if calldata is None:
             calldata = Calldata([])
-        calldata.push_int(self.__class__.contract_address)
-        calldata.push_int(self.__class__.selector)
+        calldata.push_int(self.__class__._contract_address)
+        calldata.push_int(self.__class__._selector)
+        # TODO: missing the function name and arg count
         calldata.count_push_len_extend(self._to_callargs())
         return calldata
 
     def to_call(self) -> Call:
+        calldata = Calldata([])
+        calldata.push_string(self.__class__._function_name) # TODO: not always present
+        calldata.count_push_len_extend(self._to_callargs())
         return Call(
-            to_addr=self.__class__.contract_address,
-            selector=self.__class__.selector,
-            calldata=self._to_callargs().data
+            to_addr=self.__class__._contract_address,
+            selector=self.__class__._selector,
+            calldata=calldata.data
         )
 
 
+@dataclass
 class SwayTransferWithConfirmation(ContractCall):
-    _contract_address: int = SWAY_TOKEN_ADDRESS
-    _selector: int = SWAY_TRANSFER_WITH_CONFIRMATION_SELECTOR
     recipient: ContractAddress
     amount: u128
     memo: felt252
     consumer: ContractAddress
+    _contract_address: int = SWAY_TOKEN_ADDRESS
+    _selector: int = SWAY_TRANSFER_WITH_CONFIRMATION_SELECTOR
 
 
 class UnknownContractCall(ContractCall):
