@@ -3,7 +3,7 @@ import asyncio
 from influencepy.starknet.net.structs import Building, Crew, InventoryItem
 from influencepy.starknet.net.system import SendDelivery, ResolveRandomEvent
 from influencepy.starknet.net.transaction import MultiInvocationTransaction
-from influencepy.starknet.util.rpc import setup_starknet
+from influencepy.starknet.util.rpc import setup_starknet_context
 
 
 async def transfer():
@@ -51,5 +51,5 @@ async def transfer():
 
 
 if __name__ == '__main__':
-    client, account, dispatcher_contract = setup_starknet()
+    client, account, dispatcher_contract = setup_starknet_context()
     asyncio.run(transfer())

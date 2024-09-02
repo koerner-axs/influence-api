@@ -7,7 +7,7 @@ from influencepy.starknet.net.contract_call import SwayTransferWithConfirmation
 from influencepy.starknet.net.structs import Crew, Entity, EntityId
 from influencepy.starknet.net.system import AcceptPrepaidAgreement
 from influencepy.starknet.net.transaction import MultiInvocationTransaction
-from influencepy.starknet.util.rpc import setup_starknet
+from influencepy.starknet.util.rpc import setup_starknet_context
 
 
 async def transfer(account: Account):
@@ -59,5 +59,5 @@ async def transfer(account: Account):
 
 
 if __name__ == '__main__':
-    client, account, dispatcher_contract = setup_starknet(prod=False)
+    client, account, dispatcher_contract = setup_starknet_context(prod=False)
     asyncio.run(transfer(account))

@@ -5,7 +5,7 @@ from influencepy.starknet.net.system import ProcessProductsFinish
 from influencepy.starknet.net.transaction import MultiInvocationTransaction
 from influencepy.starknet.util.contract import DispatcherContract
 from influencepy.starknet.util.random_event import handle_random_events
-from influencepy.starknet.util.rpc import setup_starknet
+from influencepy.starknet.util.rpc import setup_starknet_context
 
 
 async def finish_ref_start_ref(dispatcher: DispatcherContract, crew: Crew, refinery: Building):
@@ -24,5 +24,5 @@ async def finish_ref_start_ref(dispatcher: DispatcherContract, crew: Crew, refin
 
 
 if __name__ == '__main__':
-    client, account, dispatcher_contract = setup_starknet()
+    client, account, dispatcher_contract = setup_starknet_context()
     asyncio.run(finish_ref_start_ref(dispatcher_contract, Crew(4190), Building(0x32ab)))

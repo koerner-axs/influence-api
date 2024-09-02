@@ -46,7 +46,14 @@ def _get_full_node_address(prod: bool = True):
     return full_node_address
 
 
-def setup_starknet(prod: bool = True, full_node_address: str = None):
+class StarknetContext:
+    def __init__(self, client: FullNodeClient, account: Account, dispatcher_contract: DispatcherContract):
+        self.client = client
+        self.account = account
+        self.dispatcher_contract = dispatcher_contract
+
+
+def setup_starknet_context(prod: bool = True, full_node_address: str = None):
     if full_node_address is None:
         full_node_address = _get_full_node_address(prod)
     client = FullNodeClient(node_url=full_node_address)

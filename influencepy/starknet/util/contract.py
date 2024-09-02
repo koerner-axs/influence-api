@@ -3,7 +3,7 @@ import json
 import os
 import tempfile
 import time
-from typing import Any, List
+from typing import Any, List, Dict
 
 from starknet_py.contract import Contract
 from starknet_py.net.account.account import Account
@@ -14,6 +14,7 @@ from influencepy.starknet.net.constants import DISPATCHER_ADDRESS
 
 TEMP_BASE_DIR = os.path.join(tempfile.gettempdir(), 'influencepy')
 DISPATCHER_ABI = os.path.join(TEMP_BASE_DIR, 'dispatcher_abi.json')
+SWAY_ABI = os.path.join(TEMP_BASE_DIR, 'sway_abi.json')
 
 
 def _unpack_provider(provider: Client | Account) -> tuple[Client, Account | None]:
@@ -22,27 +23,27 @@ def _unpack_provider(provider: Client | Account) -> tuple[Client, Account | None
     return provider, None
 
 
-def _get_dispatcher_abi():
-    if not os.path.exists(DISPATCHER_ABI):
+def _get_abi(file):
+    if not os.path.exists(file):
         return None
-    created_at = os.stat(DISPATCHER_ABI).st_ctime
+    created_at = os.stat(file).st_ctime
     if created_at < (time.time() - 72 * 3600):
-        os.remove(DISPATCHER_ABI)
+        os.remove(file)
         return None
     print('Using cached dispatcher contract ABI..')
-    with open(DISPATCHER_ABI, 'r') as f:
+    with open(file, 'r') as f:
         return json.load(f)
 
 
-def _set_dispatcher_abi(abi):
+def _store_abi(abi):
     os.makedirs(TEMP_BASE_DIR, exist_ok=True)
     with open(DISPATCHER_ABI, 'w') as f:
         json.dump(abi, f)
 
 
 def get_dispatcher_contract(provider: Client | Account, address: int = DISPATCHER_ADDRESS,
-                            reload_abi: bool = False):
-    abi = _get_dispatcher_abi()
+                            reload_abi: bool = False) -> Contract:
+    abi = _get_dispatcher_abi(DISPATCHER_ABI)
     if abi is None or reload_abi:
         client, _ = _unpack_provider(provider)
         print('Resolving dispatcher contract ABI..')
@@ -60,3 +61,10 @@ class DispatcherContract:
 
     async def run_system(self, system_call: "SystemCall") -> List[int]:
         return await self.client.call_contract(system_call.to_call())
+
+
+class SwayContract:
+    def __init__(self, provider: Client | Account, address: int, selectors: Dict[str, int]):
+        self.client, _ = _unpack_provider(provider)
+        self.contract = get_dispatcher_contract(self.client, address, reload_abi)
+        self.selectors = selectors
