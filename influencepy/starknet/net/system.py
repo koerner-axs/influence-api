@@ -1,6 +1,8 @@
 from typing import List
 from dataclasses import dataclass
 
+from starknet_py.net.client_models import Call
+
 from influencepy.starknet.net.constants import DISPATCHER_ADDRESS, DISPATCHER_RUN_SYSTEM_SELECTOR
 from influencepy.starknet.net.contract_call import ContractCall
 from influencepy.starknet.net.datatypes import ContractAddress, CubitFixedPoint64, CubitFixedPoint128, u256, felt252, \
@@ -24,6 +26,16 @@ class SystemCall(ContractCall):
         args_calldata.prepend_string(self.__class__._function_name)
         calldata.count_push_len_extend(args_calldata)
         return calldata
+
+    def to_call(self) -> Call:
+        calldata = Calldata([])
+        calldata.push_string(self.__class__._function_name)
+        calldata.count_push_len_extend(self._to_callargs())
+        return Call(
+            to_addr=self.__class__._contract_address,
+            selector=self.__class__._selector,
+            calldata=calldata.data
+        )
 
 
 @dataclass

@@ -25,9 +25,7 @@ class ContractCall(Schema):
         return calldata
 
     def to_call(self) -> Call:
-        calldata = Calldata([])
-        calldata.push_string(self.__class__._function_name) # TODO: not always present
-        calldata.count_push_len_extend(self._to_callargs())
+        calldata = self._to_callargs()
         return Call(
             to_addr=self.__class__._contract_address,
             selector=self.__class__._selector,
