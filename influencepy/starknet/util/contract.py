@@ -3,7 +3,7 @@ import json
 import os
 import tempfile
 import time
-from typing import Any, List, Dict
+from typing import List
 
 from starknet_py.contract import Contract
 from starknet_py.net.account.account import Account
@@ -13,8 +13,8 @@ from starknet_py.proxy.contract_abi_resolver import ContractAbiResolver, ProxyCo
 from influencepy.starknet.net.constants import DISPATCHER_ADDRESS
 
 TEMP_BASE_DIR = os.path.join(tempfile.gettempdir(), 'influencepy')
-DISPATCHER_ABI = os.path.join(TEMP_BASE_DIR, 'dispatcher_abi.json')
-SWAY_ABI = os.path.join(TEMP_BASE_DIR, 'sway_abi.json')
+DISPATCHER_ABI_FILE = os.path.join(TEMP_BASE_DIR, 'dispatcher_abi.json')
+SWAY_ABI_FILE = os.path.join(TEMP_BASE_DIR, 'sway_abi.json')
 
 
 def _unpack_provider(provider: Client | Account) -> tuple[Client, Account | None]:
@@ -35,36 +35,37 @@ def _get_abi(file):
         return json.load(f)
 
 
-def _store_abi(abi):
+def _store_abi(abi, file):
     os.makedirs(TEMP_BASE_DIR, exist_ok=True)
-    with open(DISPATCHER_ABI, 'w') as f:
+    with open(file, 'w') as f:
         json.dump(abi, f)
 
 
-def get_dispatcher_contract(provider: Client | Account, address: int = DISPATCHER_ADDRESS,
-                            reload_abi: bool = False) -> Contract:
-    abi = _get_dispatcher_abi(DISPATCHER_ABI)
+def _get_contract(provider: Client | Account, address: int, temp_abi_file: str, reload_abi: bool = False) -> Contract:
+    abi = _get_abi(temp_abi_file)
     if abi is None or reload_abi:
         client, _ = _unpack_provider(provider)
         print('Resolving dispatcher contract ABI..')
         abi, cairo_version = asyncio.run(ContractAbiResolver(
             address=address, client=client, proxy_config=ProxyConfig()
         ).resolve())
-        _set_dispatcher_abi(abi)
+        _store_abi(abi, temp_abi_file)
     return Contract(address=address, abi=abi, provider=provider)
 
 
 class DispatcherContract:
     def __init__(self, provider: Client | Account, address: int = DISPATCHER_ADDRESS, reload_abi: bool = False):
         self.client, _ = _unpack_provider(provider)
-        self.contract = get_dispatcher_contract(self.client, address, reload_abi)
+        self.contract = _get_contract(self.client, address, DISPATCHER_ABI_FILE, reload_abi)
 
     async def run_system(self, system_call: "SystemCall") -> List[int]:
         return await self.client.call_contract(system_call.to_call())
 
 
 class SwayContract:
-    def __init__(self, provider: Client | Account, address: int, selectors: Dict[str, int]):
+    def __init__(self, provider: Client | Account, address: int):
         self.client, _ = _unpack_provider(provider)
-        self.contract = get_dispatcher_contract(self.client, address, reload_abi)
-        self.selectors = selectors
+        self.contract = _get_contract(self.client, address, SWAY_ABI_FILE, False)
+
+    async def transfer_with_confirmation(self):
+        pass

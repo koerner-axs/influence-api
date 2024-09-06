@@ -33,16 +33,6 @@ class ContractCall(Schema):
         )
 
 
-@dataclass
-class SwayTransferWithConfirmation(ContractCall):
-    recipient: ContractAddress
-    amount: u128
-    memo: felt252
-    consumer: ContractAddress
-    _contract_address: int = SWAY_TOKEN_ADDRESS
-    _selector: int = SWAY_TRANSFER_WITH_CONFIRMATION_SELECTOR
-
-
 class UnknownContractCall(ContractCall):
     def __init__(self, calldata: List[int], contract_address: int | str, selector: int | str):
         self.calldata = calldata
