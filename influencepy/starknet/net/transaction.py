@@ -11,6 +11,9 @@ class MultiInvocationTransaction(Schema):
     def __init__(self):
         self.invocations = []
 
+    def get_invocation(self, index: int) -> ContractCall:
+        return self.invocations[index]
+
     def prepend_contract_call(self, contract_call: ContractCall | Any):
         self.invocations.insert(0, contract_call)
 
