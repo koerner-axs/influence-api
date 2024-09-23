@@ -20,7 +20,7 @@ async def read_transaction(client: FullNodeClient):
     calldata = Calldata(tx.calldata)
     multi_invocation = MultiInvocationTransaction.from_calldata(calldata)
     for invocation in multi_invocation.invocations:
-        print(invocation)
+        print(repr(invocation))
 
 
 if __name__ == '__main__':

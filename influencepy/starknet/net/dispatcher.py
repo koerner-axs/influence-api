@@ -6,10 +6,10 @@ from influencepy.starknet.net.sway import *
 from influencepy.starknet.net.system import *
 
 
-class SystemCallDispatcher(Schema):
-    _contract_address: int = SystemCall._contract_address
-    _selector: int = SystemCall._selector
-    _variants: Dict[str, SystemCall] = {
+class RunSystemDispatcher(Schema):
+    _contract_address: int = DISPATCHER_ADDRESS  # TODO: maybe remove
+    _selector: int = get_selector_from_name('run_system')
+    _variants: Dict[str, Schema] = {
         variant._function_name: variant for variant in [
             AcceptContractAgreement,
             AcceptDelivery,
@@ -101,18 +101,18 @@ class SystemCallDispatcher(Schema):
     }
 
     @classmethod
-    def from_calldata(cls, calldata: Calldata, **kwargs) -> Schema | Any:
+    def from_calldata(cls, calldata: Calldata, **kwargs) -> Schema:
         function_name = calldata.pop_string()
         arg_count = calldata.pop_int()
-        variant: SystemCall = cls._variants.get(function_name, UnknownSystemCall)
+        variant: Schema = cls._variants.get(function_name, UnknownSystemCall)
         kwargs.update({'function_name': function_name, 'arg_count': arg_count})
         return variant.from_calldata(calldata, **kwargs)
 
 
 class DispatcherContractCallDispatcher(Schema):
-    _contract_address: int = SystemCall._contract_address
-    _variants: Dict[int, SystemCall] = {
-        SystemCallDispatcher._selector: SystemCallDispatcher
+    _contract_address: int = DISPATCHER_ADDRESS
+    _variants: Dict[int, Schema] = {
+        RunSystemDispatcher._selector: RunSystemDispatcher
     }
 
     @classmethod
@@ -150,7 +150,7 @@ class SwayTokenContractCallDispatcher(Schema):
 
 class ContractCallDispatcher(Schema):
     _variants: Dict[int, Schema] = {
-        SystemCall._contract_address: SystemCallDispatcher,
+        DispatcherContractCallDispatcher._contract_address: DispatcherContractCallDispatcher,
         SwayTokenContractCall._contract_address: SwayTokenContractCallDispatcher
     }
 
