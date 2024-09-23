@@ -44,7 +44,7 @@ class Schema(BasicType):
             try:
                 list_[index].to_calldata(calldata)
             except Exception as e:
-                raise ValueError(f"Error while serializing List[{element_type}] at index {index}: {e}")
+                raise ValueError(f'Error while serializing List[{element_type}] at index {index}: {e}')
 
     @staticmethod
     def _list_from_calldata(element_type, calldata: Calldata) -> List:
@@ -55,7 +55,7 @@ class Schema(BasicType):
                 element = element_type.from_calldata(calldata)
                 new_list.append(element)
             except Exception as e:
-                raise ValueError(f"Error while deserializing List[{element_type}] at index {index}: {e}")
+                raise ValueError(f'Error while deserializing List[{element_type}] at index {index}: {e}')
         return new_list
 
     def __post_init__(self):
@@ -63,7 +63,7 @@ class Schema(BasicType):
             value = getattr(self, key)
             if isinstance(field_type, type) and not isinstance(value, field_type):
                 if not is_auto_convertible(field_type):
-                    raise ValueError(f'Field "{key}" is not of type "{field_type}"')
+                    raise ValueError(f'Field "{key}" is not of type "{field_type}" and is not auto-convertible')
                 try:
                     converted = field_type(value)
                 except Exception as e:

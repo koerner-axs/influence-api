@@ -19,7 +19,8 @@ async def read_transaction(client: FullNodeClient):
         raise ValueError('Transaction is not an InvokeTransactionV1')
     calldata = Calldata(tx.calldata)
     multi_invocation = MultiInvocationTransaction.from_calldata(calldata)
-    print(multi_invocation)
+    for invocation in multi_invocation.invocations:
+        print(invocation)
 
 
 if __name__ == '__main__':

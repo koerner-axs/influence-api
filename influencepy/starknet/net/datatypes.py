@@ -1,4 +1,4 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass
 from typing import List
 
 from starknet_py.cairo import felt
@@ -58,7 +58,7 @@ def is_auto_convertible(cls):
     return getattr(cls, '__auto_convert__', False)
 
 
-def _make_uint_type(bits: int) -> type:
+def _make_uint_type(bits: int, type_name: str, repr_hex: bool) -> type:
     @autoconvert
     class UnsignedInt(BasicType):
         def __init__(self, value: int):
@@ -74,6 +74,9 @@ def _make_uint_type(bits: int) -> type:
         def from_calldata(calldata: Calldata) -> "UnsignedInt":
             return UnsignedInt(calldata.pop_int())
 
+        def __repr__(self, as_hex=repr_hex):
+            return f'{type_name}{bits}(0x{self.value:02x})' if as_hex else f'{type_name}{bits}({self.value})'
+
     return UnsignedInt
 
 
@@ -81,7 +84,7 @@ def _make_uint_type(bits: int) -> type:
 class UnsignedInt256(BasicType):
     def __init__(self, value: int):
         if not 0 <= value < 2 ** 256:
-            raise ValueError(f"Value {value} is not in the range [0, 2**256)")
+            raise ValueError(f'Value {value} is not in the range [0, 2**256)')
         self.value = value
 
     def to_calldata(self, calldata: Calldata) -> Calldata:
@@ -95,14 +98,36 @@ class UnsignedInt256(BasicType):
         high = calldata.pop_int()
         return UnsignedInt256(low + (high << 128))
 
+    def __repr__(self, as_hex=True):
+        return f'uint256(0x{self.value:02x})' if as_hex else f'uint256({self.value})'
 
-u64 = _make_uint_type(64)
-u128 = _make_uint_type(128)
+
+@autoconvert
+class ShortString(BasicType):
+    def __init__(self, value: str):
+        if len(value) > 31:
+            raise ValueError(f'String {value} is too long')
+        self.value = value
+
+    def to_calldata(self, calldata: Calldata) -> Calldata:
+        calldata.push_string(self.value)
+        return calldata
+
+    @staticmethod
+    def from_calldata(calldata: Calldata) -> "ShortString":
+        return ShortString(calldata.pop_string())
+
+    def __repr__(self):
+        return f'str("{self.value}")'
+
+
+u64 = _make_uint_type(64, 'uint', False)
+u128 = _make_uint_type(128, 'uint', False)
+felt252 = _make_uint_type(252, 'felt', True)
+ContractAddress = _make_uint_type(252, 'contract', True)
+AccountAddress = _make_uint_type(252, 'account', True)
 u256 = UnsignedInt256
-felt252 = _make_uint_type(252)
-shortstr = felt252
-ContractAddress = felt252
-AccountAddress = felt252
+shortstr = ShortString
 
 
 @dataclass
