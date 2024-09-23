@@ -39,8 +39,8 @@ class UnknownContractCall(ContractCall):
 
     @classmethod
     def from_calldata(cls, calldata: Calldata, **kwargs) -> "UnknownContractCall":
-        """ Pops the argument length and all arguments from the calldata and stores it.
-        No further parsing is done. """
+        """ Pops all arguments and stores them. No further parsing is done.
+        Expects the number of arguments as a keyword argument."""
         data = []
         for _ in range(kwargs['arg_count']):
             data.append(calldata.pop_int())

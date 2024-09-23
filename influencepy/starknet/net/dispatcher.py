@@ -1,8 +1,8 @@
-from typing import Dict, Tuple, Any
+from typing import Dict, Any
 
 from influencepy.starknet.net.contract_call import UnknownContractCall
 from influencepy.starknet.net.schema import Schema
-from influencepy.starknet.net.sway import SwayTransferWithConfirmation
+from influencepy.starknet.net.sway import *
 from influencepy.starknet.net.system import *
 
 
@@ -109,19 +109,60 @@ class SystemCallDispatcher(Schema):
         return variant.from_calldata(calldata, **kwargs)
 
 
-class ContractCallDispatcher(Schema):
-    _variants: Dict[Tuple[int, int], ContractCall] = {
-        (variant._contract_address, variant._selector): variant for variant in [
-            SystemCallDispatcher,
-            SwayTransferWithConfirmation
-        ]
+class DispatcherContractCallDispatcher(Schema):
+    _contract_address: int = SystemCall._contract_address
+    _variants: Dict[int, SystemCall] = {
+        SystemCallDispatcher._selector: SystemCallDispatcher
+    }
+
+    @classmethod
+    def from_calldata(cls, calldata: Calldata, **kwargs) -> Schema:
+        selector = calldata.pop_int()
+        arg_count = calldata.pop_int()
+        variant: Schema = cls._variants.get(selector, UnknownContractCall)
+        kwargs.update({'selector': selector, 'arg_count': arg_count})
+        return variant.from_calldata(calldata, **kwargs)
+
+
+class SwayTokenContractCallDispatcher(Schema):
+    _contract_address: int = SwayTokenContractCall._contract_address
+    _variants: Dict[int, SwayTokenContractCall] = {
+        SwayTransferWithConfirmation._selector: SwayTransferWithConfirmation,
+        SwayTransferFromWithConfirmation._selector: SwayTransferFromWithConfirmation,
+        SwayConfirmReceipt._selector: SwayConfirmReceipt,
+        SwayAllowance._selector: SwayAllowance,
+        SwayApprove._selector: SwayApprove,
+        SwayBalanceOf._selector: SwayBalanceOf,
+        DecreaseAllowance._selector: DecreaseAllowance,
+        IncreaseAllowance._selector: IncreaseAllowance,
+        SwayTransfer._selector: SwayTransfer,
+        SwayTransferFrom._selector: SwayTransferFrom
     }
 
     @classmethod
     def from_calldata(cls, calldata: Calldata, **kwargs) -> ContractCall:
-        contract_address = calldata.pop_int()
         selector = calldata.pop_int()
         arg_count = calldata.pop_int()
-        variant: ContractCall = cls._variants.get((contract_address, selector), UnknownContractCall)
-        kwargs.update({'contract_address': contract_address, 'selector': selector, 'arg_count': arg_count})
+        variant: ContractCall = cls._variants.get(selector, UnknownContractCall)
+        kwargs.update({'selector': selector, 'arg_count': arg_count})
         return variant.from_calldata(calldata, **kwargs)
+
+
+class ContractCallDispatcher(Schema):
+    _variants: Dict[int, Schema] = {
+        SystemCall._contract_address: SystemCallDispatcher,
+        SwayTokenContractCall._contract_address: SwayTokenContractCallDispatcher
+    }
+
+    @classmethod
+    def from_calldata(cls, calldata: Calldata, **kwargs) -> Schema:
+        contract_address = calldata.pop_int()
+        if contract_address in cls._variants:
+            variant: Schema = cls._variants[contract_address]
+            kwargs.update({'contract_address': contract_address})
+            return variant.from_calldata(calldata, **kwargs)
+        else:
+            selector = calldata.pop_int()
+            arg_count = calldata.pop_int()
+            kwargs.update({'contract_address': contract_address, 'selector': selector, 'arg_count': arg_count})
+            return UnknownContractCall.from_calldata(calldata, **kwargs)
