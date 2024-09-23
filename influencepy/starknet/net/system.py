@@ -1,9 +1,10 @@
 from typing import List
 from dataclasses import dataclass
 
+from starknet_py.hash.selector import get_selector_from_name
 from starknet_py.net.client_models import Call
 
-from influencepy.starknet.net.constants import DISPATCHER_ADDRESS, DISPATCHER_RUN_SYSTEM_SELECTOR
+from influencepy.starknet.net.constants import DISPATCHER_ADDRESS
 from influencepy.starknet.net.contract_call import ContractCall
 from influencepy.starknet.net.datatypes import ContractAddress, CubitFixedPoint64, CubitFixedPoint128, u256, felt252, \
     u64, shortstr, u128, Calldata
@@ -13,7 +14,7 @@ from influencepy.starknet.util.contract import DispatcherContract
 
 class SystemCall(ContractCall):
     _contract_address: int = DISPATCHER_ADDRESS
-    _selector: int = DISPATCHER_RUN_SYSTEM_SELECTOR
+    _selector: int = get_selector_from_name('run_system')
     _function_name: str
 
     def to_calldata(self, calldata: Calldata = None) -> Calldata:

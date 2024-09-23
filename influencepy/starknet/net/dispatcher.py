@@ -1,7 +1,8 @@
 from typing import Dict, Tuple, Any
 
-from influencepy.starknet.net.contract_call import SwayTransferWithConfirmation, UnknownContractCall
+from influencepy.starknet.net.contract_call import UnknownContractCall
 from influencepy.starknet.net.schema import Schema
+from influencepy.starknet.net.sway import SwayTransferWithConfirmation
 from influencepy.starknet.net.system import *
 
 

@@ -1,10 +1,8 @@
-from dataclasses import dataclass
 from typing import List
 
 from starknet_py.net.client_models import Call
 
-from influencepy.starknet.net.constants import SWAY_TOKEN_ADDRESS, SWAY_TRANSFER_WITH_CONFIRMATION_SELECTOR
-from influencepy.starknet.net.datatypes import Calldata, ContractAddress, u128, felt252
+from influencepy.starknet.net.datatypes import Calldata
 from influencepy.starknet.net.schema import Schema
 
 
