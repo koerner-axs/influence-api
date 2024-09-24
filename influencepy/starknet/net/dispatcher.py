@@ -1,6 +1,7 @@
-from typing import Dict, Any
+from typing import Dict
 
 from influencepy.starknet.net.contract_call import UnknownContractCall
+from influencepy.starknet.net.event import *
 from influencepy.starknet.net.schema import Schema
 from influencepy.starknet.net.sway import *
 from influencepy.starknet.net.system import *
@@ -166,3 +167,13 @@ class ContractCallDispatcher(Schema):
             arg_count = calldata.pop_int()
             kwargs.update({'contract_address': contract_address, 'selector': selector, 'arg_count': arg_count})
             return UnknownContractCall.from_calldata(calldata, **kwargs)
+
+
+class SystemEventDispatcher:
+    _variants: Dict[int, SystemEvent] = ALL_SYSTEM_EVENTS
+
+    @classmethod
+    def from_calldata(cls, keys: List[int], data: List[int], **kwargs) -> SystemEvent:
+        if len(keys) != 1 or keys[0] not in cls._variants:
+            return UnknownSystemEvent(keys, data)
+        return cls._variants[keys[0]].from_calldata(Calldata(data), **kwargs)

@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 from dataclasses import dataclass
 
 from starknet_py.hash.utils import _starknet_keccak
@@ -19,7 +19,7 @@ class AddedAccountToWhitelist(SystemEvent):
     permitted: ContractAddress
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('AddedAccountToWhitelist')
+    _key: int = _starknet_keccak(b'AddedAccountToWhitelist')
 
 
 @dataclass
@@ -29,7 +29,7 @@ class AddedToWhitelist(SystemEvent):
     target: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('AddedToWhitelist')
+    _key: int = _starknet_keccak(b'AddedToWhitelist')
 
 
 @dataclass
@@ -39,7 +39,7 @@ class AddedToWhitelistV1(SystemEvent):
     permitted: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('AddedToWhitelistV1')
+    _key: int = _starknet_keccak(b'AddedToWhitelistV1')
 
 
 @dataclass
@@ -47,13 +47,13 @@ class ArrivalRewardClaimed(SystemEvent):
     asteroid: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ArrivalRewardClaimed')
+    _key: int = _starknet_keccak(b'ArrivalRewardClaimed')
 
 
 @dataclass
 class AsteroidInitialized(SystemEvent):
     asteroid: Entity
-    _key: int = _starknet_keccak('AsteroidInitialized')
+    _key: int = _starknet_keccak(b'AsteroidInitialized')
 
 
 @dataclass
@@ -61,7 +61,7 @@ class AsteroidManaged(SystemEvent):
     asteroid: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('AsteroidManaged')
+    _key: int = _starknet_keccak(b'AsteroidManaged')
 
 
 @dataclass
@@ -69,7 +69,7 @@ class AsteroidPurchased(SystemEvent):
     asteroid: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('AsteroidPurchased')
+    _key: int = _starknet_keccak(b'AsteroidPurchased')
 
 
 @dataclass
@@ -77,7 +77,7 @@ class BuildingRepossessed(SystemEvent):
     building: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('BuildingRepossessed')
+    _key: int = _starknet_keccak(b'BuildingRepossessed')
 
 
 @dataclass
@@ -91,7 +91,7 @@ class BuyOrderCancelled(SystemEvent):
     storage_slot: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('BuyOrderCancelled')
+    _key: int = _starknet_keccak(b'BuyOrderCancelled')
 
 
 @dataclass
@@ -106,7 +106,7 @@ class BuyOrderCreated(SystemEvent):
     maker_fee: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('BuyOrderCreated')
+    _key: int = _starknet_keccak(b'BuyOrderCreated')
 
 
 @dataclass
@@ -122,7 +122,7 @@ class BuyOrderFilled(SystemEvent):
     origin_slot: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('BuyOrderFilled')
+    _key: int = _starknet_keccak(b'BuyOrderFilled')
 
 
 @dataclass
@@ -130,7 +130,7 @@ class ConstructionAbandoned(SystemEvent):
     building: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ConstructionAbandoned')
+    _key: int = _starknet_keccak(b'ConstructionAbandoned')
 
 
 @dataclass
@@ -138,7 +138,7 @@ class ConstructionDeconstructed(SystemEvent):
     building: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ConstructionDeconstructed')
+    _key: int = _starknet_keccak(b'ConstructionDeconstructed')
 
 
 @dataclass
@@ -146,7 +146,7 @@ class ConstructionFinished(SystemEvent):
     building: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ConstructionFinished')
+    _key: int = _starknet_keccak(b'ConstructionFinished')
 
 
 @dataclass
@@ -158,7 +158,7 @@ class ConstructionPlanned(SystemEvent):
     grace_period_end: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ConstructionPlanned')
+    _key: int = _starknet_keccak(b'ConstructionPlanned')
 
 
 @dataclass
@@ -167,7 +167,7 @@ class ConstructionStarted(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ConstructionStarted')
+    _key: int = _starknet_keccak(b'ConstructionStarted')
 
 
 @dataclass
@@ -178,7 +178,7 @@ class ContractAgreementAccepted(SystemEvent):
     contract: ContractAddress
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ContractAgreementAccepted')
+    _key: int = _starknet_keccak(b'ContractAgreementAccepted')
 
 
 @dataclass
@@ -188,7 +188,7 @@ class ContractPolicyAssigned(SystemEvent):
     contract: ContractAddress
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ContractPolicyAssigned')
+    _key: int = _starknet_keccak(b'ContractPolicyAssigned')
 
 
 @dataclass
@@ -197,7 +197,7 @@ class ContractPolicyRemoved(SystemEvent):
     permission: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ContractPolicyRemoved')
+    _key: int = _starknet_keccak(b'ContractPolicyRemoved')
 
 
 @dataclass
@@ -205,7 +205,7 @@ class CrewDelegated(SystemEvent):
     delegated_to: ContractAddress
     crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('CrewDelegated')
+    _key: int = _starknet_keccak(b'CrewDelegated')
 
 
 @dataclass
@@ -215,7 +215,7 @@ class CrewEjected(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('CrewEjected')
+    _key: int = _starknet_keccak(b'CrewEjected')
 
 
 @dataclass
@@ -224,7 +224,7 @@ class CrewStationed(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('CrewStationed')
+    _key: int = _starknet_keccak(b'CrewStationed')
 
 
 @dataclass
@@ -234,14 +234,14 @@ class CrewStationedV1(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('CrewStationedV1')
+    _key: int = _starknet_keccak(b'CrewStationedV1')
 
 
 @dataclass
 class CrewmatePurchased(SystemEvent):
     crewmate: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('CrewmatePurchased')
+    _key: int = _starknet_keccak(b'CrewmatePurchased')
 
 
 @dataclass
@@ -263,7 +263,7 @@ class CrewmateRecruited(SystemEvent):
     station: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('CrewmateRecruited')
+    _key: int = _starknet_keccak(b'CrewmateRecruited')
 
 
 @dataclass
@@ -287,7 +287,7 @@ class CrewmateRecruitedV1(SystemEvent):
     composition: List[u64]
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('CrewmateRecruitedV1')
+    _key: int = _starknet_keccak(b'CrewmateRecruitedV1')
 
 
 @dataclass
@@ -295,7 +295,7 @@ class CrewmatesArranged(SystemEvent):
     composition: List[u64]
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('CrewmatesArranged')
+    _key: int = _starknet_keccak(b'CrewmatesArranged')
 
 
 @dataclass
@@ -304,7 +304,7 @@ class CrewmatesArrangedV1(SystemEvent):
     composition_new: List[u64]
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('CrewmatesArrangedV1')
+    _key: int = _starknet_keccak(b'CrewmatesArrangedV1')
 
 
 @dataclass
@@ -316,7 +316,7 @@ class CrewmatesExchanged(SystemEvent):
     crew2_composition_old: List[u64]
     crew2_composition_new: List[u64]
     caller: ContractAddress
-    _key: int = _starknet_keccak('CrewmatesExchanged')
+    _key: int = _starknet_keccak(b'CrewmatesExchanged')
 
 
 @dataclass
@@ -325,7 +325,7 @@ class Debug_DepositBounds(SystemEvent):
     initial_yield: u64
     lower_bound: CubitFixedPoint64
     upper_bound: CubitFixedPoint64
-    _key: int = _starknet_keccak('Debug_DepositBounds')
+    _key: int = _starknet_keccak(b'Debug_DepositBounds')
 
 
 @dataclass
@@ -338,7 +338,7 @@ class DeliveryCancelled(SystemEvent):
     delivery: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('DeliveryCancelled')
+    _key: int = _starknet_keccak(b'DeliveryCancelled')
 
 
 @dataclass
@@ -348,7 +348,7 @@ class DeliveryDumped(SystemEvent):
     products: List[InventoryItem]
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('DeliveryDumped')
+    _key: int = _starknet_keccak(b'DeliveryDumped')
 
 
 @dataclass
@@ -361,7 +361,7 @@ class DeliveryPackaged(SystemEvent):
     delivery: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('DeliveryPackaged')
+    _key: int = _starknet_keccak(b'DeliveryPackaged')
 
 
 @dataclass
@@ -375,7 +375,7 @@ class DeliveryPackagedV1(SystemEvent):
     delivery: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('DeliveryPackagedV1')
+    _key: int = _starknet_keccak(b'DeliveryPackagedV1')
 
 
 @dataclass
@@ -388,7 +388,7 @@ class DeliveryReceived(SystemEvent):
     delivery: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('DeliveryReceived')
+    _key: int = _starknet_keccak(b'DeliveryReceived')
 
 
 @dataclass
@@ -402,7 +402,7 @@ class DeliverySent(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('DeliverySent')
+    _key: int = _starknet_keccak(b'DeliverySent')
 
 
 @dataclass
@@ -411,7 +411,7 @@ class DepositListedForSale(SystemEvent):
     price: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('DepositListedForSale')
+    _key: int = _starknet_keccak(b'DepositListedForSale')
 
 
 @dataclass
@@ -420,7 +420,7 @@ class DepositPurchased(SystemEvent):
     price: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('DepositPurchased')
+    _key: int = _starknet_keccak(b'DepositPurchased')
 
 
 @dataclass
@@ -430,7 +430,7 @@ class DepositPurchasedV1(SystemEvent):
     seller_crew: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('DepositPurchasedV1')
+    _key: int = _starknet_keccak(b'DepositPurchasedV1')
 
 
 @dataclass
@@ -438,7 +438,7 @@ class DepositUnlistedForSale(SystemEvent):
     deposit: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('DepositUnlistedForSale')
+    _key: int = _starknet_keccak(b'DepositUnlistedForSale')
 
 
 @dataclass
@@ -446,7 +446,7 @@ class EmergencyActivated(SystemEvent):
     ship: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('EmergencyActivated')
+    _key: int = _starknet_keccak(b'EmergencyActivated')
 
 
 @dataclass
@@ -454,7 +454,7 @@ class EmergencyDeactivated(SystemEvent):
     ship: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('EmergencyDeactivated')
+    _key: int = _starknet_keccak(b'EmergencyDeactivated')
 
 
 @dataclass
@@ -463,7 +463,7 @@ class EmergencyPropellantCollected(SystemEvent):
     amount: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('EmergencyPropellantCollected')
+    _key: int = _starknet_keccak(b'EmergencyPropellantCollected')
 
 
 @dataclass
@@ -473,7 +473,7 @@ class EventAnnotated(SystemEvent):
     content_hash: List[felt252]
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('EventAnnotated')
+    _key: int = _starknet_keccak(b'EventAnnotated')
 
 
 @dataclass
@@ -481,7 +481,7 @@ class ExchangeConfigured(SystemEvent):
     exchange: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ExchangeConfigured')
+    _key: int = _starknet_keccak(b'ExchangeConfigured')
 
 
 @dataclass
@@ -490,7 +490,7 @@ class FoodSupplied(SystemEvent):
     last_fed: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('FoodSupplied')
+    _key: int = _starknet_keccak(b'FoodSupplied')
 
 
 @dataclass
@@ -501,7 +501,7 @@ class FoodSuppliedV1(SystemEvent):
     origin_slot: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('FoodSuppliedV1')
+    _key: int = _starknet_keccak(b'FoodSuppliedV1')
 
 
 @dataclass
@@ -510,7 +510,7 @@ class MaterialProcessingFinished(SystemEvent):
     processor_slot: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('MaterialProcessingFinished')
+    _key: int = _starknet_keccak(b'MaterialProcessingFinished')
 
 
 @dataclass
@@ -527,7 +527,7 @@ class MaterialProcessingStartedV1(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('MaterialProcessingStartedV1')
+    _key: int = _starknet_keccak(b'MaterialProcessingStartedV1')
 
 
 @dataclass
@@ -536,7 +536,7 @@ class NameChanged(SystemEvent):
     name: shortstr
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('NameChanged')
+    _key: int = _starknet_keccak(b'NameChanged')
 
 
 @dataclass
@@ -550,7 +550,7 @@ class PrepaidAgreementAccepted(SystemEvent):
     notice_period: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('PrepaidAgreementAccepted')
+    _key: int = _starknet_keccak(b'PrepaidAgreementAccepted')
 
 
 @dataclass
@@ -561,7 +561,7 @@ class PrepaidAgreementCancelled(SystemEvent):
     eviction_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('PrepaidAgreementCancelled')
+    _key: int = _starknet_keccak(b'PrepaidAgreementCancelled')
 
 
 @dataclass
@@ -575,7 +575,7 @@ class PrepaidAgreementExtended(SystemEvent):
     notice_period: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('PrepaidAgreementExtended')
+    _key: int = _starknet_keccak(b'PrepaidAgreementExtended')
 
 
 @dataclass
@@ -589,7 +589,7 @@ class PrepaidMerkleAgreementAccepted(SystemEvent):
     notice_period: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('PrepaidMerkleAgreementAccepted')
+    _key: int = _starknet_keccak(b'PrepaidMerkleAgreementAccepted')
 
 
 @dataclass
@@ -602,7 +602,7 @@ class PrepaidMerklePolicyAssigned(SystemEvent):
     merkle_root: felt252
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('PrepaidMerklePolicyAssigned')
+    _key: int = _starknet_keccak(b'PrepaidMerklePolicyAssigned')
 
 
 @dataclass
@@ -611,7 +611,7 @@ class PrepaidMerklePolicyRemoved(SystemEvent):
     permission: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('PrepaidMerklePolicyRemoved')
+    _key: int = _starknet_keccak(b'PrepaidMerklePolicyRemoved')
 
 
 @dataclass
@@ -623,7 +623,7 @@ class PrepaidPolicyAssigned(SystemEvent):
     notice_period: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('PrepaidPolicyAssigned')
+    _key: int = _starknet_keccak(b'PrepaidPolicyAssigned')
 
 
 @dataclass
@@ -632,14 +632,14 @@ class PrepaidPolicyRemoved(SystemEvent):
     permission: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('PrepaidPolicyRemoved')
+    _key: int = _starknet_keccak(b'PrepaidPolicyRemoved')
 
 
 @dataclass
 class PrepareForLaunchRewardClaimed(SystemEvent):
     asteroid: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('PrepareForLaunchRewardClaimed')
+    _key: int = _starknet_keccak(b'PrepareForLaunchRewardClaimed')
 
 
 @dataclass
@@ -648,7 +648,7 @@ class PublicPolicyAssigned(SystemEvent):
     permission: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('PublicPolicyAssigned')
+    _key: int = _starknet_keccak(b'PublicPolicyAssigned')
 
 
 @dataclass
@@ -657,7 +657,7 @@ class PublicPolicyRemoved(SystemEvent):
     permission: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('PublicPolicyRemoved')
+    _key: int = _starknet_keccak(b'PublicPolicyRemoved')
 
 
 @dataclass
@@ -668,7 +668,7 @@ class RandomEventResolved(SystemEvent):
     action_target: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('RandomEventResolved')
+    _key: int = _starknet_keccak(b'RandomEventResolved')
 
 
 @dataclass
@@ -678,7 +678,7 @@ class RemovedAccountFromWhitelist(SystemEvent):
     permitted: ContractAddress
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('RemovedAccountFromWhitelist')
+    _key: int = _starknet_keccak(b'RemovedAccountFromWhitelist')
 
 
 @dataclass
@@ -688,7 +688,7 @@ class RemovedFromWhitelist(SystemEvent):
     target: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('RemovedFromWhitelist')
+    _key: int = _starknet_keccak(b'RemovedFromWhitelist')
 
 
 @dataclass
@@ -698,7 +698,7 @@ class RemovedFromWhitelistV1(SystemEvent):
     permitted: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('RemovedFromWhitelistV1')
+    _key: int = _starknet_keccak(b'RemovedFromWhitelistV1')
 
 
 @dataclass
@@ -711,7 +711,7 @@ class ResourceExtractionFinished(SystemEvent):
     destination_slot: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ResourceExtractionFinished')
+    _key: int = _starknet_keccak(b'ResourceExtractionFinished')
 
 
 @dataclass
@@ -726,7 +726,7 @@ class ResourceExtractionStarted(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ResourceExtractionStarted')
+    _key: int = _starknet_keccak(b'ResourceExtractionStarted')
 
 
 @dataclass
@@ -735,7 +735,7 @@ class ResourceScanFinished(SystemEvent):
     abundances: List[u128]
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ResourceScanFinished')
+    _key: int = _starknet_keccak(b'ResourceScanFinished')
 
 
 @dataclass
@@ -744,7 +744,7 @@ class ResourceScanStarted(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ResourceScanStarted')
+    _key: int = _starknet_keccak(b'ResourceScanStarted')
 
 
 @dataclass
@@ -753,7 +753,7 @@ class SamplingDepositFinished(SystemEvent):
     initial_yield: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('SamplingDepositFinished')
+    _key: int = _starknet_keccak(b'SamplingDepositFinished')
 
 
 @dataclass
@@ -764,7 +764,7 @@ class SamplingDepositStarted(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('SamplingDepositStarted')
+    _key: int = _starknet_keccak(b'SamplingDepositStarted')
 
 
 @dataclass
@@ -778,7 +778,7 @@ class SamplingDepositStartedV1(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('SamplingDepositStartedV1')
+    _key: int = _starknet_keccak(b'SamplingDepositStartedV1')
 
 
 @dataclass
@@ -791,7 +791,7 @@ class SellOrderCancelled(SystemEvent):
     storage_slot: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('SellOrderCancelled')
+    _key: int = _starknet_keccak(b'SellOrderCancelled')
 
 
 @dataclass
@@ -806,7 +806,7 @@ class SellOrderCreated(SystemEvent):
     maker_fee: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('SellOrderCreated')
+    _key: int = _starknet_keccak(b'SellOrderCreated')
 
 
 @dataclass
@@ -822,7 +822,7 @@ class SellOrderFilled(SystemEvent):
     destination_slot: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('SellOrderFilled')
+    _key: int = _starknet_keccak(b'SellOrderFilled')
 
 
 @dataclass
@@ -834,7 +834,7 @@ class ShipAssemblyFinished(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ShipAssemblyFinished')
+    _key: int = _starknet_keccak(b'ShipAssemblyFinished')
 
 
 @dataclass
@@ -846,7 +846,7 @@ class ShipAssemblyStarted(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ShipAssemblyStarted')
+    _key: int = _starknet_keccak(b'ShipAssemblyStarted')
 
 
 @dataclass
@@ -860,7 +860,7 @@ class ShipAssemblyStartedV1(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ShipAssemblyStartedV1')
+    _key: int = _starknet_keccak(b'ShipAssemblyStartedV1')
 
 
 @dataclass
@@ -868,7 +868,7 @@ class ShipCommandeered(SystemEvent):
     ship: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ShipCommandeered')
+    _key: int = _starknet_keccak(b'ShipCommandeered')
 
 
 @dataclass
@@ -877,7 +877,7 @@ class ShipDocked(SystemEvent):
     dock: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ShipDocked')
+    _key: int = _starknet_keccak(b'ShipDocked')
 
 
 @dataclass
@@ -886,7 +886,7 @@ class ShipUndocked(SystemEvent):
     dock: Entity
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('ShipUndocked')
+    _key: int = _starknet_keccak(b'ShipUndocked')
 
 
 @dataclass
@@ -895,7 +895,7 @@ class SurfaceScanFinished(SystemEvent):
     bonuses: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('SurfaceScanFinished')
+    _key: int = _starknet_keccak(b'SurfaceScanFinished')
 
 
 @dataclass
@@ -904,14 +904,14 @@ class SurfaceScanStarted(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('SurfaceScanStarted')
+    _key: int = _starknet_keccak(b'SurfaceScanStarted')
 
 
 @dataclass
 class TestnetSwayClaimed(SystemEvent):
     amount: u256
     caller: ContractAddress
-    _key: int = _starknet_keccak('TestnetSwayClaimed')
+    _key: int = _starknet_keccak(b'TestnetSwayClaimed')
 
 
 @dataclass
@@ -923,7 +923,7 @@ class TransitFinished(SystemEvent):
     arrival: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('TransitFinished')
+    _key: int = _starknet_keccak(b'TransitFinished')
 
 
 @dataclass
@@ -936,4 +936,100 @@ class TransitStarted(SystemEvent):
     finish_time: u64
     caller_crew: Entity
     caller: ContractAddress
-    _key: int = _starknet_keccak('TransitStarted')
+    _key: int = _starknet_keccak(b'TransitStarted')
+
+
+class UnknownSystemEvent(SystemEvent):
+    def __init__(self, keys: List[int], data: List[int]):
+        self.keys = keys
+        self.data = data
+
+
+ALL_SYSTEM_EVENTS: Dict[int, SystemEvent] = {
+    AddedAccountToWhitelist._key: AddedAccountToWhitelist,
+    AddedToWhitelist._key: AddedToWhitelist,
+    AddedToWhitelistV1._key: AddedToWhitelistV1,
+    ArrivalRewardClaimed._key: ArrivalRewardClaimed,
+    AsteroidInitialized._key: AsteroidInitialized,
+    AsteroidManaged._key: AsteroidManaged,
+    AsteroidPurchased._key: AsteroidPurchased,
+    BuildingRepossessed._key: BuildingRepossessed,
+    BuyOrderCancelled._key: BuyOrderCancelled,
+    BuyOrderCreated._key: BuyOrderCreated,
+    BuyOrderFilled._key: BuyOrderFilled,
+    ConstructionAbandoned._key: ConstructionAbandoned,
+    ConstructionDeconstructed._key: ConstructionDeconstructed,
+    ConstructionFinished._key: ConstructionFinished,
+    ConstructionPlanned._key: ConstructionPlanned,
+    ConstructionStarted._key: ConstructionStarted,
+    ContractAgreementAccepted._key: ContractAgreementAccepted,
+    ContractPolicyAssigned._key: ContractPolicyAssigned,
+    ContractPolicyRemoved._key: ContractPolicyRemoved,
+    CrewDelegated._key: CrewDelegated,
+    CrewEjected._key: CrewEjected,
+    CrewStationed._key: CrewStationed,
+    CrewStationedV1._key: CrewStationedV1,
+    CrewmatePurchased._key: CrewmatePurchased,
+    CrewmateRecruited._key: CrewmateRecruited,
+    CrewmateRecruitedV1._key: CrewmateRecruitedV1,
+    CrewmatesArranged._key: CrewmatesArranged,
+    CrewmatesArrangedV1._key: CrewmatesArrangedV1,
+    CrewmatesExchanged._key: CrewmatesExchanged,
+    Debug_DepositBounds._key: Debug_DepositBounds,
+    DeliveryCancelled._key: DeliveryCancelled,
+    DeliveryDumped._key: DeliveryDumped,
+    DeliveryPackaged._key: DeliveryPackaged,
+    DeliveryPackagedV1._key: DeliveryPackagedV1,
+    DeliveryReceived._key: DeliveryReceived,
+    DeliverySent._key: DeliverySent,
+    DepositListedForSale._key: DepositListedForSale,
+    DepositPurchased._key: DepositPurchased,
+    DepositPurchasedV1._key: DepositPurchasedV1,
+    DepositUnlistedForSale._key: DepositUnlistedForSale,
+    EmergencyActivated._key: EmergencyActivated,
+    EmergencyDeactivated._key: EmergencyDeactivated,
+    EmergencyPropellantCollected._key: EmergencyPropellantCollected,
+    EventAnnotated._key: EventAnnotated,
+    ExchangeConfigured._key: ExchangeConfigured,
+    FoodSupplied._key: FoodSupplied,
+    FoodSuppliedV1._key: FoodSuppliedV1,
+    MaterialProcessingFinished._key: MaterialProcessingFinished,
+    MaterialProcessingStartedV1._key: MaterialProcessingStartedV1,
+    NameChanged._key: NameChanged,
+    PrepaidAgreementAccepted._key: PrepaidAgreementAccepted,
+    PrepaidAgreementCancelled._key: PrepaidAgreementCancelled,
+    PrepaidAgreementExtended._key: PrepaidAgreementExtended,
+    PrepaidMerkleAgreementAccepted._key: PrepaidMerkleAgreementAccepted,
+    PrepaidMerklePolicyAssigned._key: PrepaidMerklePolicyAssigned,
+    PrepaidMerklePolicyRemoved._key: PrepaidMerklePolicyRemoved,
+    PrepaidPolicyAssigned._key: PrepaidPolicyAssigned,
+    PrepaidPolicyRemoved._key: PrepaidPolicyRemoved,
+    PrepareForLaunchRewardClaimed._key: PrepareForLaunchRewardClaimed,
+    PublicPolicyAssigned._key: PublicPolicyAssigned,
+    PublicPolicyRemoved._key: PublicPolicyRemoved,
+    RandomEventResolved._key: RandomEventResolved,
+    RemovedAccountFromWhitelist._key: RemovedAccountFromWhitelist,
+    RemovedFromWhitelist._key: RemovedFromWhitelist,
+    RemovedFromWhitelistV1._key: RemovedFromWhitelistV1,
+    ResourceExtractionFinished._key: ResourceExtractionFinished,
+    ResourceExtractionStarted._key: ResourceExtractionStarted,
+    ResourceScanFinished._key: ResourceScanFinished,
+    ResourceScanStarted._key: ResourceScanStarted,
+    SamplingDepositFinished._key: SamplingDepositFinished,
+    SamplingDepositStarted._key: SamplingDepositStarted,
+    SamplingDepositStartedV1._key: SamplingDepositStartedV1,
+    SellOrderCancelled._key: SellOrderCancelled,
+    SellOrderCreated._key: SellOrderCreated,
+    SellOrderFilled._key: SellOrderFilled,
+    ShipAssemblyFinished._key: ShipAssemblyFinished,
+    ShipAssemblyStarted._key: ShipAssemblyStarted,
+    ShipAssemblyStartedV1._key: ShipAssemblyStartedV1,
+    ShipCommandeered._key: ShipCommandeered,
+    ShipDocked._key: ShipDocked,
+    ShipUndocked._key: ShipUndocked,
+    SurfaceScanFinished._key: SurfaceScanFinished,
+    SurfaceScanStarted._key: SurfaceScanStarted,
+    TestnetSwayClaimed._key: TestnetSwayClaimed,
+    TransitFinished._key: TransitFinished,
+    TransitStarted._key: TransitStarted,
+}
