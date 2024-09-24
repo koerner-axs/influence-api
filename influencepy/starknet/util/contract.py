@@ -31,6 +31,7 @@ def _get_abi(file):
         os.remove(file)
         return None
     print('Using cached dispatcher contract ABI..')
+    print('ABI file:', file)
     with open(file, 'r') as f:
         return json.load(f)
 

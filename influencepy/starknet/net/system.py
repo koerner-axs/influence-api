@@ -614,7 +614,10 @@ class CheckForRandomEvent(RunSystem):
     async def query(self, dispatcher: DispatcherContract) -> bool:
         result: List[int] = await dispatcher.run_system(self)
         print('CheckForRandomEvent result:', result)
-        return result != 0
+        if len(result) != 2 or result[0] != 1:
+            raise ValueError('CheckForRandomEvent result should have length 2')
+        flag = result[1]
+        return flag != 0
 
 
 @dataclass

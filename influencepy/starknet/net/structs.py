@@ -36,6 +36,13 @@ class Building(Entity):
         super().__init__(entity_type=EntityId.BUILDING, entity_id=building_id)
 
 
+class Deposit(Entity):
+    """ Convenience class for deposit entities. """
+
+    def __init__(self, deposit_id: int):
+        super().__init__(entity_type=EntityId.DEPOSIT, entity_id=deposit_id)
+
+
 @dataclass
 class InventoryItem(Schema):
     product: u64
