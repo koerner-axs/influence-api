@@ -28,6 +28,7 @@ async def finish_refinery(dispatcher: DispatcherContract, account: Account, crew
 
     invoke = await account.sign_invoke_v1([rre_call, ppf_call], max_fee=int(1e14))
     print(invoke)
+
     # result = await account.client.send_transaction(invoke)
     # print(result)
     print('Done')
@@ -49,6 +50,9 @@ async def finish_extraction(dispatcher: DispatcherContract, account: Account, cr
 
     invoke = await account.sign_invoke_v1(calls, max_fee=int(1e13))
     print(invoke)
+
+    #result = await account.client.send_transaction(invoke)
+    #print(result)
     print('Done')
 
 
