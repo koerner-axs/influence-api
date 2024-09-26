@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: influencepy
+Version: 0.0.1
+Summary: Influence Game API
+Author: Viktor K. Koerner
+Author-email: koerner-axs@protonmail.com
+Keywords: influence,api,starknet,ethereum,blockchain
+
+A Python API to query and interact with the state of the game Influence

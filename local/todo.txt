@@ -1,0 +1,12 @@
+- Implement cubit fixed float: check all floats have the same width
+- What should be the datatype of non-mutating calls?
+-> ReadComponent
+-> WriteComponent ???
+-> CheckForRandomEvent
+
+- Model events
+
+- Implement schemas for syscalls
+- Implement schemas for events
+
+- Test instant transfer via a single transaction

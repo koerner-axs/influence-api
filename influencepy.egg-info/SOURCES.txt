@@ -1,0 +1,7 @@
+setup.py
+influencepy/__init__.py
+influencepy/client.py
+influencepy.egg-info/PKG-INFO
+influencepy.egg-info/SOURCES.txt
+influencepy.egg-info/dependency_links.txt
+influencepy.egg-info/top_level.txt
