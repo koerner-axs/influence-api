@@ -8,7 +8,7 @@ from starknet_py.net.signer.stark_curve_signer import KeyPair
 from influencepy.starknet.util.contract import DispatcherContract
 
 
-def _get_main_account(prod: bool):
+def _get_account(prod: bool):
     var_name = 'INFLUENCE_PROD_ACCOUNT' if prod else 'INFLUENCE_TEST_ACCOUNT'
     account_address = os.environ.get(var_name)
     if account_address is None:
@@ -16,7 +16,7 @@ def _get_main_account(prod: bool):
     return account_address
 
 
-def _get_main_account_private_key(prod: bool):
+def _get_account_private_key(prod: bool):
     var_name = 'INFLUENCE_PROD_PRIVATE_KEY' if prod else 'INFLUENCE_TEST_PRIVATE_KEY'
     private_key = os.environ.get(var_name)
     if private_key is None:
@@ -27,9 +27,9 @@ def _get_main_account_private_key(prod: bool):
 def setup_account(client: FullNodeClient, prod: bool = True, account_address: str = None,
                   private_key: str = None) -> Account:
     if account_address is None:
-        account_address = _get_main_account(prod)
+        account_address = _get_account(prod)
     if private_key is None:
-        private_key = _get_main_account_private_key(prod)
+        private_key = _get_account_private_key(prod)
     return Account(
         address=account_address,
         client=client,
