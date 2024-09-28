@@ -126,17 +126,20 @@ u128 = _make_uint_type(128, 'uint', False)
 felt252 = _make_uint_type(252, 'felt', True)
 ContractAddress = _make_uint_type(252, 'contract', True)
 AccountAddress = _make_uint_type(252, 'account', True)
+ClassHash = _make_uint_type(252, 'class', True)
 u256 = UnsignedInt256
 shortstr = ShortString
 
 
 @dataclass
 class CubitFixedPoint64(BasicType):
+    # TODO: Add conversion to and from float, __repr__
     mag: u64
     sign: bool
 
 
 @dataclass
 class CubitFixedPoint128(BasicType):
+    # TODO: Add conversion to and from float, __repr__
     mag: u128
     sign: bool
