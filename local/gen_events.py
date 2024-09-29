@@ -51,6 +51,12 @@ for event_name in event_list:
     gen_lines.append(f'    _key: int = _starknet_keccak(b\'{event_name}\')')
     gen_lines.append('')
 gen_lines.append("""
+class UnknownSystemEvent(SystemEvent):
+    def __init__(self, keys: List[int], data: List[int]):
+        self.keys = keys
+        self.data = data
+
+
 # Begin unofficial events. The ABIs for these events are not available in the Influence SDK and are inferred manually or
 # with the help of StarkNet block explorers.
 class ContractRegisteredEvent(SystemEvent):
@@ -69,10 +75,11 @@ class SystemRegisteredEvent(SystemEvent):
     _key: int = _starknet_keccak(b'SystemRegistered')
 
 
-class UnknownSystemEvent(SystemEvent):
-    def __init__(self, keys: List[int], data: List[int]):
-        self.keys = keys
-        self.data = data
+class SeedingEvent(SystemEvent):
+    \"\"\"Note: The name of this event class is inferred from the context in which it appears on the chain.
+    As such, it may be incorrect and is subject to change.\"\"\"
+    type: shortstr
+    _key: int = 0x297be67eb977068ccd2304c6440368d4a6114929aeb860c98b6a7e91f96e2ef
 
 """)
 unofficial_event_list = ['ContractRegisteredEvent', 'SystemRegisteredEvent']

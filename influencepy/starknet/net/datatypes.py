@@ -117,6 +117,13 @@ class ShortString(BasicType):
     def from_calldata(calldata: Calldata) -> "ShortString":
         return ShortString(calldata.pop_string())
 
+    def encode(self) -> int:
+        return felt.encode_shortstring(self.value)
+
+    @staticmethod
+    def decode(int_repr: int) -> "ShortString":
+        return ShortString(felt.decode_shortstring(int_repr))
+
     def __repr__(self):
         return f'str("{self.value}")'
 

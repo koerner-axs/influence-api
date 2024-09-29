@@ -940,6 +940,12 @@ class TransitStarted(SystemEvent):
     _key: int = _starknet_keccak(b'TransitStarted')
 
 
+class UnknownSystemEvent(SystemEvent):
+    def __init__(self, keys: List[int], data: List[int]):
+        self.keys = keys
+        self.data = data
+
+
 # Begin unofficial events. The ABIs for these events are not available in the Influence SDK and are inferred manually or
 # with the help of StarkNet block explorers.
 class ContractRegisteredEvent(SystemEvent):
@@ -958,7 +964,24 @@ class SystemRegisteredEvent(SystemEvent):
     _key: int = _starknet_keccak(b'SystemRegistered')
 
 
-class UnknownSystemEvent(SystemEvent):
+class SeedingEvent:
+    """Note: The name of this event class is inferred from the context in which it appears on the chain.
+    As such, it may be incorrect and is subject to change."""
+    type: shortstr
+    data: List[int]
+    _key: int = 0x297be67eb977068ccd2304c6440368d4a6114929aeb860c98b6a7e91f96e2ef
+
+    def __init__(self, keys: List[int], data: List[int]):
+        self.type = shortstr.decode(keys[1])
+        self.data = data
+        if len(keys) > 2:
+            print(f"Warning: SeedingEvent has more keys than expected: {keys}")
+
+    def __repr__(self):
+        return f"SeedingEvent(type={self.type}, data={self.data})"
+
+
+class UnknownEvent(SystemEvent):
     def __init__(self, keys: List[int], data: List[int]):
         self.keys = keys
         self.data = data
