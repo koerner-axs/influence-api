@@ -43,6 +43,20 @@ class Deposit(Entity):
         super().__init__(entity_type=EntityId.DEPOSIT, entity_id=deposit_id)
 
 
+class BuildingId(u64):
+    EMPTY_LOT: 0
+    WAREHOUSE: 1
+    EXTRACTOR: 2
+    REFINERY: 3
+    BIOREACTOR: 4
+    FACTORY: 5
+    SHIPYARD: 6
+    SPACEPORT: 7
+    MARKETPLACE: 8
+    HABITAT: 9
+    TANK_FARM: 10
+
+
 @dataclass
 class InventoryItem(Schema):
     product: u64

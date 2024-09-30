@@ -180,9 +180,8 @@ class SystemEventDispatcher:
 class EventDispatcher:
     @classmethod
     def from_calldata(cls, keys: List[int], data: List[int], **kwargs):
-        if len(keys) != 1:
-            # TODO: clean up if possible
-            if keys[0] == SeedingEvent._key:
-                return SeedingEvent(keys, data)
-            return UnknownEvent(keys, data)
-        return SystemEventDispatcher.from_calldata(keys[0], data, **kwargs)
+        if len(keys) == 1:
+            return SystemEventDispatcher.from_calldata(keys[0], data, **kwargs)
+        if keys[0] == ComponentUpdated._key:
+            return ComponentUpdated(keys, data)
+        return UnknownEvent(keys, data)

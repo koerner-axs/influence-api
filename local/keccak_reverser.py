@@ -5,8 +5,9 @@ from starknet_py.hash.utils import _starknet_keccak
 target_keccak = 0x297be67eb977068ccd2304c6440368d4a6114929aeb860c98b6a7e91f96e2ef
 max_len = 5
 count_checked = 0
-dictionary = ['Contract', 'Publish', 'Registered', 'Register', 'Event', 'Dispatcher', 'System', 'Seeded', 'Variable',
-              'Value', 'Store', 'Stored', 'Written', 'Updated', 'Update', 'Crewmate', 'Created', 'Object', 'Asset']
+dictionary = ['Contract', 'Publish', 'Event', 'Dispatcher', 'System', 'Variable', 'Value', 'Store', 'Stored',
+              'Written', 'Updated', 'Update', 'Created', 'Object', 'Asset', 'Component', 'Changed']
+
 
 def recurse_on_prefix(prefix, depth):
     global count_checked

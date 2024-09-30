@@ -3,17 +3,20 @@ import keyword
 
 type_map = {
     'core::integer::u64': 'u64',
-    'influence::common::types::entity::Entity': 'Entity',
-    'core::starknet::contract_address::ContractAddress': 'ContractAddress',
     'core::array::Span::<core::integer::u64>': 'List[u64]',
-    'core::felt252': 'felt252',
-    'cubit::f64::types::fixed::Fixed': 'CubitFixedPoint64',
-    'core::array::Span::<influence::common::types::inventory_item::InventoryItem>': 'List[InventoryItem]',
-    'core::array::Span::<core::felt252>': 'List[felt252]',
-    'influence::common::types::string::String': 'shortstr',
+    'core::integer::u128': 'u128',
     'core::array::Span::<core::integer::u128>': 'List[u128]',
-    'core::bool': 'bool',
     'core::integer::u256': 'u256',
+    'core::array::Span::<core::integer::u256>': 'List[u256]',
+    'core::felt252': 'felt252',
+    'core::array::Span::<core::felt252>': 'List[felt252]',
+    'core::bool': 'bool',
+    'core::starknet::contract_address::ContractAddress': 'ContractAddress',
+    'influence::common::types::string::String': 'shortstr',
+    'cubit::f64::types::fixed::Fixed': 'CubitFixedPoint64',
+    'influence::common::types::entity::Entity': 'Entity',
+    'influence::common::types::inventory_item::InventoryItem': 'InventoryItem',
+    'core::array::Span::<influence::common::types::inventory_item::InventoryItem>': 'List[InventoryItem]'
 }
 
 with open('local/starknet_events.json', 'r') as f:
