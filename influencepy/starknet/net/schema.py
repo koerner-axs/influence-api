@@ -27,12 +27,18 @@ class Schema(BasicType):
             if key.startswith('_'):
                 continue
             if isinstance(field_type, type) and issubclass(field_type, BasicType):
-                setattr(instance, key, field_type.from_calldata(calldata))
+                try:
+                    setattr(instance, key, field_type.from_calldata(calldata))
+                except Exception as e:
+                    raise ValueError(f'Error while deserializing field "{key}" to type {field_type.__name__}') from e
             elif get_origin(field_type) == list:
-                field_type = get_args(field_type)[0]
-                setattr(instance, key, cls._list_from_calldata(field_type, calldata))
+                try:
+                    field_type = get_args(field_type)[0]
+                    setattr(instance, key, cls._list_from_calldata(field_type, calldata))
+                except Exception as e:
+                    raise ValueError(f'Error while deserializing List[{field_type.__name__}] field "{key}"') from e
             else:
-                raise NotImplementedError(f'Unsupported field type "{field_type}" for field "{key}"')
+                raise NotImplementedError(f'Unsupported field type {field_type.__name__} for field "{key}"')
         if '__post_init__' in cls.__dict__:
             instance.__post_init__()
         return instance
@@ -44,7 +50,7 @@ class Schema(BasicType):
             try:
                 list_[index].to_calldata(calldata)
             except Exception as e:
-                raise ValueError(f'Error while serializing List[{element_type}] at index {index}: {e}')
+                raise ValueError(f'Error while serializing List[{element_type.__name__}] at index {index}') from e
 
     @staticmethod
     def _list_from_calldata(element_type, calldata: Calldata) -> List:
@@ -52,10 +58,9 @@ class Schema(BasicType):
         new_list = []
         for index in range(num_elements):
             try:
-                element = element_type.from_calldata(calldata)
-                new_list.append(element)
+                new_list.append(element_type.from_calldata(calldata))
             except Exception as e:
-                raise ValueError(f'Error while deserializing List[{element_type}] at index {index}: {e}')
+                raise ValueError(f'Error while deserializing List[{element_type.__name__}] at index {index}') from e
         return new_list
 
     def __post_init__(self):
@@ -63,12 +68,14 @@ class Schema(BasicType):
             value = getattr(self, key)
             if isinstance(field_type, type) and not isinstance(value, field_type):
                 if not is_auto_convertible(field_type):
-                    raise ValueError(f'Field "{key}" is not of type "{field_type}" and is not auto-convertible')
+                    raise ValueError(
+                        f'Field "{key}" is not of type {field_type.__name__} and is not auto-convertible')
                 try:
                     converted = field_type(value)
                 except Exception as e:
                     raise ValueError(
-                        f'Error while auto converting field "{key}" (="{value}) to proper type "{field_type}": {e}')
+                        f'Error while auto converting field "{key}" (="{value}) to proper type {field_type.__name__}')\
+                        from e
                 setattr(self, key, converted)
 
     def __str__(self):
