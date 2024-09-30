@@ -2,7 +2,7 @@ import asyncio
 
 from starknet_py.net.account.account import Account
 
-from influencepy.starknet.net.struct import Building, Crew, Deposit
+from influencepy.starknet.net.structs import Building, Crew, Deposit
 from influencepy.starknet.net.system import *
 from influencepy.starknet.net.transaction import MultiInvocationTransaction
 from influencepy.starknet.util.contract import DispatcherContract

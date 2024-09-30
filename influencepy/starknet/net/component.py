@@ -4,7 +4,7 @@ from typing import Dict, List  # noqa: F401
 from starknet_py.hash.utils import _starknet_keccak
 
 from influencepy.starknet.net.datatypes import *  # noqa: F401
-from influencepy.starknet.net.struct import *  # noqa: F401
+from influencepy.starknet.net.structs import *  # noqa: F401
 
 
 class ComponentUpdated(Schema):

@@ -8,7 +8,7 @@ from influencepy.starknet.net.constants import DISPATCHER_ADDRESS
 from influencepy.starknet.net.contract_call import ContractCall
 from influencepy.starknet.net.datatypes import u64, u128, u256, felt252, shortstr, CubitFixedPoint64, \
     CubitFixedPoint128, ContractAddress, Calldata
-from influencepy.starknet.net.struct import Entity, InventoryItem, Withdrawal, SeededAsteroid, SeededCrewmate
+from influencepy.starknet.net.structs import Entity, InventoryItem, Withdrawal, SeededAsteroid, SeededCrewmate
 from influencepy.starknet.util.contract import DispatcherContract
 
 

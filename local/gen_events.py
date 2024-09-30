@@ -34,7 +34,7 @@ from starknet_py.hash.utils import _starknet_keccak
 from influencepy.starknet.net.datatypes import u64, u128, u256, felt252, shortstr, Calldata, ClassHash, \\
     ContractAddress, CubitFixedPoint64
 from influencepy.starknet.net.schema import Schema
-from influencepy.starknet.net.struct import Entity, InventoryItem
+from influencepy.starknet.net.structs import Entity, InventoryItem
 
 
 class SystemEvent(Schema):

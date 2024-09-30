@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from decimal import Decimal
 from typing import List
 
 from starknet_py.cairo import felt
@@ -140,13 +141,71 @@ shortstr = ShortString
 
 @dataclass
 class CubitFixedPoint64(BasicType):
-    # TODO: Add conversion to and from float, __repr__
+    # TODO: Add __repr__
     mag: u64
-    sign: bool
+    sign: bool  # TODO: does sign == False really mean positive?
+
+    def to_calldata(self, calldata: Calldata) -> Calldata:
+        self.mag.to_calldata(calldata)
+        calldata.push_int(self.sign)
+        return calldata
+
+    @staticmethod
+    def from_calldata(calldata: Calldata) -> "CubitFixedPoint64":
+        mag = u64.from_calldata(calldata)
+        sign = bool(calldata.pop_int())
+        return CubitFixedPoint64(mag, sign)
+
+    def to_decimal(self):
+        unscaled = -Decimal(self.mag.value) if self.sign else Decimal(self.mag.value)
+        return Decimal(2) ** -32 * unscaled
+
+    @staticmethod
+    def from_decimal(value: Decimal) -> "CubitFixedPoint64":
+        sign = value < 0
+        scaled = -value if sign else value
+        mag = u64(int(round((scaled * 2 ** 32))))
+        return CubitFixedPoint64(mag, sign)
+
+    def to_float(self):
+        return float(self.to_decimal())
+
+    @staticmethod
+    def from_float(value: float) -> "CubitFixedPoint64":
+        return CubitFixedPoint64.from_decimal(Decimal(value))
 
 
 @dataclass
 class CubitFixedPoint128(BasicType):
-    # TODO: Add conversion to and from float, __repr__
+    # TODO: Add __repr__
     mag: u128
-    sign: bool
+    sign: bool  # TODO: does sign == False really mean positive?
+
+    def to_calldata(self, calldata: Calldata) -> Calldata:
+        self.mag.to_calldata(calldata)
+        calldata.push_int(self.sign)
+        return calldata
+
+    @staticmethod
+    def from_calldata(calldata: Calldata) -> "CubitFixedPoint128":
+        mag = u128.from_calldata(calldata)
+        sign = bool(calldata.pop_int())
+        return CubitFixedPoint128(mag, sign)
+
+    def to_decimal(self):
+        unscaled = -Decimal(self.mag.value) if self.sign else Decimal(self.mag.value)
+        return Decimal(2) ** -64 * unscaled
+
+    @staticmethod
+    def from_decimal(value: Decimal) -> "CubitFixedPoint128":
+        sign = value < 0
+        scaled = -value if sign else value
+        mag = u128(int(round((scaled * 2 ** 64))))
+        return CubitFixedPoint128(mag, sign)
+
+    def to_float(self):
+        return float(self.to_decimal())
+
+    @staticmethod
+    def from_float(value: float) -> "CubitFixedPoint128":
+        return CubitFixedPoint128.from_decimal(Decimal(value))
