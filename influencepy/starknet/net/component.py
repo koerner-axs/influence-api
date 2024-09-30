@@ -1,16 +1,21 @@
 from dataclasses import dataclass  # noqa: F401
 from typing import Dict, List  # noqa: F401
 
+from starknet_py.hash.utils import _starknet_keccak
+
 from influencepy.starknet.net.datatypes import *  # noqa: F401
 from influencepy.starknet.net.struct import *  # noqa: F401
 
 
-class Component:
-    _name: str
+class ComponentUpdated(Schema):
+    """Note: The name of this event class was reversed from its keccak hash.
+    As such, it may be incorrect and is subject to change."""
+    _key: int = _starknet_keccak(b'ComponentUpdated')  # first key
+    _name: str  # second key
 
 
 @dataclass
-class Building(Component):
+class Building(ComponentUpdated):
     status: u64
     building_type: u64
     planned_at: u64
@@ -19,7 +24,7 @@ class Building(Component):
 
 
 @dataclass
-class BuildingType(Component):
+class BuildingType(ComponentUpdated):
     process_type: u64
     site_slot: u64
     site_type: u64
@@ -27,7 +32,7 @@ class BuildingType(Component):
 
 
 @dataclass
-class Celestial(Component):
+class Celestial(ComponentUpdated):
     celestial_type: u64
     mass: CubitFixedPoint128
     radius: CubitFixedPoint64
@@ -40,25 +45,25 @@ class Celestial(Component):
 
 
 @dataclass
-class ContractAgreement(Component):
+class ContractAgreement(ComponentUpdated):
     address: ContractAddress
     _name: str = 'ContractAgreement'
 
 
 @dataclass
-class ContractPolicy(Component):
+class ContractPolicy(ComponentUpdated):
     address: ContractAddress
     _name: str = 'ContractPolicy'
 
 
 @dataclass
-class Control(Component):
+class Control(ComponentUpdated):
     controller: Entity
     _name: str = 'Control'
 
 
 @dataclass
-class Crew(Component):
+class Crew(ComponentUpdated):
     delegated_to: ContractAddress
     roster: List[u64]
     last_fed: u64
@@ -72,7 +77,7 @@ class Crew(Component):
 
 
 @dataclass
-class Crewmate(Component):
+class Crewmate(ComponentUpdated):
     status: u64
     collection: u64
     class_: u64
@@ -84,7 +89,7 @@ class Crewmate(Component):
 
 
 @dataclass
-class Delivery(Component):
+class Delivery(ComponentUpdated):
     status: u64
     origin: Entity
     origin_slot: u64
@@ -96,7 +101,7 @@ class Delivery(Component):
 
 
 @dataclass
-class Deposit(Component):
+class Deposit(ComponentUpdated):
     status: u64
     resource: u64
     initial_yield: u64
@@ -107,7 +112,7 @@ class Deposit(Component):
 
 
 @dataclass
-class Dock(Component):
+class Dock(ComponentUpdated):
     dock_type: u64
     docked_ships: u64
     ready_at: u64
@@ -115,14 +120,14 @@ class Dock(Component):
 
 
 @dataclass
-class DockType(Component):
+class DockType(ComponentUpdated):
     cap: u64
     delay: u64
     _name: str = 'DockType'
 
 
 @dataclass
-class DryDock(Component):
+class DryDock(ComponentUpdated):
     dry_dock_type: u64
     status: u64
     output_ship: Entity
@@ -131,14 +136,14 @@ class DryDock(Component):
 
 
 @dataclass
-class DryDockType(Component):
+class DryDockType(ComponentUpdated):
     max_mass: u64
     max_volume: u64
     _name: str = 'DryDockType'
 
 
 @dataclass
-class Exchange(Component):
+class Exchange(ComponentUpdated):
     exchange_type: u64
     maker_fee: u64
     taker_fee: u64
@@ -148,13 +153,13 @@ class Exchange(Component):
 
 
 @dataclass
-class ExchangeType(Component):
+class ExchangeType(ComponentUpdated):
     allowed_products: u64
     _name: str = 'ExchangeType'
 
 
 @dataclass
-class Extractor(Component):
+class Extractor(ComponentUpdated):
     extractor_type: u64
     status: u64
     output_product: u64
@@ -166,7 +171,7 @@ class Extractor(Component):
 
 
 @dataclass
-class Inventory(Component):
+class Inventory(ComponentUpdated):
     inventory_type: u64
     status: u64
     mass: u64
@@ -179,7 +184,7 @@ class Inventory(Component):
 
 
 @dataclass
-class InventoryType(Component):
+class InventoryType(ComponentUpdated):
     mass: u64
     volume: u64
     modifiable: bool
@@ -188,13 +193,13 @@ class InventoryType(Component):
 
 
 @dataclass
-class Location(Component):
+class Location(ComponentUpdated):
     location: Entity
     _name: str = 'Location'
 
 
 @dataclass
-class ModifierType(Component):
+class ModifierType(ComponentUpdated):
     class_: u64
     dept_type: u64
     dept_eff: u64
@@ -206,13 +211,13 @@ class ModifierType(Component):
 
 
 @dataclass
-class Name(Component):
+class Name(ComponentUpdated):
     name: shortstr
     _name: str = 'Name'
 
 
 @dataclass
-class Orbit(Component):
+class Orbit(ComponentUpdated):
     a: CubitFixedPoint128
     ecc: CubitFixedPoint128
     inc: CubitFixedPoint128
@@ -223,7 +228,7 @@ class Orbit(Component):
 
 
 @dataclass
-class Order(Component):
+class Order(ComponentUpdated):
     status: u64
     amount: u64
     valid_time: u64
@@ -232,7 +237,7 @@ class Order(Component):
 
 
 @dataclass
-class PrepaidAgreement(Component):
+class PrepaidAgreement(ComponentUpdated):
     rate: u64
     initial_term: u64
     notice_period: u64
@@ -243,7 +248,7 @@ class PrepaidAgreement(Component):
 
 
 @dataclass
-class PrepaidPolicy(Component):
+class PrepaidPolicy(ComponentUpdated):
     rate: u64
     initial_term: u64
     notice_period: u64
@@ -251,14 +256,14 @@ class PrepaidPolicy(Component):
 
 
 @dataclass
-class PrivateSale(Component):
+class PrivateSale(ComponentUpdated):
     status: u64
     amount: u64
     _name: str = 'PrivateSale'
 
 
 @dataclass
-class ProcessType(Component):
+class ProcessType(ComponentUpdated):
     setup_time: u64
     recipe_time: u64
     batched: bool
@@ -269,7 +274,7 @@ class ProcessType(Component):
 
 
 @dataclass
-class Processor(Component):
+class Processor(ComponentUpdated):
     processor_type: u64
     status: u64
     running_process: u64
@@ -283,20 +288,20 @@ class Processor(Component):
 
 
 @dataclass
-class ProductType(Component):
+class ProductType(ComponentUpdated):
     mass: u64
     volume: u64
     _name: str = 'ProductType'
 
 
 @dataclass
-class PublicPolicy(Component):
+class PublicPolicy(ComponentUpdated):
     public: bool
     _name: str = 'PublicPolicy'
 
 
 @dataclass
-class Ship(Component):
+class Ship(ComponentUpdated):
     ship_type: u64
     status: u64
     ready_at: u64
@@ -310,7 +315,7 @@ class Ship(Component):
 
 
 @dataclass
-class ShipType(Component):
+class ShipType(ComponentUpdated):
     cargo_inventory_type: u64
     cargo_slot: u64
     docking: bool
@@ -327,21 +332,21 @@ class ShipType(Component):
 
 
 @dataclass
-class ShipVariantType(Component):
+class ShipVariantType(ComponentUpdated):
     ship_type: u64
     exhaust_velocity_modifier: CubitFixedPoint64
     _name: str = 'ShipVariantType'
 
 
 @dataclass
-class Station(Component):
+class Station(ComponentUpdated):
     station_type: u64
     population: u64
     _name: str = 'Station'
 
 
 @dataclass
-class StationType(Component):
+class StationType(ComponentUpdated):
     cap: u64
     recruitment: bool
     efficiency: CubitFixedPoint64
@@ -349,53 +354,60 @@ class StationType(Component):
 
 
 @dataclass
-class Unique(Component):
+class Unique(ComponentUpdated):
     unique: felt252
     _name: str = 'Unique'
 
 
 @dataclass
-class WhitelistAgreement(Component):
+class WhitelistAgreement(ComponentUpdated):
     whitelisted: bool
+    _name: str = 'WhitelistAgreement'
 
 
-ALL_COMPONENTS: Dict[str, Component] = {
-    "Building._key": Building,
-    "BuildingType._key": BuildingType,
-    "Celestial._key": Celestial,
-    "ContractAgreement._key": ContractAgreement,
-    "ContractPolicy._key": ContractPolicy,
-    "Control._key": Control,
-    "Crew._key": Crew,
-    "Crewmate._key": Crewmate,
-    "Delivery._key": Delivery,
-    "Deposit._key": Deposit,
-    "Dock._key": Dock,
-    "DockType._key": DockType,
-    "DryDock._key": DryDock,
-    "DryDockType._key": DryDockType,
-    "Exchange._key": Exchange,
-    "ExchangeType._key": ExchangeType,
-    "Extractor._key": Extractor,
-    "Inventory._key": Inventory,
-    "InventoryType._key": InventoryType,
-    "Location._key": Location,
-    "ModifierType._key": ModifierType,
-    "Name._key": Name,
-    "Orbit._key": Orbit,
-    "Order._key": Order,
-    "PrepaidAgreement._key": PrepaidAgreement,
-    "PrepaidPolicy._key": PrepaidPolicy,
-    "PrivateSale._key": PrivateSale,
-    "ProcessType._key": ProcessType,
-    "Processor._key": Processor,
-    "ProductType._key": ProductType,
-    "PublicPolicy._key": PublicPolicy,
-    "Ship._key": Ship,
-    "ShipType._key": ShipType,
-    "ShipVariantType._key": ShipVariantType,
-    "Station._key": Station,
-    "StationType._key": StationType,
-    "Unique._key": Unique,
-    "WhitelistAgreement._key": WhitelistAgreement,
+class UnknownComponentUpdated(ComponentUpdated):
+    def __init__(self, name: str, data: Calldata):
+        self.name = name
+        self.data = data
+
+
+ALL_COMPONENTS: Dict[str, ComponentUpdated] = {
+    Building._name: Building,
+    BuildingType._name: BuildingType,
+    Celestial._name: Celestial,
+    ContractAgreement._name: ContractAgreement,
+    ContractPolicy._name: ContractPolicy,
+    Control._name: Control,
+    Crew._name: Crew,
+    Crewmate._name: Crewmate,
+    Delivery._name: Delivery,
+    Deposit._name: Deposit,
+    Dock._name: Dock,
+    DockType._name: DockType,
+    DryDock._name: DryDock,
+    DryDockType._name: DryDockType,
+    Exchange._name: Exchange,
+    ExchangeType._name: ExchangeType,
+    Extractor._name: Extractor,
+    Inventory._name: Inventory,
+    InventoryType._name: InventoryType,
+    Location._name: Location,
+    ModifierType._name: ModifierType,
+    Name._name: Name,
+    Orbit._name: Orbit,
+    Order._name: Order,
+    PrepaidAgreement._name: PrepaidAgreement,
+    PrepaidPolicy._name: PrepaidPolicy,
+    PrivateSale._name: PrivateSale,
+    ProcessType._name: ProcessType,
+    Processor._name: Processor,
+    ProductType._name: ProductType,
+    PublicPolicy._name: PublicPolicy,
+    Ship._name: Ship,
+    ShipType._name: ShipType,
+    ShipVariantType._name: ShipVariantType,
+    Station._name: Station,
+    StationType._name: StationType,
+    Unique._name: Unique,
+    WhitelistAgreement._name: WhitelistAgreement,
 }

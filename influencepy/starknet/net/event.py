@@ -3,8 +3,8 @@ from dataclasses import dataclass
 
 from starknet_py.hash.utils import _starknet_keccak
 
-from influencepy.starknet.net.datatypes import u64, u128, u256, felt252, shortstr, ClassHash, ContractAddress, \
-    CubitFixedPoint64
+from influencepy.starknet.net.datatypes import u64, u128, u256, felt252, shortstr, Calldata, ClassHash, \
+    ContractAddress, CubitFixedPoint64
 from influencepy.starknet.net.schema import Schema
 from influencepy.starknet.net.struct import Entity, InventoryItem
 
@@ -941,7 +941,7 @@ class TransitStarted(SystemEvent):
 
 
 class UnknownSystemEvent(SystemEvent):
-    def __init__(self, keys: List[int], data: List[int]):
+    def __init__(self, keys: List[int], data: Calldata):
         self.keys = keys
         self.data = data
 
@@ -964,25 +964,8 @@ class SystemRegisteredEvent(SystemEvent):
     _key: int = _starknet_keccak(b'SystemRegistered')
 
 
-class ComponentUpdated:
-    """Note: The name of this event class was reversed from its keccak hash.
-    As such, it may be incorrect and is subject to change."""
-    type: shortstr
-    data: List[int]
-    _key: int = _starknet_keccak(b'ComponentUpdated')
-
-    def __init__(self, keys: List[int], data: List[int]):
-        self.type = shortstr.decode(keys[1])
-        self.data = data
-        if len(keys) > 2:
-            print(f"Warning: ComponentUpdated has more keys than expected: {keys}")
-
-    def __repr__(self):
-        return f"ComponentUpdated(type={self.type}, data={self.data})"
-
-
-class UnknownEvent(SystemEvent):
-    def __init__(self, keys: List[int], data: List[int]):
+class UnknownEvent:
+    def __init__(self, keys: List[int], data: Calldata):
         self.keys = keys
         self.data = data
 

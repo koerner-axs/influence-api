@@ -37,7 +37,7 @@ with open('local/component_template.py', 'r') as f:
 gen_lines = []
 for component_name, component in component_list:
     gen_lines.append('@dataclass')
-    gen_lines.append(f'class {component_name}(Component):')
+    gen_lines.append(f'class {component_name}(ComponentUpdated):')
     for field in component['members']:
         mapped_type = type_map.get(field['type'], field['type'])
         if mapped_type is None:
@@ -46,14 +46,15 @@ for component_name, component in component_list:
         if keyword.iskeyword(field['name']):
             name += '_'
         gen_lines.append(f'    {name}: {mapped_type}')
-    gen_lines.append(f'    _name: str = \'{component_name}\'\n\n')
+    gen_lines.append(f'    _name: str = \'{component_name}\'')
+    gen_lines.append('\n')
 gen_lines = gen_lines[:-1]
 component_template = replace_placeholder(component_template, '\n'.join(gen_lines))
 
 gen_lines = []
-gen_lines.append('ALL_COMPONENTS: Dict[str, Component] = {')
+gen_lines.append('ALL_COMPONENTS: Dict[str, ComponentUpdated] = {')
 for component_name, _ in component_list:
-    gen_lines.append(f'    "{component_name}._key": {component_name},')
+    gen_lines.append(f'    {component_name}._name: {component_name},')
 gen_lines.append('}')
 component_template = replace_placeholder(component_template, '\n'.join(gen_lines))
 

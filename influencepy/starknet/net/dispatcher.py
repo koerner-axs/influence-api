@@ -1,3 +1,4 @@
+from influencepy.starknet.net.component import ComponentUpdated, ALL_COMPONENTS, UnknownComponentUpdated
 from influencepy.starknet.net.contract_call import UnknownContractCall
 from influencepy.starknet.net.event import *
 from influencepy.starknet.net.schema import Schema
@@ -171,17 +172,28 @@ class SystemEventDispatcher:
     _variants: Dict[int, SystemEvent] = ALL_SYSTEM_EVENTS
 
     @classmethod
-    def from_calldata(cls, key: int, data: List[int], **kwargs) -> SystemEvent:
+    def from_calldata(cls, key: int, calldata: Calldata, **kwargs) -> SystemEvent:
         if key not in cls._variants:
-            return UnknownSystemEvent([key], data)
-        return cls._variants[key].from_calldata(Calldata(data), **kwargs)
+            return UnknownSystemEvent([key], calldata)
+        return cls._variants[key].from_calldata(calldata, **kwargs)
+
+
+class ComponentUpdatedDispatcher:
+    _variants: Dict[str, ComponentUpdated] = ALL_COMPONENTS
+
+    @classmethod
+    def from_calldata(cls, key: int, calldata: Calldata, **kwargs) -> "ComponentUpdated":
+        name = shortstr.decode(key).value
+        if name not in cls._variants:
+            return UnknownComponentUpdated(name, calldata)
+        return cls._variants[name].from_calldata(calldata, **kwargs)
 
 
 class EventDispatcher:
     @classmethod
-    def from_calldata(cls, keys: List[int], data: List[int], **kwargs):
+    def from_calldata(cls, keys: List[int], calldata: Calldata, **kwargs):
         if len(keys) == 1:
-            return SystemEventDispatcher.from_calldata(keys[0], data, **kwargs)
+            return SystemEventDispatcher.from_calldata(keys[0], calldata, **kwargs)
         if keys[0] == ComponentUpdated._key:
-            return ComponentUpdated(keys, data)
-        return UnknownEvent(keys, data)
+            return ComponentUpdatedDispatcher.from_calldata(keys[1], calldata)
+        return UnknownEvent(keys, calldata)

@@ -30,7 +30,7 @@ async def read_event(client: FullNodeClient):
             key = event.keys[0] if len(event.keys) == 1 else tuple(event.keys)
             if key in event_count:
                 event_count[key] += 1
-                event = EventDispatcher.from_calldata(event.keys, event.data)
+                event = EventDispatcher.from_calldata(event.keys, Calldata(event.data))
             elif key not in unknown_events:
                 unknown_events[key] = event.transaction_hash
                 hex_key = hex(key) if isinstance(key, int) else tuple(hex(x) for x in key)
@@ -40,7 +40,7 @@ async def read_event(client: FullNodeClient):
                 except Exception as e:
                     pass
                 print(f'{hex_key} first occurred in {hex(event.transaction_hash)} {note}')
-                print(EventDispatcher.from_calldata(event.keys, event.data))
+                print(EventDispatcher.from_calldata(event.keys, Calldata(event.data)))
 
     event_count = [(key, count) for key, count in event_count.items() if count > 0]
     event_count.sort(key=lambda x: x[1], reverse=True)

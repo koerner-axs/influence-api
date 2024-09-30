@@ -31,10 +31,10 @@ from dataclasses import dataclass
 
 from starknet_py.hash.utils import _starknet_keccak
 
-from influencepy.starknet.net.datatypes import u64, u128, u256, felt252, shortstr, ClassHash, ContractAddress, \\
-    CubitFixedPoint64
+from influencepy.starknet.net.datatypes import u64, u128, u256, felt252, shortstr, Calldata, ClassHash, \\
+    ContractAddress, CubitFixedPoint64
 from influencepy.starknet.net.schema import Schema
-from influencepy.starknet.net.structs import Entity, InventoryItem
+from influencepy.starknet.net.struct import Entity, InventoryItem
 
 
 class SystemEvent(Schema):
@@ -55,7 +55,7 @@ for event_name in event_list:
     gen_lines.append('')
 gen_lines.append("""
 class UnknownSystemEvent(SystemEvent):
-    def __init__(self, keys: List[int], data: List[int]):
+    def __init__(self, keys: List[int], data: Calldata):
         self.keys = keys
         self.data = data
 
@@ -78,11 +78,10 @@ class SystemRegisteredEvent(SystemEvent):
     _key: int = _starknet_keccak(b'SystemRegistered')
 
 
-class SeedingEvent(SystemEvent):
-    \"\"\"Note: The name of this event class is inferred from the context in which it appears on the chain.
-    As such, it may be incorrect and is subject to change.\"\"\"
-    type: shortstr
-    _key: int = 0x297be67eb977068ccd2304c6440368d4a6114929aeb860c98b6a7e91f96e2ef
+class UnknownEvent:
+    def __init__(self, keys: List[int], data: Calldata):
+        self.keys = keys
+        self.data = data
 
 """)
 unofficial_event_list = ['ContractRegisteredEvent', 'SystemRegisteredEvent']
