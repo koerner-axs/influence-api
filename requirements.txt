@@ -1,3 +1,5 @@
 setuptools
 starknet_py
+sqlalchemy
+psycopg2
 requests
