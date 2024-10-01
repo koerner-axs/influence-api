@@ -202,8 +202,7 @@ class EventDispatcher:
     @classmethod
     def from_calldata(cls, keys: List[int], calldata: Calldata, **kwargs):
         if len(keys) == 1:
-            return None
-            #return SystemEventDispatcher.from_calldata(keys[0], calldata, **kwargs)
+            return SystemEventDispatcher.from_calldata(keys[0], calldata, **kwargs)
         if keys[0] == ComponentUpdated._key:
             return ComponentUpdatedDispatcher.from_calldata(keys, calldata)
         return UnknownEvent(keys, calldata)

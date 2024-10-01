@@ -128,7 +128,7 @@ class ShortString(BasicType):
         return ShortString(felt.decode_shortstring(int_repr))
 
     def __repr__(self):
-        return f'str("{self.value}")'
+        return f'"{self.value}"'
 
 
 @autoconvert
@@ -193,6 +193,9 @@ class CubitFixedPoint64(BasicType):
     def from_float(value: float) -> "CubitFixedPoint64":
         return CubitFixedPoint64.from_decimal(Decimal(value))
 
+    def __repr__(self):
+        return f'fixed64({self.to_float()})'
+
 
 @dataclass
 class CubitFixedPoint128(BasicType):
@@ -228,3 +231,6 @@ class CubitFixedPoint128(BasicType):
     @staticmethod
     def from_float(value: float) -> "CubitFixedPoint128":
         return CubitFixedPoint128.from_decimal(Decimal(value))
+
+    def __repr__(self):
+        return f'fixed128({self.to_float()})'

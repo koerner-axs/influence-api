@@ -85,4 +85,5 @@ class Schema(BasicType):
                 setattr(self, key, converted)
 
     def __str__(self):
-        return str(self.__dict__)
+        fields = [field for field in self.__dict__.keys() if not field.startswith('_')]
+        return f'{self.__class__.__name__}({", ".join(f"{field}={getattr(self, field)}" for field in fields)})'
