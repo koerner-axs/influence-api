@@ -11,13 +11,15 @@ from influencepy.starknet.util.rpc import setup_starknet_context
 async def read_event(client: FullNodeClient):
     addr = DISPATCHER_ADDRESS
 
-    events = await client.get_events(addr)
+    events = await client.get_events(addr, keys=[[1172733737439152708200787106475389365980570295937413226161927159884463661807], [1131570551]])
     for _ in range(10):
-        events = await client.get_events(addr, continuation_token=events.continuation_token, chunk_size=100)
+        events = await client.get_events(addr, keys=[[1172733737439152708200787106475389365980570295937413226161927159884463661807], [1131570551]], continuation_token=events.continuation_token, chunk_size=100)
         print(f'Got {len(events.events)} events')
         for event in events.events:
-            print(event)
-            print(EventDispatcher.from_calldata(event.keys, Calldata(event.data)))
+            calldata = Calldata(event.data)
+            print(EventDispatcher.from_calldata(event.keys, calldata))
+            if len(calldata) > 0:
+                print(f'Extra data: {calldata}')
 
 
 if __name__ == '__main__':

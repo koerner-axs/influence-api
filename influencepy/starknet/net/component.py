@@ -7,11 +7,17 @@ from influencepy.starknet.net.datatypes import *  # noqa: F401
 from influencepy.starknet.net.structs import *  # noqa: F401
 
 
-class ComponentUpdated(Schema):
+class UnknownComponentUpdatedPreamble(Schema):
+    first_unknown: u128
+    second_unknown: u128
+
+
+class ComponentUpdated(UnknownComponentUpdatedPreamble):
     """Note: The name of this event class was reversed from its keccak hash.
     As such, it may be incorrect and is subject to change."""
     _key: int = _starknet_keccak(b'ComponentUpdated')  # first key
     _name: str  # second key
+    _version_key: int  # optional versioning keys
 
 
 @dataclass
@@ -63,7 +69,19 @@ class Control(ComponentUpdated):
 
 
 @dataclass
-class Crew(ComponentUpdated):
+class CrewV0(ComponentUpdated):
+    delegated_to: ContractAddress
+    roster: List[u64]
+    last_fed: u64
+    ready_at: u64
+    unknown_field_1: u64
+    unknown_field_2: u64
+    _name: str = 'Crew'
+    _version_key: int = 0
+
+
+@dataclass
+class CrewV1(ComponentUpdated):
     delegated_to: ContractAddress
     roster: List[u64]
     last_fed: u64
@@ -74,6 +92,7 @@ class Crew(ComponentUpdated):
     action_weight: u64
     action_strategy: u64
     _name: str = 'Crew'
+    _version_key: int = 1
 
 
 @dataclass
@@ -187,7 +206,7 @@ class Inventory(ComponentUpdated):
 class InventoryType(ComponentUpdated):
     mass: u64
     volume: u64
-    modifiable: bool
+    modifiable: Bool
     products: List[InventoryItem]
     _name: str = 'InventoryType'
 
@@ -206,7 +225,7 @@ class ModifierType(ComponentUpdated):
     mgmt_eff: u64
     trait_type: u64
     trait_eff: u64
-    further_modified: bool
+    further_modified: Bool
     _name: str = 'ModifierType'
 
 
@@ -266,7 +285,7 @@ class PrivateSale(ComponentUpdated):
 class ProcessType(ComponentUpdated):
     setup_time: u64
     recipe_time: u64
-    batched: bool
+    batched: Bool
     processor_type: u64
     inputs: List[InventoryItem]
     outputs: List[InventoryItem]
@@ -296,7 +315,7 @@ class ProductType(ComponentUpdated):
 
 @dataclass
 class PublicPolicy(ComponentUpdated):
-    public: bool
+    public: Bool
     _name: str = 'PublicPolicy'
 
 
@@ -318,10 +337,10 @@ class Ship(ComponentUpdated):
 class ShipType(ComponentUpdated):
     cargo_inventory_type: u64
     cargo_slot: u64
-    docking: bool
+    docking: Bool
     exhaust_velocity: CubitFixedPoint128
     hull_mass: u64
-    landing: bool
+    landing: Bool
     process_type: u64
     propellant_emergency_divisor: u64
     propellant_inventory_type: u64
@@ -348,7 +367,7 @@ class Station(ComponentUpdated):
 @dataclass
 class StationType(ComponentUpdated):
     cap: u64
-    recruitment: bool
+    recruitment: Bool
     efficiency: CubitFixedPoint64
     _name: str = 'StationType'
 
@@ -361,24 +380,25 @@ class Unique(ComponentUpdated):
 
 @dataclass
 class WhitelistAgreement(ComponentUpdated):
-    whitelisted: bool
+    whitelisted: Bool
     _name: str = 'WhitelistAgreement'
 
 
 class UnknownComponentUpdated(ComponentUpdated):
-    def __init__(self, name: str, data: Calldata):
+    def __init__(self, name: str, keys: List[int], data: Calldata):
         self.name = name
+        self.keys = keys
         self.data = data
 
 
-ALL_COMPONENTS: Dict[str, ComponentUpdated] = {
+ALL_COMPONENTS: Dict[str, ComponentUpdated | List[ComponentUpdated]] = {
     Building._name: Building,
     BuildingType._name: BuildingType,
     Celestial._name: Celestial,
     ContractAgreement._name: ContractAgreement,
     ContractPolicy._name: ContractPolicy,
     Control._name: Control,
-    Crew._name: Crew,
+    CrewV0._name: [CrewV0, CrewV1],
     Crewmate._name: Crewmate,
     Delivery._name: Delivery,
     Deposit._name: Deposit,

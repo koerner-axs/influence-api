@@ -51,6 +51,8 @@ class BasicType:
 
 
 def autoconvert(cls):
+    """Annotation to allow automatic conversion of a field parameter to the correct type from a simple type such as int
+    when building dataclasses."""
     cls.__auto_convert__ = True
     return cls
 
@@ -127,6 +129,23 @@ class ShortString(BasicType):
 
     def __repr__(self):
         return f'str("{self.value}")'
+
+
+@autoconvert
+class Bool(BasicType):
+    def __init__(self, value: bool):
+        self.value = value
+
+    def to_calldata(self, calldata: Calldata) -> Calldata:
+        calldata.push_int(self.value)
+        return calldata
+
+    @staticmethod
+    def from_calldata(calldata: Calldata) -> "Bool":
+        return Bool(bool(calldata.pop_int()))
+
+    def __repr__(self):
+        return f'{self.value}'
 
 
 u64 = _make_uint_type(64, 'uint', False)

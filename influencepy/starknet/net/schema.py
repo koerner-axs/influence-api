@@ -23,22 +23,28 @@ class Schema(BasicType):
     @classmethod
     def from_calldata(cls, calldata: Calldata, **kwargs) -> "Schema":
         instance = cls.__new__(cls)
-        for key, field_type in cls.__annotations__.items():
+        annotations = {}
+        for base in cls.__mro__[-2::-1]:  # Skip the last element (object) and reverse
+            annotations.update(base.__annotations__)
+        for key, field_type in annotations.items():
             if key.startswith('_'):
                 continue
             if isinstance(field_type, type) and issubclass(field_type, BasicType):
                 try:
                     setattr(instance, key, field_type.from_calldata(calldata))
                 except Exception as e:
-                    raise ValueError(f'Error while deserializing field "{key}" to type {field_type.__name__}') from e
+                    raise ValueError(
+                        f'Error while deserializing {cls.__name__}: at field "{key}" of type {field_type.__name__}') from e
             elif get_origin(field_type) == list:
                 try:
                     field_type = get_args(field_type)[0]
                     setattr(instance, key, cls._list_from_calldata(field_type, calldata))
                 except Exception as e:
-                    raise ValueError(f'Error while deserializing List[{field_type.__name__}] field "{key}"') from e
+                    raise ValueError(
+                        f'Error while deserializing {cls.__name__}: at List[{field_type.__name__}] field "{key}"') from e
             else:
-                raise NotImplementedError(f'Unsupported field type {field_type.__name__} for field "{key}"')
+                raise NotImplementedError(
+                    f'Unsupported field type {field_type.__name__} for field "{key}" in {cls.__name__}')
         if '__post_init__' in cls.__dict__:
             instance.__post_init__()
         return instance
@@ -74,7 +80,7 @@ class Schema(BasicType):
                     converted = field_type(value)
                 except Exception as e:
                     raise ValueError(
-                        f'Error while auto converting field "{key}" (="{value}) to proper type {field_type.__name__}')\
+                        f'Error while auto converting field "{key}" (="{value}) to proper type {field_type.__name__}') \
                         from e
                 setattr(self, key, converted)
 

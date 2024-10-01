@@ -179,21 +179,31 @@ class SystemEventDispatcher:
 
 
 class ComponentUpdatedDispatcher:
-    _variants: Dict[str, ComponentUpdated] = ALL_COMPONENTS
+    _variants: Dict[str, ComponentUpdated | List[ComponentUpdated]] = ALL_COMPONENTS
 
     @classmethod
-    def from_calldata(cls, key: int, calldata: Calldata, **kwargs) -> "ComponentUpdated":
-        name = shortstr.decode(key).value
+    def from_calldata(cls, keys: List[int], calldata: Calldata, **kwargs) -> "ComponentUpdated":
+        name = shortstr.decode(keys[1]).value
         if name not in cls._variants:
-            return UnknownComponentUpdated(name, calldata)
-        return cls._variants[name].from_calldata(calldata, **kwargs)
+            return UnknownComponentUpdated(name, keys, calldata)
+        var = cls._variants[name]
+        if not isinstance(var, list):
+            return var.from_calldata(calldata, **kwargs)
+        version = 0
+        if len(keys) >= 3:
+            version = keys[2]
+        for variant in var:
+            if variant._version_key == version:
+                return variant.from_calldata(calldata, **kwargs)
+        raise ValueError(f'ComponentUpdated "{name}" has no version with key {version}')
 
 
 class EventDispatcher:
     @classmethod
     def from_calldata(cls, keys: List[int], calldata: Calldata, **kwargs):
         if len(keys) == 1:
-            return SystemEventDispatcher.from_calldata(keys[0], calldata, **kwargs)
+            return None
+            #return SystemEventDispatcher.from_calldata(keys[0], calldata, **kwargs)
         if keys[0] == ComponentUpdated._key:
-            return ComponentUpdatedDispatcher.from_calldata(keys[1], calldata)
+            return ComponentUpdatedDispatcher.from_calldata(keys, calldata)
         return UnknownEvent(keys, calldata)

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from starknet_py.hash.utils import _starknet_keccak
 
-from influencepy.starknet.net.datatypes import u64, u128, u256, felt252, shortstr, Calldata, ClassHash, \
+from influencepy.starknet.net.datatypes import u64, u128, u256, felt252, shortstr, Bool, Calldata, ClassHash, \
     ContractAddress, CubitFixedPoint64
 from influencepy.starknet.net.schema import Schema
 from influencepy.starknet.net.structs import Entity, InventoryItem
@@ -773,7 +773,7 @@ class SamplingDepositStartedV1(SystemEvent):
     deposit: Entity
     lot: Entity
     resource: u64
-    improving: bool
+    improving: Bool
     origin: Entity
     origin_slot: u64
     finish_time: u64

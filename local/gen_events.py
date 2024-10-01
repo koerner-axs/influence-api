@@ -10,7 +10,7 @@ type_map = {
     'core::array::Span::<core::integer::u256>': 'List[u256]',
     'core::felt252': 'felt252',
     'core::array::Span::<core::felt252>': 'List[felt252]',
-    'core::bool': 'bool',
+    'core::bool': 'Bool',
     'core::starknet::contract_address::ContractAddress': 'ContractAddress',
     'influence::common::types::string::String': 'shortstr',
     'cubit::f64::types::fixed::Fixed': 'CubitFixedPoint64',
@@ -31,7 +31,7 @@ from dataclasses import dataclass
 
 from starknet_py.hash.utils import _starknet_keccak
 
-from influencepy.starknet.net.datatypes import u64, u128, u256, felt252, shortstr, Calldata, ClassHash, \\
+from influencepy.starknet.net.datatypes import u64, u128, u256, felt252, shortstr, Bool, Calldata, ClassHash, \\
     ContractAddress, CubitFixedPoint64
 from influencepy.starknet.net.schema import Schema
 from influencepy.starknet.net.structs import Entity, InventoryItem
