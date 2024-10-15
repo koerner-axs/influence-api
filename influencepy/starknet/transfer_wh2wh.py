@@ -1,6 +1,6 @@
 import asyncio
 
-from influencepy.starknet.net.struct import Building, Crew, InventoryItem
+from influencepy.starknet.net.structs import Building, Crew, InventoryItem
 from influencepy.starknet.net.system import SendDelivery, ResolveRandomEvent
 from influencepy.starknet.net.transaction import MultiInvocationTransaction
 from influencepy.starknet.util.rpc import setup_starknet_context

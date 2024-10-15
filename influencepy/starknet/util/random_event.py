@@ -1,7 +1,7 @@
 import asyncio
 from typing import List
 
-from influencepy.starknet.net.struct import Crew
+from influencepy.starknet.net.structs import Crew
 from influencepy.starknet.net.system import ResolveRandomEvent, CheckForRandomEvent
 from influencepy.starknet.net.transaction import MultiInvocationTransaction
 from influencepy.starknet.util.contract import DispatcherContract

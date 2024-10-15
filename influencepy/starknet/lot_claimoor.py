@@ -4,7 +4,7 @@ from starknet_py.net.account.account import Account
 
 from influencepy.starknet.net.constants import DISPATCHER_ADDRESS
 from influencepy.starknet.net.contract_call import SwayTransferWithConfirmation
-from influencepy.starknet.net.struct import Crew, Entity, EntityId
+from influencepy.starknet.net.structs import Crew, Entity, EntityId
 from influencepy.starknet.net.system import AcceptPrepaidAgreement
 from influencepy.starknet.net.transaction import MultiInvocationTransaction
 from influencepy.starknet.util.rpc import setup_starknet_context
