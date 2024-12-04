@@ -23,14 +23,18 @@ async def finish_refinery(dispatcher: DispatcherContract, account: Account, crew
 
     rre_call = tx.get_invocation(0).to_call()
     print(rre_call)
-    ppf_call = tx.get_invocation(1).to_call()
-    print(ppf_call)
 
-    invoke = await account.sign_invoke_v1([rre_call, ppf_call], max_fee=int(1e14))
+    calls = [rre_call]
+    if len(tx.invocations) > 1:
+        ppf_call = tx.get_invocation(1).to_call()
+        print(ppf_call)
+        calls.append(ppf_call)
+
+    invoke = await account.sign_invoke_v1(calls, max_fee=int(1e12))
     print(invoke)
 
-    # result = await account.client.send_transaction(invoke)
-    # print(result)
+    result = await account.client.send_transaction(invoke)
+    print(result)
     print('Done')
 
 
@@ -103,7 +107,7 @@ async def finish_core_improvement(dispatcher: DispatcherContract, account: Accou
 
 if __name__ == '__main__':
     client, account, dispatcher_contract = setup_starknet_context()
-    # asyncio.run(finish_refinery(dispatcher_contract, account, Crew(0x1c47), Building(0x51ad)))
+    asyncio.run(finish_refinery(dispatcher_contract, account, Crew(9109), Building(26967)))
     # asyncio.run(finish_extraction(dispatcher_contract, account, Crew(0x1300), Building(0x1537c)))
-    asyncio.run(start_core_improvement(dispatcher_contract, account, Crew(0x1300), Deposit(0x1537c), Building(0x305d)))
+    # asyncio.run(start_core_improvement(dispatcher_contract, account, Crew(0x1300), Deposit(0x1537c), Building(0x305d)))
     # asyncio.run(finish_core_improvement(dispatcher_contract, account, Crew(0x1300), Deposit(0x1537c)))
