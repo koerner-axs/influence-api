@@ -9,7 +9,7 @@ from influencepy.starknet.net.structs import *  # noqa: F401
 
 class UnknownComponentUpdatedPreamble(Schema):
     first_unknown: u128
-    second_unknown: u128
+    second_unknown: PackedEntity
 
 
 class ComponentUpdated(UnknownComponentUpdatedPreamble):
@@ -320,20 +320,6 @@ class PublicPolicy(ComponentUpdated):
 
 
 @dataclass
-class Ship(ComponentUpdated):
-    ship_type: u64
-    status: u64
-    ready_at: u64
-    variant: u64
-    emergency_at: u64
-    transit_origin: Entity
-    transit_departure: u64
-    transit_destination: Entity
-    transit_arrival: u64
-    _name: str = 'Ship'
-
-
-@dataclass
 class ShipType(ComponentUpdated):
     cargo_inventory_type: u64
     cargo_slot: u64
@@ -348,6 +334,31 @@ class ShipType(ComponentUpdated):
     propellant_type: u64
     station_type: u64
     _name: str = 'ShipType'
+
+
+@dataclass
+class ShipV0(ComponentUpdated):
+    ship_type: u64
+    status: u64
+    ready_at: u64
+    variant: u64
+    _name: str = 'Ship'
+    _version_key: int = 0
+
+
+@dataclass
+class ShipV1(ComponentUpdated):
+    ship_type: u64
+    status: u64
+    ready_at: u64
+    variant: u64
+    emergency_at: u64
+    transit_origin: Entity
+    transit_departure: u64
+    transit_destination: Entity
+    transit_arrival: u64
+    _name: str = 'Ship'
+    _version_key: int = 1
 
 
 @dataclass
@@ -423,8 +434,8 @@ ALL_COMPONENTS: Dict[str, ComponentUpdated | List[ComponentUpdated]] = {
     Processor._name: Processor,
     ProductType._name: ProductType,
     PublicPolicy._name: PublicPolicy,
-    Ship._name: Ship,
     ShipType._name: ShipType,
+    ShipV0._name: [ShipV0, ShipV1],
     ShipVariantType._name: ShipVariantType,
     Station._name: Station,
     StationType._name: StationType,

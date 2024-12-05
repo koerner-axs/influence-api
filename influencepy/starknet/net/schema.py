@@ -4,7 +4,7 @@ from influencepy.starknet.net.datatypes import BasicType, is_auto_convertible, C
 
 
 class Schema(BasicType):
-    def to_calldata(self, calldata: Calldata | None = None) -> Calldata:
+    def to_calldata(self, calldata: Calldata | None) -> Calldata:
         if calldata is None:
             calldata = Calldata([])
         for key, field_type in self.__annotations__.items():
