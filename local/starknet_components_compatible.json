@@ -663,9 +663,33 @@
       }
     ]
   },
-  "influence::components::ship::Ship": {
+  "influence::components::ship::ShipV0": {
     "type": "struct",
     "name": "influence::components::ship::Ship",
+    "version_key": 0,
+    "members": [
+      {
+        "name": "ship_type",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "status",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "ready_at",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "variant",
+        "type": "core::integer::u64"
+      }
+    ]
+  },
+  "influence::components::ship::ShipV1": {
+    "type": "struct",
+    "name": "influence::components::ship::Ship",
+    "version_key": 1,
     "members": [
       {
         "name": "ship_type",

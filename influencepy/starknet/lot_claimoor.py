@@ -4,7 +4,7 @@ from starknet_py.net.account.account import Account
 
 from influencepy.starknet.net.constants import DISPATCHER_ADDRESS
 from influencepy.starknet.net.contract_call import SwayTransferWithConfirmation
-from influencepy.starknet.net.structs import Crew, Entity, EntityId
+from influencepy.starknet.net.structs import Crew, Entity, EntityType
 from influencepy.starknet.net.system import AcceptPrepaidAgreement
 from influencepy.starknet.net.transaction import MultiInvocationTransaction
 from influencepy.starknet.util.rpc import setup_starknet_context
@@ -39,7 +39,7 @@ async def transfer(account: Account):
         consumer=DISPATCHER_ADDRESS
     ))
     tx.append_contract_call(AcceptPrepaidAgreement(
-        target=Entity(EntityId.LOT, 1121017 * 2**32 + 1),
+        target=Entity(EntityType.LOT, 1121017 * 2 ** 32 + 1),
         permission=0x1,
         permitted=Crew(3369),
         term=0x278d00,  # 30 days

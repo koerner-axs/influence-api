@@ -13,13 +13,17 @@ async def read_event(client: FullNodeClient):
 
     events = await client.get_events(addr)
     for _ in range(10):
-        events = await client.get_events(addr, continuation_token=events.continuation_token, chunk_size=100)
+        events = await client.get_events(addr, continuation_token=events.continuation_token, chunk_size=1024)
         print(f'Got {len(events.events)} events')
         for event in events.events:
-            print(event)
-            calldata = Calldata(event.data)
-            print(EventDispatcher.from_calldata(event.keys, calldata))
+            calldata = Calldata(event.data.copy())
+            try:
+                print(EventDispatcher.from_calldata(event.keys, calldata))
+            except Exception as e:
+                print('Offending event:', event)
+                raise e
             if len(calldata) > 0:
+                print('Offending event:', event)
                 print(f'Extra data: {calldata}')
 
 
