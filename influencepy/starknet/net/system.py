@@ -414,7 +414,7 @@ class FillBuyOrder(RunSystem):
     escrow_caller: ContractAddress
     escrow_type: u64
     escrow_token: ContractAddress
-    escrow_withdrawals: None
+    escrow_withdrawals: List[Withdrawal]
     _function_name: str = 'FillBuyOrder'
 
 
@@ -728,7 +728,7 @@ class ScanSurfaceStart(RunSystem):
 
 @dataclass
 class SeedAsteroids(RunSystem):
-    asteroids: None
+    asteroids: List[SeededAsteroid]
     _function_name: str = 'SeedAsteroids'
 
 
@@ -741,7 +741,7 @@ class SeedColony(RunSystem):
 
 @dataclass
 class SeedCrewmates(RunSystem):
-    crewmates: None
+    crewmates: List[SeededCrewmate]
     _function_name: str = 'SeedCrewmates'
 
 

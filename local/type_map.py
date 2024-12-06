@@ -14,5 +14,8 @@ type_map = {
     'cubit::f128::types::fixed::Fixed': 'CubitFixedPoint128',
     'influence::common::types::entity::Entity': 'Entity',
     'influence::common::types::inventory_item::InventoryItem': 'InventoryItem',
-    'core::array::Span::<influence::common::types::inventory_item::InventoryItem>': 'List[InventoryItem]'
+    'core::array::Span::<influence::common::types::inventory_item::InventoryItem>': 'List[InventoryItem]',
+    'core::array::Span::<influence::interfaces::escrow::Withdrawal>': 'List[Withdrawal]',
+    'core::array::Span::<influence::systems::seeding::seed_asteroids::SeedAsteroids::SeededAsteroid>': 'List[SeededAsteroid]',
+    'core::array::Span::<influence::systems::seeding::seed_crewmates::SeedCrewmates::SeededCrewmate>': 'List[SeededCrewmate]'
 }
