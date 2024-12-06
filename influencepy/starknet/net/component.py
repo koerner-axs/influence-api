@@ -206,7 +206,7 @@ class Inventory(ComponentUpdated):
 class InventoryType(ComponentUpdated):
     mass: u64
     volume: u64
-    modifiable: Bool
+    modifiable: bool
     products: List[InventoryItem]
     _name: str = 'InventoryType'
 
@@ -225,7 +225,7 @@ class ModifierType(ComponentUpdated):
     mgmt_eff: u64
     trait_type: u64
     trait_eff: u64
-    further_modified: Bool
+    further_modified: bool
     _name: str = 'ModifierType'
 
 
@@ -285,7 +285,7 @@ class PrivateSale(ComponentUpdated):
 class ProcessType(ComponentUpdated):
     setup_time: u64
     recipe_time: u64
-    batched: Bool
+    batched: bool
     processor_type: u64
     inputs: List[InventoryItem]
     outputs: List[InventoryItem]
@@ -315,7 +315,7 @@ class ProductType(ComponentUpdated):
 
 @dataclass
 class PublicPolicy(ComponentUpdated):
-    public: Bool
+    public: bool
     _name: str = 'PublicPolicy'
 
 
@@ -323,10 +323,10 @@ class PublicPolicy(ComponentUpdated):
 class ShipType(ComponentUpdated):
     cargo_inventory_type: u64
     cargo_slot: u64
-    docking: Bool
+    docking: bool
     exhaust_velocity: CubitFixedPoint128
     hull_mass: u64
-    landing: Bool
+    landing: bool
     process_type: u64
     propellant_emergency_divisor: u64
     propellant_inventory_type: u64
@@ -378,7 +378,7 @@ class Station(ComponentUpdated):
 @dataclass
 class StationType(ComponentUpdated):
     cap: u64
-    recruitment: Bool
+    recruitment: bool
     efficiency: CubitFixedPoint64
     _name: str = 'StationType'
 
@@ -391,7 +391,7 @@ class Unique(ComponentUpdated):
 
 @dataclass
 class WhitelistAgreement(ComponentUpdated):
-    whitelisted: Bool
+    whitelisted: bool
     _name: str = 'WhitelistAgreement'
 
 

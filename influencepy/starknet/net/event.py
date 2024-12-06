@@ -443,6 +443,14 @@ class DepositUnlistedForSale(SystemEvent):
 
 
 @dataclass
+class DirectMessageSent(SystemEvent):
+    recipient: ContractAddress
+    content_hash: List[felt252]
+    caller: ContractAddress
+    _key: int = _starknet_keccak(b'DirectMessageSent')
+
+
+@dataclass
 class EmergencyActivated(SystemEvent):
     ship: Entity
     caller_crew: Entity
@@ -580,6 +588,21 @@ class PrepaidAgreementExtended(SystemEvent):
 
 
 @dataclass
+class PrepaidAgreementTransferred(SystemEvent):
+    target: Entity
+    permission: u64
+    permitted: Entity
+    old_permitted: Entity
+    term: u64
+    rate: u64
+    initial_term: u64
+    notice_period: u64
+    caller_crew: Entity
+    caller: ContractAddress
+    _key: int = _starknet_keccak(b'PrepaidAgreementTransferred')
+
+
+@dataclass
 class PrepaidMerkleAgreementAccepted(SystemEvent):
     target: Entity
     permission: u64
@@ -670,6 +693,14 @@ class RandomEventResolved(SystemEvent):
     caller_crew: Entity
     caller: ContractAddress
     _key: int = _starknet_keccak(b'RandomEventResolved')
+
+
+@dataclass
+class RekeyedInbox(SystemEvent):
+    messaging_key_x: u256
+    messaging_key_y: u256
+    caller: ContractAddress
+    _key: int = _starknet_keccak(b'RekeyedInbox')
 
 
 @dataclass
@@ -773,7 +804,7 @@ class SamplingDepositStartedV1(SystemEvent):
     deposit: Entity
     lot: Entity
     resource: u64
-    improving: Bool
+    improving: bool
     origin: Entity
     origin_slot: u64
     finish_time: u64
@@ -951,7 +982,7 @@ class UnknownSystemEvent(SystemEvent):
 class ContractRegisteredEvent(SystemEvent):
     # TODO: This is an event the Dispatcher emits when register_contract is successful. It does not represent an event
     #  emitted by a system, so it might need to inherit from a different class and be renamed accordingly.
-    name: shortstr
+    name: felt252
     address: ContractAddress
     _key: int = _starknet_keccak(b'ContractRegistered')
 
@@ -959,7 +990,7 @@ class ContractRegisteredEvent(SystemEvent):
 class SystemRegisteredEvent(SystemEvent):
     # TODO: This is an event the Dispatcher emits when register_system is successful. It does not represent an event
     #  emitted by a system, so it might need to inherit from a different class and be renamed accordingly.
-    name: shortstr
+    name: felt252
     class_hash: ClassHash
     _key: int = _starknet_keccak(b'SystemRegistered')
 
@@ -1011,6 +1042,7 @@ ALL_SYSTEM_EVENTS: Dict[int, SystemEvent] = {
     DepositPurchased._key: DepositPurchased,
     DepositPurchasedV1._key: DepositPurchasedV1,
     DepositUnlistedForSale._key: DepositUnlistedForSale,
+    DirectMessageSent._key: DirectMessageSent,
     EmergencyActivated._key: EmergencyActivated,
     EmergencyDeactivated._key: EmergencyDeactivated,
     EmergencyPropellantCollected._key: EmergencyPropellantCollected,
@@ -1024,6 +1056,7 @@ ALL_SYSTEM_EVENTS: Dict[int, SystemEvent] = {
     PrepaidAgreementAccepted._key: PrepaidAgreementAccepted,
     PrepaidAgreementCancelled._key: PrepaidAgreementCancelled,
     PrepaidAgreementExtended._key: PrepaidAgreementExtended,
+    PrepaidAgreementTransferred._key: PrepaidAgreementTransferred,
     PrepaidMerkleAgreementAccepted._key: PrepaidMerkleAgreementAccepted,
     PrepaidMerklePolicyAssigned._key: PrepaidMerklePolicyAssigned,
     PrepaidMerklePolicyRemoved._key: PrepaidMerklePolicyRemoved,
@@ -1033,6 +1066,7 @@ ALL_SYSTEM_EVENTS: Dict[int, SystemEvent] = {
     PublicPolicyAssigned._key: PublicPolicyAssigned,
     PublicPolicyRemoved._key: PublicPolicyRemoved,
     RandomEventResolved._key: RandomEventResolved,
+    RekeyedInbox._key: RekeyedInbox,
     RemovedAccountFromWhitelist._key: RemovedAccountFromWhitelist,
     RemovedFromWhitelist._key: RemovedFromWhitelist,
     RemovedFromWhitelistV1._key: RemovedFromWhitelistV1,

@@ -1,15 +1,14 @@
-from typing import List
-from dataclasses import dataclass
+from dataclasses import dataclass  # noqa: F401
+from typing import List  # noqa: F401
 
 from starknet_py.hash.selector import get_selector_from_name
 from starknet_py.net.client_models import Call
 
 from influencepy.starknet.net.constants import DISPATCHER_ADDRESS
 from influencepy.starknet.net.contract_call import ContractCall
-from influencepy.starknet.net.datatypes import u64, u128, u256, felt252, shortstr, CubitFixedPoint64, \
-    CubitFixedPoint128, ContractAddress, Calldata
-from influencepy.starknet.net.structs import Entity, InventoryItem, Withdrawal, SeededAsteroid, SeededCrewmate
-from influencepy.starknet.util.contract import DispatcherContract
+from influencepy.starknet.net.datatypes import *
+from influencepy.starknet.net.structs import *
+from influencepy.starknet.util.contract import DispatcherContract  # noqa: F401
 
 
 class RunSystem(ContractCall):
@@ -49,14 +48,10 @@ class AcceptContractAgreement(RunSystem):
 
 
 @dataclass
-class AcceptPrepaidMerkleAgreement(RunSystem):
-    target: Entity
-    permission: u64
-    permitted: Entity
-    term: u64
-    merkle_proof: List[felt252]
+class AcceptDelivery(RunSystem):
+    delivery: Entity
     caller_crew: Entity
-    _function_name: str = 'AcceptPrepaidMerkleAgreement'
+    _function_name: str = 'AcceptDelivery'
 
 
 @dataclass
@@ -70,115 +65,29 @@ class AcceptPrepaidAgreement(RunSystem):
 
 
 @dataclass
-class ExtendPrepaidAgreement(RunSystem):
+class AcceptPrepaidMerkleAgreement(RunSystem):
     target: Entity
     permission: u64
     permitted: Entity
-    added_term: u64
+    term: u64
+    merkle_proof: List[felt252]
     caller_crew: Entity
-    _function_name: str = 'ExtendPrepaidAgreement'
+    _function_name: str = 'AcceptPrepaidMerkleAgreement'
 
 
 @dataclass
-class CancelPrepaidAgreement(RunSystem):
-    target: Entity
-    permission: u64
-    permitted: Entity
+class ActivateEmergency(RunSystem):
     caller_crew: Entity
-    _function_name: str = 'CancelPrepaidAgreement'
+    _function_name: str = 'ActivateEmergency'
 
 
 @dataclass
-class RemoveFromWhitelist(RunSystem):
-    target: Entity
-    permission: u64
-    permitted: Entity
+class AnnotateEvent(RunSystem):
+    transaction_hash: felt252
+    log_index: u64
+    content_hash: List[felt252]
     caller_crew: Entity
-    _function_name: str = 'RemoveFromWhitelist'
-
-
-@dataclass
-class RemoveAccountFromWhiteList(RunSystem):
-    target: Entity
-    permission: u64
-    permitted: ContractAddress
-    caller_crew: Entity
-    _function_name: str = 'RemoveAccountFromWhiteList'
-
-
-@dataclass
-class Whitelist(RunSystem):
-    target: Entity
-    permission: u64
-    permitted: Entity
-    caller_crew: Entity
-    _function_name: str = 'Whitelist'
-
-
-@dataclass
-class WhitelistAccount(RunSystem):
-    target: Entity
-    permission: u64
-    permitted: ContractAddress
-    caller_crew: Entity
-    _function_name: str = 'WhitelistAccount'
-
-
-@dataclass
-class ConstructionAbandon(RunSystem):
-    building: Entity
-    caller_crew: Entity
-    _function_name: str = 'ConstructionAbandon'
-
-
-@dataclass
-class ConstructionDeconstruct(RunSystem):
-    building: Entity
-    caller_crew: Entity
-    _function_name: str = 'ConstructionDeconstruct'
-
-
-@dataclass
-class ConstructionFinish(RunSystem):
-    building: Entity
-    caller_crew: Entity
-    _function_name: str = 'ConstructionFinish'
-
-
-@dataclass
-class ConstructionPlan(RunSystem):
-    building_type: u64
-    lot: Entity
-    caller_crew: Entity
-    _function_name: str = 'ConstructionPlan'
-
-
-@dataclass
-class ConstructionStart(RunSystem):
-    building: Entity
-    caller_crew: Entity
-    _function_name: str = 'ConstructionStart'
-
-
-@dataclass
-class CommandeerShip(RunSystem):
-    ship: Entity
-    caller_crew: Entity
-    _function_name: str = 'CommandeerShip'
-
-
-@dataclass
-class ManageAsteroid(RunSystem):
-    asteroid: Entity
-    caller_crew: Entity
-    _function_name: str = 'ManageAsteroid'
-
-
-@dataclass
-class RepossessBuilding(RunSystem):
-    building: Entity
-    caller_crew: Entity
-    _function_name: str = 'RepossessBuilding'
+    _function_name: str = 'AnnotateEvent'
 
 
 @dataclass
@@ -189,276 +98,23 @@ class ArrangeCrew(RunSystem):
 
 
 @dataclass
-class DelegateCrew(RunSystem):
-    delegated_to: ContractAddress
-    caller_crew: Entity
-    _function_name: str = 'DelegateCrew'
-
-
-@dataclass
-class EjectCrew(RunSystem):
-    ejected_crew: Entity
-    caller_crew: Entity
-    _function_name: str = 'EjectCrew'
-
-
-@dataclass
-class ExchangeCrew(RunSystem):
-    crew1: Entity
-    comp1: List[u64]
-    crew2: Entity  # ABI specifies a leading _
-    comp2: List[u64]
-    _function_name: str = 'ExchangeCrew'
-
-
-@dataclass
-class InitializeArvadian(RunSystem):
-    crewmate: Entity
-    impactful: List[u64]
-    cosmetic: List[u64]
-    name: shortstr
-    station: Entity
-    caller_crew: Entity
-    _function_name: str = 'InitializeArvadian'
-
-
-@dataclass
-class RecruitAdalian(RunSystem):
-    crewmate: Entity
-    class_: u64  # class is a reserved keyword
-    impactful: List[u64]
-    cosmetic: List[u64]
-    gender: u64
-    body: u64
-    face: u64
-    hair: u64
-    hair_color: u64
-    clothes: u64
-    name: shortstr
-    station: Entity
-    caller_crew: Entity
-    _function_name: str = 'RecruitAdalian'
-
-
-@dataclass
-class ResupplyFood(RunSystem):
-    origin: Entity
-    origin_slot: u64
-    food: u64
-    caller_crew: Entity
-    _function_name: str = 'ResupplyFood'
-
-
-@dataclass
-class ResupplyFoodFromExchange(RunSystem):
-    seller_crew: Entity
-    exchange: Entity
-    amount: u64
-    price: u64
-    storage: Entity
-    storage_slot: u64
-    caller_crew: Entity
-    _function_name: str = 'ResupplyFoodFromExchange'
-
-
-@dataclass
-class StationCrew(RunSystem):
+class AssembleShipFinish(RunSystem):
+    dry_dock: Entity
+    dry_dock_slot: u64
     destination: Entity
     caller_crew: Entity
-    _function_name: str = 'StationCrew'
+    _function_name: str = 'AssembleShipFinish'
 
 
 @dataclass
-class AcceptDelivery(RunSystem):
-    delivery: Entity
-    caller_crew: Entity
-    _function_name: str = 'AcceptDelivery'
-
-
-@dataclass
-class DumpDelivery(RunSystem):
-    origin: Entity
-    origin_slot: u64
-    products: List[InventoryItem]
-    caller_crew: Entity
-    _function_name: str = 'DumpDelivery'
-
-
-@dataclass
-class CancelDelivery(RunSystem):
-    delivery: Entity
-    caller_crew: Entity
-    _function_name: str = 'CancelDelivery'
-
-
-@dataclass
-class PackageDelivery(RunSystem):
-    origin: Entity
-    origin_slot: u64
-    products: List[InventoryItem]
-    dest: Entity
-    dest_slot: u64
-    price: u64
-    caller_crew: Entity
-    _function_name: str = 'PackageDelivery'
-
-
-@dataclass
-class ReceiveDelivery(RunSystem):
-    delivery: Entity
-    caller_crew: Entity
-    _function_name: str = 'ReceiveDelivery'
-
-
-@dataclass
-class SendDelivery(RunSystem):
-    origin: Entity
-    origin_slot: u64
-    products: List[InventoryItem]
-    dest: Entity
-    dest_slot: u64
-    caller_crew: Entity
-    _function_name: str = 'SendDelivery'
-
-
-@dataclass
-class SampleDepositStart(RunSystem):
-    lot: Entity
-    resource: u64
+class AssembleShipStart(RunSystem):
+    dry_dock: Entity
+    dry_dock_slot: u64
+    ship_type: u64
     origin: Entity
     origin_slot: u64
     caller_crew: Entity
-    _function_name: str = 'SampleDepositStart'
-
-
-@dataclass
-class SampleDepositImprove(RunSystem):
-    deposit: Entity
-    origin: Entity
-    origin_slot: u64
-    caller_crew: Entity
-    _function_name: str = 'SampleDepositImprove'
-
-
-@dataclass
-class SampleDepositFinish(RunSystem):
-    deposit: Entity
-    caller_crew: Entity
-    _function_name: str = 'SampleDepositFinish'
-
-
-@dataclass
-class ListDepositForSale(RunSystem):
-    deposit: Entity
-    price: u64
-    caller_crew: Entity
-    _function_name: str = 'ListDepositForSale'
-
-
-@dataclass
-class PurchaseDeposit(RunSystem):
-    deposit: Entity
-    caller_crew: Entity
-    _function_name: str = 'PurchaseDeposit'
-
-
-@dataclass
-class UnlistDepositForSale(RunSystem):
-    deposit: Entity
-    caller_crew: Entity
-    _function_name: str = 'UnlistDepositForSale'
-
-
-@dataclass
-class ActivateEmergency(RunSystem):
-    caller_crew: Entity
-    _function_name: str = 'ActivateEmergency'
-
-
-@dataclass
-class CollectEmergencyPropellant(RunSystem):
-    caller_crew: Entity
-    _function_name: str = 'CollectEmergencyPropellant'
-
-
-@dataclass
-class DeactivateEmergency(RunSystem):
-    caller_crew: Entity
-    _function_name: str = 'DeactivateEmergency'
-
-
-@dataclass
-class CreateSellOrder(RunSystem):
-    exchange: Entity
-    product: u64
-    amount: u64
-    price: u64
-    storage: Entity
-    storage_slot: u64
-    caller_crew: Entity
-    _function_name: str = 'CreateSellOrder'
-
-
-@dataclass
-class FillSellOrder(RunSystem):
-    seller_crew: Entity
-    exchange: Entity
-    product: u64
-    amount: u64
-    price: u64
-    storage: Entity
-    storage_slot: u64
-    destination: Entity
-    destination_slot: u64
-    caller_crew: Entity
-    _function_name: str = 'FillSellOrder'
-
-
-@dataclass
-class CancelSellOrder(RunSystem):
-    seller_crew: Entity
-    exchange: Entity
-    product: u64
-    price: u64
-    storage: Entity
-    storage_slot: u64
-    caller_crew: Entity
-    _function_name: str = 'CancelSellOrder'
-
-
-@dataclass
-class CreateBuyOrder(RunSystem):
-    exchange: Entity
-    product: u64
-    amount: u64
-    price: u64
-    storage: Entity
-    storage_slot: u64
-    caller_crew: Entity
-    escrow_caller: ContractAddress
-    escrow_type: u64
-    escrow_token: ContractAddress
-    escrow_amount: u256
-    _function_name: str = 'CreateBuyOrder'
-
-
-@dataclass
-class FillBuyOrder(RunSystem):
-    buyer_crew: Entity
-    exchange: Entity
-    product: u64
-    price: u64
-    storage: Entity
-    storage_slot: u64
-    amount: u64
-    origin: Entity
-    origin_slot: u64
-    caller_crew: Entity
-    escrow_caller: ContractAddress
-    escrow_type: u64
-    escrow_token: ContractAddress
-    escrow_withdrawals: List[Withdrawal]
-    _function_name: str = 'FillBuyOrder'
+    _function_name: str = 'AssembleShipStart'
 
 
 @dataclass
@@ -502,112 +158,45 @@ class AssignPublicPolicy(RunSystem):
 
 
 @dataclass
-class RemoveContractPolicy(RunSystem):
+class CancelDelivery(RunSystem):
+    delivery: Entity
+    caller_crew: Entity
+    _function_name: str = 'CancelDelivery'
+
+
+@dataclass
+class CancelPrepaidAgreement(RunSystem):
     target: Entity
     permission: u64
+    permitted: Entity
     caller_crew: Entity
-    _function_name: str = 'RemoveContractPolicy'
+    _function_name: str = 'CancelPrepaidAgreement'
 
 
 @dataclass
-class RemovePrepaidPolicy(RunSystem):
-    target: Entity
-    permission: u64
+class CancelSellOrder(RunSystem):
+    seller_crew: Entity
+    exchange: Entity
+    product: u64
+    price: u64
+    storage: Entity
+    storage_slot: u64
     caller_crew: Entity
-    _function_name: str = 'RemovePrepaidPolicy'
+    _function_name: str = 'CancelSellOrder'
 
 
 @dataclass
-class RemovePrepaidMerklePolicy(RunSystem):
-    target: Entity
-    permission: u64
+class ChangeName(RunSystem):
+    entity: Entity
+    name: shortstr
     caller_crew: Entity
-    _function_name: str = 'RemovePrepaidMerklePolicy'
-
-
-@dataclass
-class RemovePublicPolicy(RunSystem):
-    target: Entity
-    permission: u64
-    caller_crew: Entity
-    _function_name: str = 'RemovePublicPolicy'
-
-
-@dataclass
-class AssembleShipFinish(RunSystem):
-    dry_dock: Entity
-    dry_dock_slot: u64
-    destination: Entity
-    caller_crew: Entity
-    _function_name: str = 'AssembleShipFinish'
-
-
-@dataclass
-class AssembleShipStart(RunSystem):
-    dry_dock: Entity
-    dry_dock_slot: u64
-    ship_type: u64
-    origin: Entity
-    origin_slot: u64
-    caller_crew: Entity
-    _function_name: str = 'AssembleShipStart'
-
-
-@dataclass
-class ExtractResourceFinish(RunSystem):
-    extractor: Entity
-    extractor_slot: u64
-    caller_crew: Entity
-    _function_name: str = 'ExtractResourceFinish'
-
-
-@dataclass
-class ExtractResourceStart(RunSystem):
-    deposit: Entity
-    yield_: u64  # yield is a reserved keyword
-    extractor: Entity
-    extractor_slot: u64
-    destination: Entity
-    destination_slot: u64
-    caller_crew: Entity
-    _function_name: str = 'ExtractResourceStart'
-
-
-@dataclass
-class ProcessProductsFinish(RunSystem):
-    processor: Entity
-    processor_slot: u64
-    caller_crew: Entity
-    _function_name: str = 'ProcessProductsFinish'
-
-
-@dataclass
-class ProcessProductsStart(RunSystem):
-    processor: Entity
-    processor_slot: u64
-    process: u64
-    target_output: u64
-    recipes: CubitFixedPoint64
-    origin: Entity
-    origin_slot: u64
-    destination: Entity
-    destination_slot: u64
-    caller_crew: Entity
-    _function_name: str = 'ProcessProductsStart'
-
-
-@dataclass
-class ResolveRandomEvent(RunSystem):
-    choice: u64
-    caller_crew: Entity
-    _function_name: str = 'ResolveRandomEvent'
+    _function_name: str = 'ChangeName'
 
 
 @dataclass
 class CheckForRandomEvent(RunSystem):
     caller_crew: Entity
     _function_name: str = 'CheckForRandomEvent'
-
     # TODO: output is of type u64, need to declare this somewhere?
 
     # TODO: should this be in here, should this be completely removed from the system?
@@ -641,6 +230,305 @@ class ClaimTestnetSway(RunSystem):
 
 
 @dataclass
+class CollectEmergencyPropellant(RunSystem):
+    caller_crew: Entity
+    _function_name: str = 'CollectEmergencyPropellant'
+
+
+@dataclass
+class CommandeerShip(RunSystem):
+    ship: Entity
+    caller_crew: Entity
+    _function_name: str = 'CommandeerShip'
+
+
+@dataclass
+class ConfigureExchange(RunSystem):
+    exchange: Entity
+    maker_fee: u64
+    taker_fee: u64
+    allowed_products: List[u64]
+    caller_crew: Entity
+    _function_name: str = 'ConfigureExchange'
+
+
+@dataclass
+class ConstructionAbandon(RunSystem):
+    building: Entity
+    caller_crew: Entity
+    _function_name: str = 'ConstructionAbandon'
+
+
+@dataclass
+class ConstructionDeconstruct(RunSystem):
+    building: Entity
+    caller_crew: Entity
+    _function_name: str = 'ConstructionDeconstruct'
+
+
+@dataclass
+class ConstructionFinish(RunSystem):
+    building: Entity
+    caller_crew: Entity
+    _function_name: str = 'ConstructionFinish'
+
+
+@dataclass
+class ConstructionPlan(RunSystem):
+    building_type: u64
+    lot: Entity
+    caller_crew: Entity
+    _function_name: str = 'ConstructionPlan'
+
+
+@dataclass
+class ConstructionStart(RunSystem):
+    building: Entity
+    caller_crew: Entity
+    _function_name: str = 'ConstructionStart'
+
+
+@dataclass
+class CreateBuyOrder(RunSystem):
+    exchange: Entity
+    product: u64
+    amount: u64
+    price: u64
+    storage: Entity
+    storage_slot: u64
+    caller_crew: Entity
+    escrow_caller: ContractAddress
+    escrow_type: u64
+    escrow_token: ContractAddress
+    escrow_amount: u256
+    _function_name: str = 'CreateBuyOrder'
+
+
+@dataclass
+class CreateSellOrder(RunSystem):
+    exchange: Entity
+    product: u64
+    amount: u64
+    price: u64
+    storage: Entity
+    storage_slot: u64
+    caller_crew: Entity
+    _function_name: str = 'CreateSellOrder'
+
+
+@dataclass
+class DeactivateEmergency(RunSystem):
+    caller_crew: Entity
+    _function_name: str = 'DeactivateEmergency'
+
+
+@dataclass
+class DelegateCrew(RunSystem):
+    delegated_to: ContractAddress
+    caller_crew: Entity
+    _function_name: str = 'DelegateCrew'
+
+
+@dataclass
+class DirectMessage(RunSystem):
+    recipient: ContractAddress
+    content_hash: List[felt252]
+    _function_name: str = 'DirectMessage'
+
+
+@dataclass
+class DockShip(RunSystem):
+    target: Entity
+    powered: bool
+    caller_crew: Entity
+    _function_name: str = 'DockShip'
+
+
+@dataclass
+class DumpDelivery(RunSystem):
+    origin: Entity
+    origin_slot: u64
+    products: List[InventoryItem]
+    caller_crew: Entity
+    _function_name: str = 'DumpDelivery'
+
+
+@dataclass
+class EjectCrew(RunSystem):
+    ejected_crew: Entity
+    caller_crew: Entity
+    _function_name: str = 'EjectCrew'
+
+
+@dataclass
+class ExchangeCrew(RunSystem):
+    crew1: Entity
+    comp1: List[u64]
+    crew2: Entity
+    comp2: List[u64]
+    _function_name: str = 'ExchangeCrew'
+
+
+@dataclass
+class ExtendPrepaidAgreement(RunSystem):
+    target: Entity
+    permission: u64
+    permitted: Entity
+    added_term: u64
+    caller_crew: Entity
+    _function_name: str = 'ExtendPrepaidAgreement'
+
+
+@dataclass
+class ExtractResourceFinish(RunSystem):
+    extractor: Entity
+    extractor_slot: u64
+    caller_crew: Entity
+    _function_name: str = 'ExtractResourceFinish'
+
+
+@dataclass
+class ExtractResourceStart(RunSystem):
+    deposit: Entity
+    yield_: u64
+    extractor: Entity
+    extractor_slot: u64
+    destination: Entity
+    destination_slot: u64
+    caller_crew: Entity
+    _function_name: str = 'ExtractResourceStart'
+
+
+@dataclass
+class FillBuyOrder(RunSystem):
+    buyer_crew: Entity
+    exchange: Entity
+    product: u64
+    price: u64
+    storage: Entity
+    storage_slot: u64
+    amount: u64
+    origin: Entity
+    origin_slot: u64
+    caller_crew: Entity
+    escrow_caller: ContractAddress
+    escrow_type: u64
+    escrow_token: ContractAddress
+    escrow_withdrawals: None
+    _function_name: str = 'FillBuyOrder'
+
+
+@dataclass
+class FillSellOrder(RunSystem):
+    seller_crew: Entity
+    exchange: Entity
+    product: u64
+    amount: u64
+    price: u64
+    storage: Entity
+    storage_slot: u64
+    destination: Entity
+    destination_slot: u64
+    caller_crew: Entity
+    _function_name: str = 'FillSellOrder'
+
+
+@dataclass
+class GrantAdalians(RunSystem):
+    recipient: ContractAddress
+    count: u64
+    _function_name: str = 'GrantAdalians'
+
+
+@dataclass
+class GrantStarterPack(RunSystem):
+    recipient: ContractAddress
+    crewmates: u64
+    tokens: u64
+    _function_name: str = 'GrantStarterPack'
+
+
+@dataclass
+class InitializeArvadian(RunSystem):
+    crewmate: Entity
+    impactful: List[u64]
+    cosmetic: List[u64]
+    name: felt252
+    station: Entity
+    caller_crew: Entity
+    _function_name: str = 'InitializeArvadian'
+
+
+@dataclass
+class InitializeAsteroid(RunSystem):
+    asteroid: Entity
+    celestial_type: u64
+    mass: u128
+    radius: u64
+    a: u128
+    ecc: u128
+    inc: u128
+    raan: u128
+    argp: u128
+    m: u128
+    purchase_order: u64
+    scan_status: u64
+    bonuses: u64
+    merkle_proof: List[felt252]
+    _function_name: str = 'InitializeAsteroid'
+
+
+@dataclass
+class ListDepositForSale(RunSystem):
+    deposit: Entity
+    price: u64
+    caller_crew: Entity
+    _function_name: str = 'ListDepositForSale'
+
+
+@dataclass
+class ManageAsteroid(RunSystem):
+    asteroid: Entity
+    caller_crew: Entity
+    _function_name: str = 'ManageAsteroid'
+
+
+@dataclass
+class PackageDelivery(RunSystem):
+    origin: Entity
+    origin_slot: u64
+    products: List[InventoryItem]
+    dest: Entity
+    dest_slot: u64
+    price: u64
+    caller_crew: Entity
+    _function_name: str = 'PackageDelivery'
+
+
+@dataclass
+class ProcessProductsFinish(RunSystem):
+    processor: Entity
+    processor_slot: u64
+    caller_crew: Entity
+    _function_name: str = 'ProcessProductsFinish'
+
+
+@dataclass
+class ProcessProductsStart(RunSystem):
+    processor: Entity
+    processor_slot: u64
+    process: u64
+    target_output: u64
+    recipes: CubitFixedPoint64
+    origin: Entity
+    origin_slot: u64
+    destination: Entity
+    destination_slot: u64
+    caller_crew: Entity
+    _function_name: str = 'ProcessProductsStart'
+
+
+@dataclass
 class PurchaseAdalian(RunSystem):
     collection: u64
     _function_name: str = 'PurchaseAdalian'
@@ -651,6 +539,163 @@ class PurchaseAsteroid(RunSystem):
     asteroid: Entity
     caller_crew: Entity
     _function_name: str = 'PurchaseAsteroid'
+
+
+@dataclass
+class PurchaseDeposit(RunSystem):
+    deposit: Entity
+    caller_crew: Entity
+    _function_name: str = 'PurchaseDeposit'
+
+
+@dataclass
+class ReadComponent(RunSystem):
+    name: felt252
+    path: List[felt252]
+    _function_name: str = 'ReadComponent'
+
+
+@dataclass
+class ReceiveDelivery(RunSystem):
+    delivery: Entity
+    caller_crew: Entity
+    _function_name: str = 'ReceiveDelivery'
+
+
+@dataclass
+class RecruitAdalian(RunSystem):
+    crewmate: Entity
+    class_: u64
+    impactful: List[u64]
+    cosmetic: List[u64]
+    gender: u64
+    body: u64
+    face: u64
+    hair: u64
+    hair_color: u64
+    clothes: u64
+    name: felt252
+    station: Entity
+    caller_crew: Entity
+    _function_name: str = 'RecruitAdalian'
+
+
+@dataclass
+class RekeyInbox(RunSystem):
+    messaging_key_x: u256
+    messaging_key_y: u256
+    _function_name: str = 'RekeyInbox'
+
+
+@dataclass
+class RemoveAccountFromWhitelist(RunSystem):
+    target: Entity
+    permission: u64
+    permitted: ContractAddress
+    caller_crew: Entity
+    _function_name: str = 'RemoveAccountFromWhitelist'
+
+
+@dataclass
+class RemoveContractPolicy(RunSystem):
+    target: Entity
+    permission: u64
+    caller_crew: Entity
+    _function_name: str = 'RemoveContractPolicy'
+
+
+@dataclass
+class RemoveFromWhitelist(RunSystem):
+    target: Entity
+    permission: u64
+    permitted: Entity
+    caller_crew: Entity
+    _function_name: str = 'RemoveFromWhitelist'
+
+
+@dataclass
+class RemovePrepaidMerklePolicy(RunSystem):
+    target: Entity
+    permission: u64
+    caller_crew: Entity
+    _function_name: str = 'RemovePrepaidMerklePolicy'
+
+
+@dataclass
+class RemovePrepaidPolicy(RunSystem):
+    target: Entity
+    permission: u64
+    caller_crew: Entity
+    _function_name: str = 'RemovePrepaidPolicy'
+
+
+@dataclass
+class RemovePublicPolicy(RunSystem):
+    target: Entity
+    permission: u64
+    caller_crew: Entity
+    _function_name: str = 'RemovePublicPolicy'
+
+
+@dataclass
+class RepossessBuilding(RunSystem):
+    building: Entity
+    caller_crew: Entity
+    _function_name: str = 'RepossessBuilding'
+
+
+@dataclass
+class ResolveRandomEvent(RunSystem):
+    choice: u64
+    caller_crew: Entity
+    _function_name: str = 'ResolveRandomEvent'
+
+
+@dataclass
+class ResupplyFood(RunSystem):
+    origin: Entity
+    origin_slot: u64
+    food: u64
+    caller_crew: Entity
+    _function_name: str = 'ResupplyFood'
+
+
+@dataclass
+class ResupplyFoodFromExchange(RunSystem):
+    seller_crew: Entity
+    exchange: Entity
+    amount: u64
+    price: u64
+    storage: Entity
+    storage_slot: u64
+    caller_crew: Entity
+    _function_name: str = 'ResupplyFoodFromExchange'
+
+
+@dataclass
+class SampleDepositFinish(RunSystem):
+    deposit: Entity
+    caller_crew: Entity
+    _function_name: str = 'SampleDepositFinish'
+
+
+@dataclass
+class SampleDepositImprove(RunSystem):
+    deposit: Entity
+    origin: Entity
+    origin_slot: u64
+    caller_crew: Entity
+    _function_name: str = 'SampleDepositImprove'
+
+
+@dataclass
+class SampleDepositStart(RunSystem):
+    lot: Entity
+    resource: u64
+    origin: Entity
+    origin_slot: u64
+    caller_crew: Entity
+    _function_name: str = 'SampleDepositStart'
 
 
 @dataclass
@@ -682,37 +727,10 @@ class ScanSurfaceStart(RunSystem):
 
 
 @dataclass
-class InitializeAsteroid(RunSystem):
-    asteroid: Entity
-    celestial_type: u64
-    mass: u128
-    radius: u64
-    a: u128
-    ecc: u128
-    inc: u128
-    raan: u128
-    argp: u128
-    m: u128
-    purchase_order: u64
-    scan_status: u64
-    bonuses: u64
-    merkle_proof: List[felt252]
-    _function_name: str = 'InitializeAsteroid'
-
-
-@dataclass
 class SeedAsteroids(RunSystem):
-    asteroids: List[SeededAsteroid]
+    asteroids: None
     _function_name: str = 'SeedAsteroids'
 
-
-@dataclass
-class SeedCrewmates(RunSystem):
-    crewmates: List[SeededCrewmate]
-    _function_name: str = 'SeedCrewmates'
-
-
-# NOTE: This is according to the system ABI, but it seems to be incorrect or incomplete
 
 @dataclass
 class SeedColony(RunSystem):
@@ -721,14 +739,16 @@ class SeedColony(RunSystem):
     _function_name: str = 'SeedColony'
 
 
-# NOTE: This is according to the system ABI, but it seems to be incorrect or incomplete
+@dataclass
+class SeedCrewmates(RunSystem):
+    crewmates: None
+    _function_name: str = 'SeedCrewmates'
+
 
 @dataclass
 class SeedHabitat(RunSystem):
     _function_name: str = 'SeedHabitat'
 
-
-# NOTE: This is according to the system ABI, but it seems to be incorrect or incomplete
 
 @dataclass
 class SeedOrders(RunSystem):
@@ -738,11 +758,31 @@ class SeedOrders(RunSystem):
 
 
 @dataclass
-class DockShip(RunSystem):
-    target: Entity
-    powered: bool
+class SendDelivery(RunSystem):
+    origin: Entity
+    origin_slot: u64
+    products: List[InventoryItem]
+    dest: Entity
+    dest_slot: u64
     caller_crew: Entity
-    _function_name: str = 'DockShip'
+    _function_name: str = 'SendDelivery'
+
+
+@dataclass
+class StationCrew(RunSystem):
+    destination: Entity
+    caller_crew: Entity
+    _function_name: str = 'StationCrew'
+
+
+@dataclass
+class TransferPrepaidAgreement(RunSystem):
+    target: Entity
+    permission: u64
+    permitted: Entity
+    new_permitted: Entity
+    caller_crew: Entity
+    _function_name: str = 'TransferPrepaidAgreement'
 
 
 @dataclass
@@ -777,47 +817,36 @@ class UndockShip(RunSystem):
 
 
 @dataclass
-class AnnotateEvent(RunSystem):
-    transaction_hash: felt252
-    log_index: u64
-    content_hash: List[felt252]
+class UnlistDepositForSale(RunSystem):
+    deposit: Entity
     caller_crew: Entity
-    _function_name: str = 'AnnotateEvent'
+    _function_name: str = 'UnlistDepositForSale'
 
 
 @dataclass
-class ChangeName(RunSystem):
-    entity: Entity
-    name: shortstr
+class Whitelist(RunSystem):
+    target: Entity
+    permission: u64
+    permitted: Entity
     caller_crew: Entity
-    _function_name: str = 'ChangeName'
+    _function_name: str = 'Whitelist'
 
 
 @dataclass
-class ConfigureExchange(RunSystem):
-    exchange: Entity
-    maker_fee: u64
-    taker_fee: u64
-    allowed_products: List[u64]
+class WhitelistAccount(RunSystem):
+    target: Entity
+    permission: u64
+    permitted: ContractAddress
     caller_crew: Entity
-    _function_name: str = 'ConfigureExchange'
-
-
-@dataclass
-class ReadComponent(RunSystem):
-    name: felt252  # TODO: could also be a shortstr
-    path: List[felt252]
-    _function_name: str = 'ReadComponent'
-    # TODO: output is of type Span<felt252>, need to declare this somewhere?
+    _function_name: str = 'WhitelistAccount'
 
 
 @dataclass
 class WriteComponent(RunSystem):
-    name: felt252  # TODO: could also be a shortstr
+    name: felt252
     path: List[felt252]
     data: List[felt252]
     _function_name: str = 'WriteComponent'
-    # TODO: state_mutability is 'view' which doesn't make sense for a write operation
 
 
 class UnknownSystemCall(RunSystem):

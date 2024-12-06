@@ -1,24 +1,6 @@
 import json
 import keyword
-
-type_map = {
-    'core::integer::u64': 'u64',
-    'core::array::Span::<core::integer::u64>': 'List[u64]',
-    'core::integer::u128': 'u128',
-    'core::array::Span::<core::integer::u128>': 'List[u128]',
-    'core::integer::u256': 'u256',
-    'core::array::Span::<core::integer::u256>': 'List[u256]',
-    'core::felt252': 'felt252',
-    'core::array::Span::<core::felt252>': 'List[felt252]',
-    'core::bool': 'Bool',
-    'core::starknet::contract_address::ContractAddress': 'ContractAddress',
-    'influence::common::types::string::String': 'shortstr',
-    'cubit::f64::types::fixed::Fixed': 'CubitFixedPoint64',
-    'cubit::f128::types::fixed::Fixed': 'CubitFixedPoint128',
-    'influence::common::types::entity::Entity': 'Entity',
-    'influence::common::types::inventory_item::InventoryItem': 'InventoryItem',
-    'core::array::Span::<influence::common::types::inventory_item::InventoryItem>': 'List[InventoryItem]'
-}
+from type_map import type_map
 
 
 def replace_placeholder(template: str, replacement: str) -> str:
@@ -40,7 +22,7 @@ for class_name, component in component_list:
     gen_lines.append('@dataclass')
     gen_lines.append(f'class {class_name}(ComponentUpdated):')
     for field in component['members']:
-        mapped_type = type_map.get(field['type'], field['type'])
+        mapped_type = type_map.get(field['type'])
         if mapped_type is None:
             print('Unmapped datatype:', field['type'])
         name = field['name']
@@ -53,7 +35,6 @@ for class_name, component in component_list:
     gen_lines.append('\n')
 gen_lines = gen_lines[:-1]
 component_template = replace_placeholder(component_template, '\n'.join(gen_lines))
-
 
 aggregated_over_versions = {}
 for class_name, component in component_list:

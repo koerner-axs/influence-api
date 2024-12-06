@@ -325,6 +325,63 @@
       }
     ]
   },
+  "PrepaidAgreementTransferred": {
+    "type": "event",
+    "name": "PrepaidAgreementTransferred",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "target",
+        "type": "influence::common::types::entity::Entity",
+        "kind": "data"
+      },
+      {
+        "name": "permission",
+        "type": "core::integer::u64",
+        "kind": "data"
+      },
+      {
+        "name": "permitted",
+        "type": "influence::common::types::entity::Entity",
+        "kind": "data"
+      },
+      {
+        "name": "old_permitted",
+        "type": "influence::common::types::entity::Entity",
+        "kind": "data"
+      },
+      {
+        "name": "term",
+        "type": "core::integer::u64",
+        "kind": "data"
+      },
+      {
+        "name": "rate",
+        "type": "core::integer::u64",
+        "kind": "data"
+      },
+      {
+        "name": "initial_term",
+        "type": "core::integer::u64",
+        "kind": "data"
+      },
+      {
+        "name": "notice_period",
+        "type": "core::integer::u64",
+        "kind": "data"
+      },
+      {
+        "name": "caller_crew",
+        "type": "influence::common::types::entity::Entity",
+        "kind": "data"
+      },
+      {
+        "name": "caller",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      }
+    ]
+  },
   "AddedToWhitelist": {
     "type": "event",
     "name": "AddedToWhitelist",
@@ -3023,6 +3080,50 @@
       {
         "name": "caller_crew",
         "type": "influence::common::types::entity::Entity",
+        "kind": "data"
+      },
+      {
+        "name": "caller",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      }
+    ]
+  },
+  "DirectMessageSent": {
+    "type": "event",
+    "name": "DirectMessageSent",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "recipient",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      },
+      {
+        "name": "content_hash",
+        "type": "core::array::Span::<core::felt252>",
+        "kind": "data"
+      },
+      {
+        "name": "caller",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      }
+    ]
+  },
+  "RekeyedInbox": {
+    "type": "event",
+    "name": "RekeyedInbox",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "messaging_key_x",
+        "type": "core::integer::u256",
+        "kind": "data"
+      },
+      {
+        "name": "messaging_key_y",
+        "type": "core::integer::u256",
         "kind": "data"
       },
       {
