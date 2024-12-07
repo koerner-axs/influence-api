@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, cast
 
 from influencepy.starknet.net.contract_call import ContractCall
 from influencepy.starknet.net.dispatcher import ContractCallDispatcher
@@ -6,13 +6,13 @@ from influencepy.starknet.net.schema import Schema
 
 
 class MultiInvocationTransaction(Schema):
-    invocations: List[ContractCallDispatcher]  # FIXME: This should be a list of ContractCall
+    invocations: List[ContractCallDispatcher]
 
     def __init__(self):
         self.invocations = []
 
     def get_invocation(self, index: int) -> ContractCall:
-        return self.invocations[index]
+        return cast(ContractCall, self.invocations[index])
 
     def prepend_contract_call(self, contract_call: ContractCall | Any):
         self.invocations.insert(0, contract_call)
