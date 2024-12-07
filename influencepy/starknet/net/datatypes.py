@@ -132,6 +132,33 @@ class ShortString(BasicType):
 
 
 @autoconvert
+class LongString(BasicType):
+    """ An influence custom string with a maximum representation width of 256 bits. """
+    def __init__(self, value: str):
+        if len(value) > 31:
+            # FIXME: This may or may not be the correct limit given the 256 bit width
+            raise ValueError(f'String {value} is too long')
+        self.value = value
+
+    def to_calldata(self, calldata: Calldata) -> Calldata:
+        calldata.push_string(self.value)
+        return calldata
+
+    @staticmethod
+    def from_calldata(calldata: Calldata) -> "LongString":
+        ret = LongString(calldata.pop_string())
+        calldata.pop_int()  # Discard the extra data
+        return ret
+
+    def encode(self) -> int:
+        # FIXME: extra data is not considered
+        return felt.encode_shortstring(self.value)
+
+    def __repr__(self):
+        return f'"{self.value}"'
+
+
+@autoconvert
 class Bool(BasicType):
     def __init__(self, value: bool):
         self.value = value
@@ -156,6 +183,7 @@ AccountAddress = _make_uint_type(252, 'account', True)
 ClassHash = _make_uint_type(252, 'class', True)
 u256 = UnsignedInt256
 shortstr = ShortString
+longstr = LongString
 
 
 @dataclass

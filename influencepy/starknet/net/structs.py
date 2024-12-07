@@ -19,6 +19,7 @@ class Enum64(Schema, Enum):
 
 
 class EntityType(Enum64):
+    UNDEFINED = 0
     CREW = 1
     CREWMATE = 2
     ASTEROID = 3
@@ -39,6 +40,8 @@ class Entity(Schema):
         return PackedEntity(entity_id=self.entity_id.value, entity_type=self.entity_type)
 
     def __str__(self):
+        if self.__class__ == Entity:
+            return f'Entity(type={self.entity_type}, id={self.entity_id})'
         return f'{self.__class__.__name__}(id={self.entity_id})'
 
 

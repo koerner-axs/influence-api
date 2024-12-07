@@ -43,8 +43,7 @@ for class_name, component in component_list:
         aggregated_over_versions[name] = []
     aggregated_over_versions[name].append(class_name)
 
-gen_lines = []
-gen_lines.append('ALL_COMPONENTS: Dict[str, ComponentUpdated | List[ComponentUpdated]] = {')
+gen_lines = ['ALL_COMPONENTS: Dict[str, ComponentUpdated | List[ComponentUpdated]] = {']
 for name, comps in aggregated_over_versions.items():
     if len(comps) == 1:
         gen_lines.append(f'    {comps[0]}._name: {comps[0]},')

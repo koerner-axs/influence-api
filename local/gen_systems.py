@@ -3,17 +3,17 @@ import keyword
 from type_map import type_map
 
 field_name_override = {
-# ('<class name>', '<field name>'): '<new field name>',
+    # ('<class name>', '<field name>'): '<new field name>',
     ('ExchangeCrew', '_crew2'): 'crew2'
 }
 
 # Field name override is applied before, so use the new field name
 type_override = {
-# ('<class name>', '<field name>'): '<new type>',
+    # ('<class name>', '<field name>'): '<new type>',
 }
 
 trailing_text = {
-# '<class name>': '<text>',
+    # '<class name>': '<text>',
     'CheckForRandomEvent':
         """    # TODO: output is of type u64, need to declare this somewhere?\n
     # TODO: should this be in here, should this be completely removed from the system?
@@ -73,8 +73,7 @@ for class_name, system in systems_list:
         aggregated_over_versions[name] = []
     aggregated_over_versions[name].append(class_name)
 
-gen_lines = []
-gen_lines.append('ALL_SYSTEMS: Dict[str, RunSystem | List[RunSystem]] = {')
+gen_lines = ['ALL_SYSTEMS: Dict[str, RunSystem | List[RunSystem]] = {']
 for name, systems in aggregated_over_versions.items():
     if len(systems) == 1:
         gen_lines.append(f'    {systems[0]}._function_name: {systems[0]},')

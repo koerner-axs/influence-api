@@ -188,7 +188,7 @@ class CancelSellOrder(RunSystem):
 @dataclass
 class ChangeName(RunSystem):
     entity: Entity
-    name: shortstr
+    name: longstr
     caller_crew: Entity
     _function_name: str = 'ChangeName'
 
@@ -339,7 +339,7 @@ class DirectMessage(RunSystem):
 @dataclass
 class DockShip(RunSystem):
     target: Entity
-    powered: bool
+    powered: Bool
     caller_crew: Entity
     _function_name: str = 'DockShip'
 
@@ -811,7 +811,7 @@ class TransitBetweenStart(RunSystem):
 @dataclass
 class UndockShip(RunSystem):
     ship: Entity
-    powered: bool
+    powered: Bool
     caller_crew: Entity
     _function_name: str = 'UndockShip'
 
