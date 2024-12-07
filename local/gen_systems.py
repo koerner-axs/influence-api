@@ -66,5 +66,22 @@ for class_name, system in systems_list:
 gen_lines = gen_lines[:-1]
 system_template = replace_placeholder(system_template, '\n'.join(gen_lines))
 
+aggregated_over_versions = {}
+for class_name, system in systems_list:
+    name = system['name'].split('::')[-1]
+    if name not in aggregated_over_versions:
+        aggregated_over_versions[name] = []
+    aggregated_over_versions[name].append(class_name)
+
+gen_lines = []
+gen_lines.append('ALL_SYSTEMS: Dict[str, RunSystem | List[RunSystem]] = {')
+for name, systems in aggregated_over_versions.items():
+    if len(systems) == 1:
+        gen_lines.append(f'    {systems[0]}._function_name: {systems[0]},')
+    else:
+        gen_lines.append(f'    {systems[0]}._function_name: [{", ".join(systems)}],')
+gen_lines.append('}')
+system_template = replace_placeholder(system_template, '\n'.join(gen_lines))
+
 with open('influencepy/starknet/net/system.py', 'w') as f:
     f.write(system_template)

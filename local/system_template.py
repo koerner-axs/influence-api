@@ -1,5 +1,5 @@
 from dataclasses import dataclass  # noqa: F401
-from typing import List  # noqa: F401
+from typing import List, Dict  # noqa: F401
 
 from starknet_py.hash.selector import get_selector_from_name
 from starknet_py.net.client_models import Call
@@ -57,3 +57,6 @@ class UnknownSystemCall(RunSystem):
 
     def __repr__(self):
         return f'UnknownSystemCall(function_name={self.function_name}, calldata={self.calldata})'
+
+
+### GENERATED BLOCK ###

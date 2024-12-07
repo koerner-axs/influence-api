@@ -18,7 +18,7 @@ async def finish_refinery(dispatcher: DispatcherContract, account: Account, crew
         caller_crew=crew
     ))
     await handle_random_events(dispatcher, tx, crew)
-    calldata = tx.to_calldata()
+    calldata = tx.to_calldata(None)
     print(calldata)
 
     rre_call = tx.get_invocation(0).to_call()

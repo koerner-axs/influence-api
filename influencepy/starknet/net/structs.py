@@ -35,12 +35,28 @@ class Entity(Schema):
     entity_type: EntityType
     entity_id: u64
 
+    def pack(self) -> "PackedEntity":
+        return PackedEntity(entity_id=self.entity_id.value, entity_type=self.entity_type)
+
+    def __str__(self):
+        return f'{self.__class__.__name__}(id={self.entity_id})'
+
 
 class Crew(Entity):
     """ Convenience class for crew entities. """
 
     def __init__(self, crew_id: int):
         super().__init__(entity_type=EntityType.CREW, entity_id=crew_id)
+
+
+class Lot(Entity):
+    """ Convenience class for lot entities. """
+
+    def __init__(self, lot_number: int, asteroid_id: int):
+        super().__init__(entity_type=EntityType.LOT, entity_id=(lot_number << 32) | asteroid_id)
+
+    def __str__(self):
+        return f'{self.__class__.__name__}(num={self.entity_id.value >> 32}, asteroid={self.entity_id.value & 0xFFFFFFFF})'
 
 
 class Building(Entity):
@@ -73,6 +89,9 @@ class PackedEntity(Schema):
     def to_calldata(self, calldata: Calldata) -> Calldata:
         calldata.push_int((self.entity_id << 16) | self.entity_type.value)
         return calldata
+
+    def unpack(self) -> Entity:
+        return Entity(entity_id=self.entity_id.value, entity_type=self.entity_type)
 
     def __str__(self):
         return f'{self.entity_type}({self.entity_id})'

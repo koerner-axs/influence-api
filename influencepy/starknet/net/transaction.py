@@ -6,7 +6,7 @@ from influencepy.starknet.net.schema import Schema
 
 
 class MultiInvocationTransaction(Schema):
-    invocations: List[ContractCallDispatcher]
+    invocations: List[ContractCallDispatcher]  # FIXME: This should be a list of ContractCall
 
     def __init__(self):
         self.invocations = []

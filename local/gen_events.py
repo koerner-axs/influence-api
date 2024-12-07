@@ -74,8 +74,7 @@ for event_name in event_list:
 gen_lines.append('    # Begin unofficial events')
 for event_name in unofficial_event_list:
     gen_lines.append(f'    {event_name}._key: {event_name},')
-gen_lines.append('}')
-gen_lines.append('')
+gen_lines.append('}\n')
 
 with open('influencepy/starknet/net/event.py', 'w') as f:
     f.write('\n'.join(gen_lines))
