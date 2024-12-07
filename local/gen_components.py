@@ -2,6 +2,20 @@ import json
 import keyword
 from type_map import type_map
 
+field_name_override = {
+    # ('<class name>', '<field name>'): '<new field name>',
+}
+
+# Field name override is applied before, so use the new field name
+type_override = {
+    # ('<class name>', '<field name>'): '<new type>',
+    ('Name', 'name'): 'shortstr'
+}
+
+trailing_text = {
+    # '<class name>': '<text>',
+}
+
 
 def replace_placeholder(template: str, replacement: str) -> str:
     return template.replace('### GENERATED BLOCK ###', replacement, 1)
@@ -22,7 +36,11 @@ for class_name, component in component_list:
     gen_lines.append('@dataclass')
     gen_lines.append(f'class {class_name}(ComponentUpdated):')
     for field in component['members']:
-        mapped_type = type_map.get(field['type'])
+        field_name = field_name_override.get((class_name, field['name']), field['name'])
+        if (class_name, field_name) in type_override:
+            mapped_type = type_override[(class_name, field_name)]
+        else:
+            mapped_type = type_map.get(field['type'])
         if mapped_type is None:
             print('Unmapped datatype:', field['type'])
         name = field['name']

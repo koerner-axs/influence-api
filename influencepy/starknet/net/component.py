@@ -231,7 +231,7 @@ class ModifierType(ComponentUpdated):
 
 @dataclass
 class Name(ComponentUpdated):
-    name: longstr
+    name: shortstr
     _name: str = 'Name'
 
 
