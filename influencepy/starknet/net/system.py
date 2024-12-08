@@ -188,7 +188,7 @@ class CancelSellOrder(RunSystem):
 @dataclass
 class ChangeName(RunSystem):
     entity: Entity
-    name: longstr
+    name: ShortString
     caller_crew: Entity
     _function_name: str = 'ChangeName'
 

@@ -26,7 +26,7 @@ class UnknownSystemEvent(SystemEvent):
 class ContractRegisteredEvent(SystemEvent):
     # TODO: This is an event the Dispatcher emits when register_contract is successful. It does not represent an event
     #  emitted by a system, so it might need to inherit from a different class and be renamed accordingly.
-    name: shortstr
+    name: ShortString
     address: ContractAddress
     _key: int = _starknet_keccak(b'ContractRegistered')
 
@@ -34,7 +34,7 @@ class ContractRegisteredEvent(SystemEvent):
 class SystemRegisteredEvent(SystemEvent):
     # TODO: This is an event the Dispatcher emits when register_system is successful. It does not represent an event
     #  emitted by a system, so it might need to inherit from a different class and be renamed accordingly.
-    name: shortstr
+    name: ShortString
     class_hash: ClassHash
     _key: int = _starknet_keccak(b'SystemRegistered')
 

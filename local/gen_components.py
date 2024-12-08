@@ -9,7 +9,6 @@ field_name_override = {
 # Field name override is applied before, so use the new field name
 type_override = {
     # ('<class name>', '<field name>'): '<new type>',
-    ('Name', 'name'): 'shortstr'
 }
 
 trailing_text = {

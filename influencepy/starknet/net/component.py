@@ -7,6 +7,10 @@ from influencepy.starknet.net.datatypes import *  # noqa: F401
 from influencepy.starknet.net.structs import *  # noqa: F401
 
 
+class ComponentReference(Schema):
+    pass
+
+
 class UnknownComponentUpdatedPreamble(Schema):
     first_unknown: u128
     second_unknown: PackedEntity
@@ -231,7 +235,7 @@ class ModifierType(ComponentUpdated):
 
 @dataclass
 class Name(ComponentUpdated):
-    name: shortstr
+    name: ShortString
     _name: str = 'Name'
 
 

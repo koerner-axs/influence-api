@@ -94,7 +94,7 @@ class ComponentUpdatedDispatcher:
 
     @classmethod
     def from_calldata(cls, keys: List[int], calldata: Calldata, **kwargs) -> "ComponentUpdated":
-        name = shortstr.decode(keys[1]).value
+        name = ShortString.decode(keys[1]).value
         if name not in cls._variants:
             return UnknownComponentUpdated(name, keys, calldata)
         var = cls._variants[name]

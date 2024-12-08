@@ -9,7 +9,7 @@ type_map = {
     'core::array::Span::<core::felt252>': 'List[felt252]',
     'core::bool': 'Bool',
     'core::starknet::contract_address::ContractAddress': 'ContractAddress',
-    'influence::common::types::string::String': 'longstr',
+    'influence::common::types::string::String': 'ShortString',
     'cubit::f64::types::fixed::Fixed': 'CubitFixedPoint64',
     'cubit::f128::types::fixed::Fixed': 'CubitFixedPoint128',
     'influence::common::types::entity::Entity': 'Entity',
