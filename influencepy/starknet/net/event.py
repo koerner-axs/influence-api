@@ -3,6 +3,8 @@ from typing import Dict, List  # noqa: F401
 
 from starknet_py.hash.utils import _starknet_keccak
 
+from influencepy.starknet.net.component import *
+from influencepy.starknet.net.component import CrewV1
 from influencepy.starknet.net.datatypes import *
 from influencepy.starknet.net.schema import Schema
 from influencepy.starknet.net.structs import Entity, InventoryItem  # noqa: F401
@@ -10,6 +12,15 @@ from influencepy.starknet.net.structs import Entity, InventoryItem  # noqa: F401
 
 class SystemEvent(Schema):
     _key: int
+
+
+class EntityTypeReference(Schema):
+    entity_type: EntityType
+
+
+class VersionPackedEntityReference(Schema):
+    version: u64
+    entity: PackedEntity
 
 
 @dataclass
@@ -970,10 +981,263 @@ class TransitStarted(SystemEvent):
     _key: int = _starknet_keccak(b'TransitStarted')
 
 
-class UnknownSystemEvent(SystemEvent):
-    def __init__(self, keys: List[int], data: Calldata):
-        self.keys = keys
-        self.data = data
+class ComponentUpdated(SystemEvent):
+    #reference: VersionPackedEntityReference
+    #reference: None
+    _key: int = _starknet_keccak(b'ComponentUpdated')
+    _name: str  # name of the component
+    _version_key: int  # optional versioning key
+
+
+@dataclass
+class BuildingUpdated(ComponentUpdated):
+    state: Building
+    _name: str = 'Building'
+
+
+@dataclass
+class BuildingTypeUpdated(ComponentUpdated):
+    state: BuildingType
+    _name: str = 'BuildingType'
+
+
+@dataclass
+class CelestialUpdated(ComponentUpdated):
+    state: Celestial
+    _name: str = 'Celestial'
+
+
+@dataclass
+class ContractAgreementUpdated(ComponentUpdated):
+    state: ContractAgreement
+    _name: str = 'ContractAgreement'
+
+
+@dataclass
+class ContractPolicyUpdated(ComponentUpdated):
+    state: ContractPolicy
+    _name: str = 'ContractPolicy'
+
+
+@dataclass
+class ControlUpdated(ComponentUpdated):
+    reference: VersionPackedEntityReference
+    state: Control
+    _name: str = 'Control'
+
+
+@dataclass
+class CrewV0Updated(ComponentUpdated):
+    reference: VersionPackedEntityReference
+    state: CrewV0
+    _name: str = 'Crew'
+    _version_key: int = 0
+
+
+@dataclass
+class CrewV1Updated(ComponentUpdated):
+    reference: VersionPackedEntityReference
+    state: CrewV1
+    _name: str = 'Crew'
+    _version_key: int = 1
+
+
+@dataclass
+class CrewmateUpdated(ComponentUpdated):
+    state: Crewmate
+    _name: str = 'Crewmate'
+
+
+@dataclass
+class DeliveryUpdated(ComponentUpdated):
+    state: Delivery
+    _name: str = 'Delivery'
+
+
+@dataclass
+class DepositUpdated(ComponentUpdated):
+    state: Deposit
+    _name: str = 'Deposit'
+
+
+@dataclass
+class DockUpdated(ComponentUpdated):
+    state: Dock
+    _name: str = 'Dock'
+
+
+@dataclass
+class DockTypeUpdated(ComponentUpdated):
+    state: DockType
+    _name: str = 'DockType'
+
+
+@dataclass
+class DryDockUpdated(ComponentUpdated):
+    state: DryDock
+    _name: str = 'DryDock'
+
+
+@dataclass
+class DryDockTypeUpdated(ComponentUpdated):
+    state: DryDockType
+    _name: str = 'DryDockType'
+
+
+@dataclass
+class ExchangeUpdated(ComponentUpdated):
+    state: Exchange
+    _name: str = 'Exchange'
+
+
+@dataclass
+class ExchangeTypeUpdated(ComponentUpdated):
+    state: ExchangeType
+    _name: str = 'ExchangeType'
+
+
+@dataclass
+class ExtractorUpdated(ComponentUpdated):
+    state: Extractor
+    _name: str = 'Extractor'
+
+
+@dataclass
+class InventoryUpdated(ComponentUpdated):
+    reference: VersionPackedEntityReference
+    state: Inventory
+    _name: str = 'Inventory'
+
+
+@dataclass
+class InventoryTypeUpdated(ComponentUpdated):
+    state: InventoryType
+    _name: str = 'InventoryType'
+
+
+@dataclass
+class LocationUpdated(ComponentUpdated):
+    reference: VersionPackedEntityReference
+    state: Location
+    _name: str = 'Location'
+
+
+@dataclass
+class ModifierTypeUpdated(ComponentUpdated):
+    state: ModifierType
+    _name: str = 'ModifierType'
+
+
+@dataclass
+class NameUpdated(ComponentUpdated):
+    state: Name
+    _name: str = 'Name'
+
+
+@dataclass
+class OrbitUpdated(ComponentUpdated):
+    state: Orbit
+    _name: str = 'Orbit'
+
+
+@dataclass
+class OrderUpdated(ComponentUpdated):
+    state: Order
+    _name: str = 'Order'
+
+
+@dataclass
+class PrepaidAgreementUpdated(ComponentUpdated):
+    state: PrepaidAgreement
+    _name: str = 'PrepaidAgreement'
+
+
+@dataclass
+class PrepaidPolicyUpdated(ComponentUpdated):
+    state: PrepaidPolicy
+    _name: str = 'PrepaidPolicy'
+
+
+@dataclass
+class PrivateSaleUpdated(ComponentUpdated):
+    state: PrivateSale
+    _name: str = 'PrivateSale'
+
+
+@dataclass
+class ProcessTypeUpdated(ComponentUpdated):
+    state: ProcessType
+    _name: str = 'ProcessType'
+
+
+@dataclass
+class ProcessorUpdated(ComponentUpdated):
+    state: Processor
+    _name: str = 'Processor'
+
+
+@dataclass
+class ProductTypeUpdated(ComponentUpdated):
+    state: ProductType
+    _name: str = 'ProductType'
+
+
+@dataclass
+class PublicPolicyUpdated(ComponentUpdated):
+    state: PublicPolicy
+    _name: str = 'PublicPolicy'
+
+
+@dataclass
+class ShipTypeUpdated(ComponentUpdated):
+    state: ShipType
+    _name: str = 'ShipType'
+
+
+@dataclass
+class ShipV0Updated(ComponentUpdated):
+    reference: VersionPackedEntityReference
+    state: ShipV0
+    _name: str = 'Ship'
+    _version_key: int = 0
+
+
+@dataclass
+class ShipV1Updated(ComponentUpdated):
+    reference: VersionPackedEntityReference
+    state: ShipV1
+    _name: str = 'Ship'
+    _version_key: int = 1
+
+
+@dataclass
+class ShipVariantTypeUpdated(ComponentUpdated):
+    state: ShipVariantType
+    _name: str = 'ShipVariantType'
+
+
+@dataclass
+class StationUpdated(ComponentUpdated):
+    reference: VersionPackedEntityReference
+    state: Station
+    _name: str = 'Station'
+
+
+@dataclass
+class StationTypeUpdated(ComponentUpdated):
+    state: StationType
+    _name: str = 'StationType'
+
+
+@dataclass
+class UniqueUpdated(ComponentUpdated):
+    _name: str = 'Unique'
+
+
+@dataclass
+class WhitelistAgreementUpdated(ComponentUpdated):
+    state: WhitelistAgreement
+    _name: str = 'WhitelistAgreement'
 
 
 # Begin unofficial events. The ABIs for these events are not available in the Influence SDK and are inferred manually or
@@ -992,6 +1256,12 @@ class SystemRegisteredEvent(SystemEvent):
     name: ShortString
     class_hash: ClassHash
     _key: int = _starknet_keccak(b'SystemRegistered')
+
+
+class UnknownSystemEvent(SystemEvent):
+    def __init__(self, keys: List[int], data: Calldata):
+        self.keys = keys
+        self.data = data
 
 
 class UnknownEvent:
@@ -1093,4 +1363,47 @@ ALL_SYSTEM_EVENTS: Dict[int, SystemEvent] = {
     # Begin unofficial events
     ContractRegisteredEvent._key: ContractRegisteredEvent,
     SystemRegisteredEvent._key: SystemRegisteredEvent,
+}
+
+
+# TODO: Versioning for ShipV0 and ShipV1
+ALL_COMPONENT_UPDATED: Dict[str, ComponentUpdated | List[ComponentUpdated]] = {
+    BuildingUpdated._name: BuildingUpdated,
+    BuildingTypeUpdated._name: BuildingTypeUpdated,
+    CelestialUpdated._name: CelestialUpdated,
+    ContractAgreementUpdated._name: ContractAgreementUpdated,
+    ContractPolicyUpdated._name: ContractPolicyUpdated,
+    ControlUpdated._name: ControlUpdated,
+    CrewV0Updated._name: [CrewV0Updated, CrewV1Updated],
+    CrewmateUpdated._name: CrewmateUpdated,
+    DeliveryUpdated._name: DeliveryUpdated,
+    DepositUpdated._name: DepositUpdated,
+    DockUpdated._name: DockUpdated,
+    DockTypeUpdated._name: DockTypeUpdated,
+    DryDockUpdated._name: DryDockUpdated,
+    DryDockTypeUpdated._name: DryDockTypeUpdated,
+    ExchangeUpdated._name: ExchangeUpdated,
+    ExchangeTypeUpdated._name: ExchangeTypeUpdated,
+    ExtractorUpdated._name: ExtractorUpdated,
+    InventoryUpdated._name: InventoryUpdated,
+    InventoryTypeUpdated._name: InventoryTypeUpdated,
+    LocationUpdated._name: LocationUpdated,
+    ModifierTypeUpdated._name: ModifierTypeUpdated,
+    NameUpdated._name: NameUpdated,
+    OrbitUpdated._name: OrbitUpdated,
+    OrderUpdated._name: OrderUpdated,
+    PrepaidAgreementUpdated._name: PrepaidAgreementUpdated,
+    PrepaidPolicyUpdated._name: PrepaidPolicyUpdated,
+    PrivateSaleUpdated._name: PrivateSaleUpdated,
+    ProcessTypeUpdated._name: ProcessTypeUpdated,
+    ProcessorUpdated._name: ProcessorUpdated,
+    ProductTypeUpdated._name: ProductTypeUpdated,
+    PublicPolicyUpdated._name: PublicPolicyUpdated,
+    ShipTypeUpdated._name: ShipTypeUpdated,
+    ShipV0Updated._name: [ShipV0Updated, ShipV1Updated],
+    ShipVariantTypeUpdated._name: ShipVariantTypeUpdated,
+    StationUpdated._name: StationUpdated,
+    StationTypeUpdated._name: StationTypeUpdated,
+    UniqueUpdated._name: UniqueUpdated,
+    WhitelistAgreementUpdated._name: WhitelistAgreementUpdated,
 }

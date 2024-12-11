@@ -7,9 +7,12 @@ class Schema(BasicType):
     def to_calldata(self, calldata: Calldata | None) -> Calldata:
         if calldata is None:
             calldata = Calldata([])
+        # FIXME: might need to aggregate annotations from all bases
         for key, field_type in self.__annotations__.items():
             if key.startswith('_'):
                 continue
+            if field_type is None:
+                raise NotImplementedError(f'Field "{key}" has no declared type')
             value = getattr(self, key)
             if isinstance(field_type, type) and issubclass(field_type, BasicType):
                 field_type.to_calldata(value, calldata)
@@ -29,6 +32,8 @@ class Schema(BasicType):
         for key, field_type in annotations.items():
             if key.startswith('_'):
                 continue
+            if field_type is None:
+                raise NotImplementedError(f'Field "{key}" has no declared type')
             if isinstance(field_type, type) and issubclass(field_type, BasicType):
                 try:
                     setattr(instance, key, field_type.from_calldata(calldata))

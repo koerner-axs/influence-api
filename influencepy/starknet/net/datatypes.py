@@ -127,6 +127,11 @@ class ShortString(BasicType):
     def decode(int_repr: int) -> "ShortString":
         return ShortString(felt.decode_shortstring(int_repr))
 
+    @staticmethod
+    def in_range(value: int) -> bool:
+        # anything larger than 31 bytes is not a string
+        return value < 2 ** (31 * 8)
+
     def __repr__(self):
         return f'"{self.value}"'
 

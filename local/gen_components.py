@@ -20,15 +20,13 @@ def replace_placeholder(template: str, replacement: str) -> str:
     return template.replace('### GENERATED BLOCK ###', replacement, 1)
 
 
-with open('local/starknet_components_compatible.json', 'r') as f:
-    event_file = json.load(f)
-
-component_list = [(x.split('::')[-1], y) for x, y in event_file.items()]
-component_list.sort(key=lambda x: x[0])
-
 with open('local/component_template.py', 'r') as f:
     component_template = f.read()
 
+with open('local/starknet_components_compatible.json', 'r') as f:
+    component_file = json.load(f)
+component_list = [(x.split('::')[-1], y) for x, y in component_file.items()]
+component_list.sort(key=lambda x: x[0])
 gen_lines = []
 for class_name, component in component_list:
     component_name = component['name'].split('::')[-1]

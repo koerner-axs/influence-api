@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from influencepy.starknet.net.datatypes import u64, u256, ContractAddress, felt252, Calldata
+from influencepy.starknet.net.datatypes import u64, u256, ContractAddress, felt252, Calldata, BasicType, ShortString
 from influencepy.starknet.net.schema import Schema
 
 
@@ -56,6 +56,7 @@ class Lot(Entity):
     """ Convenience class for lot entities. """
 
     def __init__(self, lot_number: int, asteroid_id: int):
+        # FIXME: das ist so bullshit, shift hat hier nix verloren
         super().__init__(entity_type=EntityType.LOT, entity_id=(lot_number << 32) | asteroid_id)
 
     def __str__(self):
@@ -76,16 +77,13 @@ class Deposit(Entity):
         super().__init__(entity_type=EntityType.DEPOSIT, entity_id=deposit_id)
 
 
-class PackedEntity(Schema):
+@dataclass
+class PackedEntity(BasicType):
     entity_id: int
     entity_type: EntityType
 
-    def __init__(self, entity_id: int, entity_type: EntityType):
-        self.entity_id = entity_id
-        self.entity_type = entity_type
-
     @classmethod
-    def from_calldata(cls, calldata: Calldata, **kwargs) -> "Schema":
+    def from_calldata(cls, calldata: Calldata, **kwargs) -> "PackedEntity":
         packed = calldata.pop_int()
         return PackedEntity(entity_id=packed >> 16, entity_type=EntityType(packed & 0xFFFF))
 
@@ -94,13 +92,33 @@ class PackedEntity(Schema):
         return calldata
 
     def unpack(self) -> Entity:
-        return Entity(entity_id=self.entity_id.value, entity_type=self.entity_type)
+        return Entity(entity_id=self.entity_id, entity_type=self.entity_type)
 
     def __str__(self):
         return f'{self.entity_type}({self.entity_id})'
 
 
-class BuildingId(Enum64):
+@dataclass
+class PackedLotIdentifier(BasicType):
+    lot_number: int
+    asteroid: int
+    entity_type: EntityType
+
+    @classmethod
+    def from_calldata(cls, calldata: Calldata) -> "PackedLotIdentifier":
+        packed = calldata.pop_int()
+        return PackedLotIdentifier(lot_number=packed >> 48, asteroid=packed >> 16 & 0xFFFFFFFF,
+                                   entity_type=EntityType(packed & 0xFFFF))
+
+    def to_calldata(self, calldata: Calldata) -> Calldata:
+        calldata.push_int((self.lot_number << 48) | (self.asteroid << 16) | self.entity_type.value)
+        return calldata
+
+    def __str__(self):
+        return f'LeaseIdentifier(lot={self.lot_number}, asteroid={self.asteroid}, type={self.entity_type})'
+
+
+class BuildingType(Enum64):
     EMPTY_LOT: 0
     WAREHOUSE: 1
     EXTRACTOR: 2
@@ -129,10 +147,10 @@ class Withdrawal(Schema):
 @dataclass
 class SeededAsteroid(Schema):
     asteroid_id: u64
-    name: felt252
+    name: ShortString
 
 
 @dataclass
 class SeededCrewmate(Schema):
     crewmate_id: u64
-    name: felt252
+    name: ShortString

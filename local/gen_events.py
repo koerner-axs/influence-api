@@ -20,15 +20,13 @@ def replace_placeholder(template: str, replacement: str) -> str:
     return template.replace('### GENERATED BLOCK ###', replacement, 1)
 
 
-with open('local/starknet_events.json', 'r') as f:
-    event_file = json.load(f)
-
-events_list = [(x.split('::')[-1], y) for x, y in event_file.items()]
-events_list.sort(key=lambda x: x[0])
-
 with open('local/event_template.py', 'r') as f:
     event_template = f.read()
 
+with open('local/starknet_events.json', 'r') as f:
+    event_file = json.load(f)
+events_list = [(x.split('::')[-1], y) for x, y in event_file.items()]
+events_list.sort(key=lambda x: x[0])
 gen_lines = []
 for class_name, event in events_list:
     event_name = event['name'].split('::')[-1]
@@ -51,13 +49,36 @@ for class_name, event in events_list:
 gen_lines = gen_lines[:-1]
 event_template = replace_placeholder(event_template, '\n'.join(gen_lines))
 
+with open('local/starknet_components_compatible.json', 'r') as f:
+    component_file = json.load(f)
+component_file = [(x.split('::')[-1], y) for x, y in component_file.items()]
+component_file.sort(key=lambda x: x[0])
+gen_lines = []
+for class_name, component in component_file:
+    component_name = component['name'].split('::')[-1]
+    gen_lines.append('@dataclass')
+    gen_lines.append(f'class {class_name}Updated(ComponentUpdated):')
+    gen_lines.append(f'    state: {class_name}')
+    gen_lines.append(f'    _name: str = \'{component_name}\'')
+    if 'version_key' in component:
+        gen_lines.append(f'    _version_key: int = {component["version_key"]}')
+    gen_lines.append('\n')
+gen_lines = gen_lines[:-1]
+event_template = replace_placeholder(event_template, '\n'.join(gen_lines))
+
 gen_lines = ['ALL_SYSTEM_EVENTS: Dict[int, SystemEvent] = {']
-unofficial_event_list = ['ContractRegisteredEvent', 'SystemRegisteredEvent']
 for class_name, event in events_list:
     gen_lines.append(f'    {class_name}._key: {class_name},')
 gen_lines.append('    # Begin unofficial events')
+unofficial_event_list = ['ContractRegisteredEvent', 'SystemRegisteredEvent']
 for event_name in unofficial_event_list:
     gen_lines.append(f'    {event_name}._key: {event_name},')
+gen_lines.append('}')
+event_template = replace_placeholder(event_template, '\n'.join(gen_lines))
+
+gen_lines = ['ALL_COMPONENT_UPDATED: Dict[str, ComponentUpdated | List[ComponentUpdated]] = {']
+for class_name, component in component_file:
+    gen_lines.append(f'    {class_name}Updated._name: {class_name}Updated,')
 gen_lines.append('}')
 event_template = replace_placeholder(event_template, '\n'.join(gen_lines))
 

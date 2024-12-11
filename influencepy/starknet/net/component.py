@@ -11,21 +11,15 @@ class ComponentReference(Schema):
     pass
 
 
-class UnknownComponentUpdatedPreamble(Schema):
-    first_unknown: u128
-    second_unknown: PackedEntity
-
-
-class ComponentUpdated(UnknownComponentUpdatedPreamble):
+class Component(Schema):
     """Note: The name of this event class was reversed from its keccak hash.
     As such, it may be incorrect and is subject to change."""
-    _key: int = _starknet_keccak(b'ComponentUpdated')  # first key
-    _name: str  # second key
+    _name: str
     _version_key: int  # optional versioning keys
 
 
 @dataclass
-class Building(ComponentUpdated):
+class Building(Component):
     status: u64
     building_type: u64
     planned_at: u64
@@ -34,7 +28,7 @@ class Building(ComponentUpdated):
 
 
 @dataclass
-class BuildingType(ComponentUpdated):
+class BuildingType(Component):
     process_type: u64
     site_slot: u64
     site_type: u64
@@ -42,7 +36,7 @@ class BuildingType(ComponentUpdated):
 
 
 @dataclass
-class Celestial(ComponentUpdated):
+class Celestial(Component):
     celestial_type: u64
     mass: CubitFixedPoint128
     radius: CubitFixedPoint64
@@ -55,25 +49,25 @@ class Celestial(ComponentUpdated):
 
 
 @dataclass
-class ContractAgreement(ComponentUpdated):
+class ContractAgreement(Component):
     address: ContractAddress
     _name: str = 'ContractAgreement'
 
 
 @dataclass
-class ContractPolicy(ComponentUpdated):
+class ContractPolicy(Component):
     address: ContractAddress
     _name: str = 'ContractPolicy'
 
 
 @dataclass
-class Control(ComponentUpdated):
+class Control(Component):
     controller: Entity
     _name: str = 'Control'
 
 
 @dataclass
-class CrewV0(ComponentUpdated):
+class CrewV0(Component):
     delegated_to: ContractAddress
     roster: List[u64]
     last_fed: u64
@@ -85,7 +79,7 @@ class CrewV0(ComponentUpdated):
 
 
 @dataclass
-class CrewV1(ComponentUpdated):
+class CrewV1(Component):
     delegated_to: ContractAddress
     roster: List[u64]
     last_fed: u64
@@ -100,7 +94,7 @@ class CrewV1(ComponentUpdated):
 
 
 @dataclass
-class Crewmate(ComponentUpdated):
+class Crewmate(Component):
     status: u64
     collection: u64
     class_: u64
@@ -112,7 +106,7 @@ class Crewmate(ComponentUpdated):
 
 
 @dataclass
-class Delivery(ComponentUpdated):
+class Delivery(Component):
     status: u64
     origin: Entity
     origin_slot: u64
@@ -124,7 +118,7 @@ class Delivery(ComponentUpdated):
 
 
 @dataclass
-class Deposit(ComponentUpdated):
+class Deposit(Component):
     status: u64
     resource: u64
     initial_yield: u64
@@ -135,7 +129,7 @@ class Deposit(ComponentUpdated):
 
 
 @dataclass
-class Dock(ComponentUpdated):
+class Dock(Component):
     dock_type: u64
     docked_ships: u64
     ready_at: u64
@@ -143,14 +137,14 @@ class Dock(ComponentUpdated):
 
 
 @dataclass
-class DockType(ComponentUpdated):
+class DockType(Component):
     cap: u64
     delay: u64
     _name: str = 'DockType'
 
 
 @dataclass
-class DryDock(ComponentUpdated):
+class DryDock(Component):
     dry_dock_type: u64
     status: u64
     output_ship: Entity
@@ -159,14 +153,14 @@ class DryDock(ComponentUpdated):
 
 
 @dataclass
-class DryDockType(ComponentUpdated):
+class DryDockType(Component):
     max_mass: u64
     max_volume: u64
     _name: str = 'DryDockType'
 
 
 @dataclass
-class Exchange(ComponentUpdated):
+class Exchange(Component):
     exchange_type: u64
     maker_fee: u64
     taker_fee: u64
@@ -176,13 +170,13 @@ class Exchange(ComponentUpdated):
 
 
 @dataclass
-class ExchangeType(ComponentUpdated):
+class ExchangeType(Component):
     allowed_products: u64
     _name: str = 'ExchangeType'
 
 
 @dataclass
-class Extractor(ComponentUpdated):
+class Extractor(Component):
     extractor_type: u64
     status: u64
     output_product: u64
@@ -194,7 +188,7 @@ class Extractor(ComponentUpdated):
 
 
 @dataclass
-class Inventory(ComponentUpdated):
+class Inventory(Component):
     inventory_type: u64
     status: u64
     mass: u64
@@ -207,7 +201,7 @@ class Inventory(ComponentUpdated):
 
 
 @dataclass
-class InventoryType(ComponentUpdated):
+class InventoryType(Component):
     mass: u64
     volume: u64
     modifiable: Bool
@@ -216,13 +210,13 @@ class InventoryType(ComponentUpdated):
 
 
 @dataclass
-class Location(ComponentUpdated):
+class Location(Component):
     location: Entity
     _name: str = 'Location'
 
 
 @dataclass
-class ModifierType(ComponentUpdated):
+class ModifierType(Component):
     class_: u64
     dept_type: u64
     dept_eff: u64
@@ -234,13 +228,13 @@ class ModifierType(ComponentUpdated):
 
 
 @dataclass
-class Name(ComponentUpdated):
+class Name(Component):
     name: ShortString
     _name: str = 'Name'
 
 
 @dataclass
-class Orbit(ComponentUpdated):
+class Orbit(Component):
     a: CubitFixedPoint128
     ecc: CubitFixedPoint128
     inc: CubitFixedPoint128
@@ -251,7 +245,7 @@ class Orbit(ComponentUpdated):
 
 
 @dataclass
-class Order(ComponentUpdated):
+class Order(Component):
     status: u64
     amount: u64
     valid_time: u64
@@ -260,7 +254,7 @@ class Order(ComponentUpdated):
 
 
 @dataclass
-class PrepaidAgreement(ComponentUpdated):
+class PrepaidAgreement(Component):
     rate: u64
     initial_term: u64
     notice_period: u64
@@ -271,7 +265,7 @@ class PrepaidAgreement(ComponentUpdated):
 
 
 @dataclass
-class PrepaidPolicy(ComponentUpdated):
+class PrepaidPolicy(Component):
     rate: u64
     initial_term: u64
     notice_period: u64
@@ -279,14 +273,14 @@ class PrepaidPolicy(ComponentUpdated):
 
 
 @dataclass
-class PrivateSale(ComponentUpdated):
+class PrivateSale(Component):
     status: u64
     amount: u64
     _name: str = 'PrivateSale'
 
 
 @dataclass
-class ProcessType(ComponentUpdated):
+class ProcessType(Component):
     setup_time: u64
     recipe_time: u64
     batched: Bool
@@ -297,7 +291,7 @@ class ProcessType(ComponentUpdated):
 
 
 @dataclass
-class Processor(ComponentUpdated):
+class Processor(Component):
     processor_type: u64
     status: u64
     running_process: u64
@@ -311,20 +305,20 @@ class Processor(ComponentUpdated):
 
 
 @dataclass
-class ProductType(ComponentUpdated):
+class ProductType(Component):
     mass: u64
     volume: u64
     _name: str = 'ProductType'
 
 
 @dataclass
-class PublicPolicy(ComponentUpdated):
+class PublicPolicy(Component):
     public: Bool
     _name: str = 'PublicPolicy'
 
 
 @dataclass
-class ShipType(ComponentUpdated):
+class ShipType(Component):
     cargo_inventory_type: u64
     cargo_slot: u64
     docking: Bool
@@ -341,7 +335,7 @@ class ShipType(ComponentUpdated):
 
 
 @dataclass
-class ShipV0(ComponentUpdated):
+class ShipV0(Component):
     ship_type: u64
     status: u64
     ready_at: u64
@@ -351,7 +345,7 @@ class ShipV0(ComponentUpdated):
 
 
 @dataclass
-class ShipV1(ComponentUpdated):
+class ShipV1(Component):
     ship_type: u64
     status: u64
     ready_at: u64
@@ -366,21 +360,21 @@ class ShipV1(ComponentUpdated):
 
 
 @dataclass
-class ShipVariantType(ComponentUpdated):
+class ShipVariantType(Component):
     ship_type: u64
     exhaust_velocity_modifier: CubitFixedPoint64
     _name: str = 'ShipVariantType'
 
 
 @dataclass
-class Station(ComponentUpdated):
+class Station(Component):
     station_type: u64
     population: u64
     _name: str = 'Station'
 
 
 @dataclass
-class StationType(ComponentUpdated):
+class StationType(Component):
     cap: u64
     recruitment: Bool
     efficiency: CubitFixedPoint64
@@ -388,25 +382,26 @@ class StationType(ComponentUpdated):
 
 
 @dataclass
-class Unique(ComponentUpdated):
-    unique: felt252
+class Unique(Component):
+    unique: ShortString
+    used: Bool
     _name: str = 'Unique'
 
 
 @dataclass
-class WhitelistAgreement(ComponentUpdated):
+class WhitelistAgreement(Component):
     whitelisted: Bool
     _name: str = 'WhitelistAgreement'
 
 
-class UnknownComponentUpdated(ComponentUpdated):
+class UnknownComponent(Component):
     def __init__(self, name: str, keys: List[int], data: Calldata):
         self.name = name
         self.keys = keys
         self.data = data
 
 
-ALL_COMPONENTS: Dict[str, ComponentUpdated | List[ComponentUpdated]] = {
+ALL_COMPONENTS: Dict[str, Component | List[Component]] = {
     Building._name: Building,
     BuildingType._name: BuildingType,
     Celestial._name: Celestial,

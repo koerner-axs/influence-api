@@ -1,6 +1,7 @@
-from influencepy.starknet.net.component import ComponentUpdated, ALL_COMPONENTS, UnknownComponentUpdated
+from influencepy.starknet.net.component import Component, ALL_COMPONENTS, UnknownComponent
 from influencepy.starknet.net.contract_call import UnknownContractCall
 from influencepy.starknet.net.event import *
+from influencepy.starknet.net.parser.unique import parse_unique_updated_event
 from influencepy.starknet.net.schema import Schema
 from influencepy.starknet.net.sway import *
 from influencepy.starknet.net.system import *
@@ -9,7 +10,7 @@ from influencepy.starknet.net.system import *
 class RunSystemDispatcher(Schema):
     _contract_address: int = DISPATCHER_ADDRESS  # TODO: maybe remove
     _selector: int = get_selector_from_name('run_system')
-    _variants: Dict[str, ComponentUpdated | List[ComponentUpdated]] = ALL_SYSTEMS
+    _variants: Dict[str, RunSystem | List[RunSystem]] = ALL_SYSTEMS
 
     @classmethod
     def from_calldata(cls, calldata: Calldata, **kwargs) -> Schema:
@@ -90,15 +91,20 @@ class SystemEventDispatcher:
 
 
 class ComponentUpdatedDispatcher:
-    _variants: Dict[str, ComponentUpdated | List[ComponentUpdated]] = ALL_COMPONENTS
+    _variants: Dict[str, ComponentUpdated | List[ComponentUpdated]] = ALL_COMPONENT_UPDATED
 
     @classmethod
     def from_calldata(cls, keys: List[int], calldata: Calldata, **kwargs) -> "ComponentUpdated":
         name = ShortString.decode(keys[1]).value
+
+        if name == 'Unique':
+            return parse_unique_updated_event(calldata)
+
         if name not in cls._variants:
-            return UnknownComponentUpdated(name, keys, calldata)
+            return UnknownComponent(name, keys, calldata)
         var = cls._variants[name]
         if not isinstance(var, list):
+            # If there is only one variant, parse it immediately
             return var.from_calldata(calldata, **kwargs)
         version = 0
         if len(keys) >= 3:
@@ -112,6 +118,7 @@ class ComponentUpdatedDispatcher:
 class EventDispatcher:
     @classmethod
     def from_calldata(cls, keys: List[int], calldata: Calldata, **kwargs):
+        # TODO: does this if make sense?
         if len(keys) == 1:
             return SystemEventDispatcher.from_calldata(keys[0], calldata, **kwargs)
         if keys[0] == ComponentUpdated._key:
