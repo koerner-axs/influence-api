@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 from influencepy.starknet.net.datatypes import felt252, u64, Calldata, ShortString, Bool, AccountAddress
 from influencepy.starknet.net.event import UniqueUpdated
 from influencepy.starknet.net.structs import PackedEntity, EntityType, PackedLotIdentifier
