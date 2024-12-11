@@ -27,8 +27,8 @@ async def read_event(client: FullNodeClient):
             calldata = Calldata(event.data.copy())
             try:
                 #print(event.keys, event.data, f'0x{event.transaction_hash:02x}')
-                #print(EventDispatcher.from_calldata(event.keys, calldata))
-                EventDispatcher.from_calldata(event.keys, calldata)
+                print(EventDispatcher.from_calldata(event.keys, calldata))
+                #EventDispatcher.from_calldata(event.keys, calldata)
                 event_count += 1
             except Exception as e:
                 print('Offending event:', event.keys, event.data, f'0x{event.transaction_hash:02x}')

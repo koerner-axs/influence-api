@@ -1,8 +1,6 @@
-from influencepy.starknet.net.component import Component, ALL_COMPONENTS, UnknownComponent
 from influencepy.starknet.net.contract_call import UnknownContractCall
 from influencepy.starknet.net.event import *
-from influencepy.starknet.net.parser.unique import parse_unique_updated_event
-from influencepy.starknet.net.schema import Schema
+from influencepy.starknet.net.parser.component_updated import ComponentUpdatedEventParser
 from influencepy.starknet.net.sway import *
 from influencepy.starknet.net.system import *
 
@@ -95,24 +93,7 @@ class ComponentUpdatedDispatcher:
 
     @classmethod
     def from_calldata(cls, keys: List[int], calldata: Calldata, **kwargs) -> "ComponentUpdated":
-        name = ShortString.decode(keys[1]).value
-
-        if name == 'Unique':
-            return parse_unique_updated_event(calldata)
-
-        if name not in cls._variants:
-            return UnknownComponent(name, keys, calldata)
-        var = cls._variants[name]
-        if not isinstance(var, list):
-            # If there is only one variant, parse it immediately
-            return var.from_calldata(calldata, **kwargs)
-        version = 0
-        if len(keys) >= 3:
-            version = keys[2]
-        for variant in var:
-            if variant._version_key == version:
-                return variant.from_calldata(calldata, **kwargs)
-        raise ValueError(f'ComponentUpdated "{name}" has no version with key {version}')
+        return ComponentUpdatedEventParser()(keys, calldata, **kwargs)
 
 
 class EventDispatcher:
