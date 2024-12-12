@@ -115,7 +115,7 @@ class PackedLotIdentifier(BasicType):
         return calldata
 
     def __str__(self):
-        return f'LeaseIdentifier(lot={self.lot_number}, asteroid={self.asteroid}, type={self.entity_type})'
+        return f'PackedLotIdentifier(lot={self.lot_number}, asteroid={self.asteroid}, type={self.entity_type})'
 
 
 class BuildingType(Enum64):

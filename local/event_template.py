@@ -63,5 +63,4 @@ class UnknownEvent:
 ### GENERATED BLOCK ###
 
 
-# TODO: Versioning for ShipV0 and ShipV1
 ### GENERATED BLOCK ###

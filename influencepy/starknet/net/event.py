@@ -3,8 +3,7 @@ from typing import Dict, List  # noqa: F401
 
 from starknet_py.hash.utils import _starknet_keccak
 
-from influencepy.starknet.net.component import *
-from influencepy.starknet.net.component import CrewV1
+from influencepy.starknet.net.component import *  # noqa: F401
 from influencepy.starknet.net.datatypes import *
 from influencepy.starknet.net.schema import Schema
 from influencepy.starknet.net.structs import Entity, InventoryItem  # noqa: F401
@@ -14,13 +13,8 @@ class SystemEvent(Schema):
     _key: int
 
 
-class EntityTypeReference(Schema):
+class UniqueReference(Schema):
     entity_type: EntityType
-
-
-class VersionPackedEntityReference(Schema):
-    version: u64
-    entity: PackedEntity
 
 
 @dataclass
@@ -982,8 +976,6 @@ class TransitStarted(SystemEvent):
 
 
 class ComponentUpdated(SystemEvent):
-    #reference: VersionPackedEntityReference
-    #reference: None
     _key: int = _starknet_keccak(b'ComponentUpdated')
     _name: str  # name of the component
     _version_key: int  # optional versioning key
@@ -1021,25 +1013,15 @@ class ContractPolicyUpdated(ComponentUpdated):
 
 @dataclass
 class ControlUpdated(ComponentUpdated):
-    reference: VersionPackedEntityReference
     state: Control
     _name: str = 'Control'
 
 
 @dataclass
-class CrewV0Updated(ComponentUpdated):
-    reference: VersionPackedEntityReference
-    state: CrewV0
+class CrewUpdated(ComponentUpdated):
+    unknown_1: felt252
+    crew: PackedEntity
     _name: str = 'Crew'
-    _version_key: int = 0
-
-
-@dataclass
-class CrewV1Updated(ComponentUpdated):
-    reference: VersionPackedEntityReference
-    state: CrewV1
-    _name: str = 'Crew'
-    _version_key: int = 1
 
 
 @dataclass
@@ -1104,7 +1086,6 @@ class ExtractorUpdated(ComponentUpdated):
 
 @dataclass
 class InventoryUpdated(ComponentUpdated):
-    reference: VersionPackedEntityReference
     state: Inventory
     _name: str = 'Inventory'
 
@@ -1117,7 +1098,6 @@ class InventoryTypeUpdated(ComponentUpdated):
 
 @dataclass
 class LocationUpdated(ComponentUpdated):
-    reference: VersionPackedEntityReference
     state: Location
     _name: str = 'Location'
 
@@ -1195,19 +1175,8 @@ class ShipTypeUpdated(ComponentUpdated):
 
 
 @dataclass
-class ShipV0Updated(ComponentUpdated):
-    reference: VersionPackedEntityReference
-    state: ShipV0
+class ShipUpdated(ComponentUpdated):
     _name: str = 'Ship'
-    _version_key: int = 0
-
-
-@dataclass
-class ShipV1Updated(ComponentUpdated):
-    reference: VersionPackedEntityReference
-    state: ShipV1
-    _name: str = 'Ship'
-    _version_key: int = 1
 
 
 @dataclass
@@ -1218,7 +1187,6 @@ class ShipVariantTypeUpdated(ComponentUpdated):
 
 @dataclass
 class StationUpdated(ComponentUpdated):
-    reference: VersionPackedEntityReference
     state: Station
     _name: str = 'Station'
 
@@ -1231,6 +1199,7 @@ class StationTypeUpdated(ComponentUpdated):
 
 @dataclass
 class UniqueUpdated(ComponentUpdated):
+    state: Unique
     _name: str = 'Unique'
 
 
@@ -1366,44 +1335,41 @@ ALL_SYSTEM_EVENTS: Dict[int, SystemEvent] = {
 }
 
 
-# TODO: Versioning for ShipV0 and ShipV1
-ALL_COMPONENT_UPDATED: Dict[str, ComponentUpdated | List[ComponentUpdated]] = {
-    BuildingUpdated._name: BuildingUpdated,
-    BuildingTypeUpdated._name: BuildingTypeUpdated,
-    CelestialUpdated._name: CelestialUpdated,
-    ContractAgreementUpdated._name: ContractAgreementUpdated,
-    ContractPolicyUpdated._name: ContractPolicyUpdated,
-    ControlUpdated._name: ControlUpdated,
-    CrewV0Updated._name: [CrewV0Updated, CrewV1Updated],
-    CrewmateUpdated._name: CrewmateUpdated,
-    DeliveryUpdated._name: DeliveryUpdated,
-    DepositUpdated._name: DepositUpdated,
-    DockUpdated._name: DockUpdated,
-    DockTypeUpdated._name: DockTypeUpdated,
-    DryDockUpdated._name: DryDockUpdated,
-    DryDockTypeUpdated._name: DryDockTypeUpdated,
-    ExchangeUpdated._name: ExchangeUpdated,
-    ExchangeTypeUpdated._name: ExchangeTypeUpdated,
-    ExtractorUpdated._name: ExtractorUpdated,
-    InventoryUpdated._name: InventoryUpdated,
-    InventoryTypeUpdated._name: InventoryTypeUpdated,
-    LocationUpdated._name: LocationUpdated,
-    ModifierTypeUpdated._name: ModifierTypeUpdated,
-    NameUpdated._name: NameUpdated,
-    OrbitUpdated._name: OrbitUpdated,
-    OrderUpdated._name: OrderUpdated,
-    PrepaidAgreementUpdated._name: PrepaidAgreementUpdated,
-    PrepaidPolicyUpdated._name: PrepaidPolicyUpdated,
-    PrivateSaleUpdated._name: PrivateSaleUpdated,
-    ProcessTypeUpdated._name: ProcessTypeUpdated,
-    ProcessorUpdated._name: ProcessorUpdated,
-    ProductTypeUpdated._name: ProductTypeUpdated,
-    PublicPolicyUpdated._name: PublicPolicyUpdated,
-    ShipTypeUpdated._name: ShipTypeUpdated,
-    ShipV0Updated._name: [ShipV0Updated, ShipV1Updated],
-    ShipVariantTypeUpdated._name: ShipVariantTypeUpdated,
-    StationUpdated._name: StationUpdated,
-    StationTypeUpdated._name: StationTypeUpdated,
-    UniqueUpdated._name: UniqueUpdated,
-    WhitelistAgreementUpdated._name: WhitelistAgreementUpdated,
-}
+ALL_COMPONENT_UPDATED: List[ComponentUpdated] = [
+    BuildingUpdated,
+    BuildingTypeUpdated,
+    CelestialUpdated,
+    ContractAgreementUpdated,
+    ContractPolicyUpdated,
+    ControlUpdated,
+    CrewmateUpdated,
+    DeliveryUpdated,
+    DepositUpdated,
+    DockUpdated,
+    DockTypeUpdated,
+    DryDockUpdated,
+    DryDockTypeUpdated,
+    ExchangeUpdated,
+    ExchangeTypeUpdated,
+    ExtractorUpdated,
+    InventoryUpdated,
+    InventoryTypeUpdated,
+    LocationUpdated,
+    ModifierTypeUpdated,
+    NameUpdated,
+    OrbitUpdated,
+    OrderUpdated,
+    PrepaidAgreementUpdated,
+    PrepaidPolicyUpdated,
+    PrivateSaleUpdated,
+    ProcessTypeUpdated,
+    ProcessorUpdated,
+    ProductTypeUpdated,
+    PublicPolicyUpdated,
+    ShipTypeUpdated,
+    ShipVariantTypeUpdated,
+    StationUpdated,
+    StationTypeUpdated,
+    UniqueUpdated,
+    WhitelistAgreementUpdated,
+]

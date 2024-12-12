@@ -1,5 +1,7 @@
 import json
 import keyword
+
+from local.gen_systems import aggregated_over_versions
 from type_map import type_map
 
 field_name_override = {
@@ -14,6 +16,12 @@ type_override = {
 trailing_text = {
     # '<class name>': '<text>',
 }
+
+ignore_components = [
+    'Unique',
+    'Ship',
+    'Crew'
+]
 
 
 def replace_placeholder(template: str, replacement: str) -> str:
@@ -76,10 +84,20 @@ for event_name in unofficial_event_list:
 gen_lines.append('}')
 event_template = replace_placeholder(event_template, '\n'.join(gen_lines))
 
-gen_lines = ['ALL_COMPONENT_UPDATED: Dict[str, ComponentUpdated | List[ComponentUpdated]] = {']
+aggregated_over_versions = {}
 for class_name, component in component_file:
-    gen_lines.append(f'    {class_name}Updated._name: {class_name}Updated,')
-gen_lines.append('}')
+    name = component['name'].split('::')[-1]
+    if name in ignore_components:
+        continue
+    if name not in aggregated_over_versions:
+        aggregated_over_versions[name] = []
+    aggregated_over_versions[name].append(class_name)
+
+gen_lines = ['ALL_COMPONENT_UPDATED: List[ComponentUpdated] = [']
+for name, comps in aggregated_over_versions.items():
+    if len(comps) == 1:
+        gen_lines.append(f'    {comps[0]}Updated,')
+gen_lines.append(']')
 event_template = replace_placeholder(event_template, '\n'.join(gen_lines))
 
 with open('influencepy/starknet/net/event.py', 'w') as f:

@@ -8,7 +8,6 @@ from influencepy.starknet.net.structs import PackedEntity, EntityType, PackedLot
 
 class UniqueEntityNameEvent(UniqueUpdated):
     entity_type: EntityType
-    # unknown: felt252
     name: ShortString
     used: Bool
 
@@ -53,7 +52,7 @@ class UniqueArrivalRewardClaimedEvent(UniqueUpdated):
 
 class UniqueTestnetSwayWhitelistEvent(UniqueUpdated):
     address: AccountAddress
-    used: Bool  # used meaning claimable reward was created
+    issued: Bool
 
 
 class UniqueTestnetSwayClaimedEvent(UniqueUpdated):
@@ -62,9 +61,9 @@ class UniqueTestnetSwayClaimedEvent(UniqueUpdated):
 
 
 class UniqueBuildingNameEvent(UniqueUpdated):
-    # TODO: fix name
+    # TODO: fix name, might not have to be a building, what about ships?
     entity_type: EntityType
-    unknown: felt252
+    asteroid: u64
     name: ShortString
     used: Bool
 
@@ -75,12 +74,12 @@ class UniqueLotUseEvent(UniqueUpdated):
 
     @classmethod
     def parse_legacy_0(cls, calldata: Calldata) -> "UniqueLotUseEvent":
-        # Handle Unique events with version 2 and subtype LotUse
+        # Handle Unique events with version 2 and subtype LotUse or UseLot
         lot = calldata.data[0]
+        # TODO: stuff like this naturally only works on one chain. Maybe there should be a Testnet flag?
         if lot == 0x1872d600000001:
-            # There is exactly one early event that has a different format. It was apparently manually written
-            # WriteComponent.
-            # It is in tx 0x5c5b088f133f5961c952d2e31be2fcbdc89a4c1b04d87d007afa67f9afd6a54
+            # There is exactly one early event that has a different format.
+            # It is in tx mainnet@0x5c5b088f133f5961c952d2e31be2fcbdc89a4c1b04d87d007afa67f9afd6a54
             calldata.pop_int()
             instance = cls.__new__(cls)
             instance.lot = PackedLotIdentifier(lot >> 32, lot & 0xFFFFFFFF, EntityType.LOT)
@@ -101,6 +100,8 @@ class UniqueAnnotateEventEvent(UniqueUpdated):
 class UniqueEventParser(EventParser):
     def __call__(self, keys: List[int], calldata: Calldata, **kwargs) -> UniqueUpdated:
         subtype = calldata.pop_int()
+        # TODO: maybe subtype is really just len(calldata) - 1 and is not a versioning key?
+
         if subtype == 2 and len(calldata) == 3:
             subtype2 = calldata.data[0]
             subtype2_str = ShortString.decode(subtype2).value
@@ -121,6 +122,7 @@ class UniqueEventParser(EventParser):
                 elif subtype3_str == 'ArrivalRewardClaimed':
                     return UniqueArrivalRewardClaimedEvent.from_calldata(calldata)
             return UniqueEntityNameEvent.from_calldata(calldata)
+
         elif subtype == 3 and len(calldata) == 4:
             subtype2 = ShortString.decode(calldata.data[0]).value
             if subtype2 == 'Name':
@@ -129,11 +131,14 @@ class UniqueEventParser(EventParser):
             elif subtype2 == 'LotUse':
                 calldata.pop_int()  # ignore subtype2
                 return UniqueLotUseEvent.from_calldata(calldata)
+
         elif subtype == 4 and len(calldata) == 5:
             subtype2 = ShortString.decode(calldata.data[0]).value
             if subtype2 == 'Name':
                 calldata.pop_int()  # ignore subtype2
                 return UniqueBuildingNameEvent.from_calldata(calldata)
+
         elif subtype == 5 and len(calldata) == 6:
             return UniqueAnnotateEventEvent.from_calldata(calldata)
+
         raise ValueError(f'Unknown uniqueness group subtype {subtype}')

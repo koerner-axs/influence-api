@@ -67,19 +67,7 @@ class Control(Component):
 
 
 @dataclass
-class CrewV0(Component):
-    delegated_to: ContractAddress
-    roster: List[u64]
-    last_fed: u64
-    ready_at: u64
-    unknown_field_1: u64
-    unknown_field_2: u64
-    _name: str = 'Crew'
-    _version_key: int = 0
-
-
-@dataclass
-class CrewV1(Component):
+class Crew(Component):
     delegated_to: ContractAddress
     roster: List[u64]
     last_fed: u64
@@ -335,17 +323,7 @@ class ShipType(Component):
 
 
 @dataclass
-class ShipV0(Component):
-    ship_type: u64
-    status: u64
-    ready_at: u64
-    variant: u64
-    _name: str = 'Ship'
-    _version_key: int = 0
-
-
-@dataclass
-class ShipV1(Component):
+class Ship(Component):
     ship_type: u64
     status: u64
     ready_at: u64
@@ -356,7 +334,6 @@ class ShipV1(Component):
     transit_destination: Entity
     transit_arrival: u64
     _name: str = 'Ship'
-    _version_key: int = 1
 
 
 @dataclass
@@ -408,7 +385,7 @@ ALL_COMPONENTS: Dict[str, Component | List[Component]] = {
     ContractAgreement._name: ContractAgreement,
     ContractPolicy._name: ContractPolicy,
     Control._name: Control,
-    CrewV0._name: [CrewV0, CrewV1],
+    Crew._name: Crew,
     Crewmate._name: Crewmate,
     Delivery._name: Delivery,
     Deposit._name: Deposit,
@@ -434,7 +411,7 @@ ALL_COMPONENTS: Dict[str, Component | List[Component]] = {
     ProductType._name: ProductType,
     PublicPolicy._name: PublicPolicy,
     ShipType._name: ShipType,
-    ShipV0._name: [ShipV0, ShipV1],
+    Ship._name: Ship,
     ShipVariantType._name: ShipVariantType,
     Station._name: Station,
     StationType._name: StationType,

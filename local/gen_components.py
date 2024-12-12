@@ -15,6 +15,10 @@ trailing_text = {
     # '<class name>': '<text>',
 }
 
+ignore_components = [
+    'Unique'
+]
+
 
 def replace_placeholder(template: str, replacement: str) -> str:
     return template.replace('### GENERATED BLOCK ###', replacement, 1)
@@ -30,6 +34,8 @@ component_list.sort(key=lambda x: x[0])
 gen_lines = []
 for class_name, component in component_list:
     component_name = component['name'].split('::')[-1]
+    if component_name in ignore_components:
+        continue
     gen_lines.append('@dataclass')
     gen_lines.append(f'class {class_name}(ComponentUpdated):')
     for field in component['members']:
@@ -54,6 +60,8 @@ component_template = replace_placeholder(component_template, '\n'.join(gen_lines
 aggregated_over_versions = {}
 for class_name, component in component_list:
     name = component['name'].split('::')[-1]
+    if name in ignore_components:
+        continue
     if name not in aggregated_over_versions:
         aggregated_over_versions[name] = []
     aggregated_over_versions[name].append(class_name)
