@@ -7,8 +7,10 @@ class Schema(BasicType):
     def to_calldata(self, calldata: Calldata | None) -> Calldata:
         if calldata is None:
             calldata = Calldata([])
-        # FIXME: might need to aggregate annotations from all bases
-        for key, field_type in self.__annotations__.items():
+        annotations = {}
+        for base in self.__class__.__mro__[-2::-1]:  # Skip the last element (object) and reverse
+            annotations.update(base.__annotations__)
+        for key, field_type in annotations.items():
             if key.startswith('_'):
                 continue
             if field_type is None:
@@ -18,7 +20,7 @@ class Schema(BasicType):
                 field_type.to_calldata(value, calldata)
             elif get_origin(field_type) == list:
                 field_type = get_args(field_type)[0]
-                self._list_to_calldata(value, field_type, calldata)
+                self.list_to_calldata(value, field_type, calldata)
             else:
                 raise NotImplementedError(f'Unsupported field type "{field_type}" for field "{key}"')
         return calldata
@@ -43,7 +45,7 @@ class Schema(BasicType):
             elif get_origin(field_type) == list:
                 try:
                     field_type = get_args(field_type)[0]
-                    setattr(instance, key, cls._list_from_calldata(field_type, calldata))
+                    setattr(instance, key, cls.list_from_calldata(field_type, calldata))
                 except Exception as e:
                     raise ValueError(
                         f'Error while deserializing {cls.__name__}: at List[{field_type.__name__}] field "{key}"') from e
@@ -55,7 +57,7 @@ class Schema(BasicType):
         return instance
 
     @staticmethod
-    def _list_to_calldata(list_: list, element_type, calldata: Calldata):
+    def list_to_calldata(list_: list, element_type, calldata: Calldata):
         calldata.push_int(len(list_))
         for index in range(len(list_)):
             try:
@@ -64,7 +66,7 @@ class Schema(BasicType):
                 raise ValueError(f'Error while serializing List[{element_type.__name__}] at index {index}') from e
 
     @staticmethod
-    def _list_from_calldata(element_type, calldata: Calldata) -> List:
+    def list_from_calldata(element_type, calldata: Calldata) -> List:
         num_elements = calldata.pop_int()
         new_list = []
         for index in range(num_elements):
